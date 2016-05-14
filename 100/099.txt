@@ -1,0 +1,80 @@
+TreeNode *GetMax(TreeNode *root)
+    {
+        if(root == NULL)
+            return root;
+
+        while(root->right)
+            root = root->right;
+        
+        return root;
+    }
+    
+    TreeNode *GetMin(TreeNode *root)
+    {
+        if(root == NULL)
+            return NULL;
+
+        while(root->left)
+            root = root->left;
+        
+        return root;
+    }
+    
+    void recoverTree(TreeNode* root) 
+    {
+        if(root == NULL || (root->left == NULL && root->right == NULL))
+            return;
+            
+        vector<TreeNode *> missed_nodes;
+        TreeNode *p_cur = root;
+        stack<TreeNode *> node_stack;
+        while(p_cur || !node_stack.empty())
+        {
+            if(missed_nodes.size() == 4)
+                break;
+
+            if(p_cur)
+            {
+                node_stack.push(p_cur);
+                p_cur = p_cur->left;
+            }
+            else
+            {
+                p_cur = node_stack.top();
+                node_stack.pop();
+                
+                TreeNode *left = GetMax(p_cur->left);
+                TreeNode *right = GetMin(p_cur->right);
+                if(left && left->val > p_cur->val)
+                {
+                    missed_nodes.push_back(p_cur);
+                    missed_nodes.push_back(left);
+                }
+                
+                if(right && right->val < p_cur->val)
+                {
+                    missed_nodes.push_back(p_cur);
+                    missed_nodes.push_back(right);
+                }
+                
+                p_cur = p_cur->right;
+            }
+        }
+        
+        if(missed_nodes.size() == 2)
+            swap(missed_nodes[0]->val, missed_nodes[1]->val);
+        else
+	    {
+	        TreeNode *min_node = missed_nodes[0];
+	        TreeNode *max_node = missed_nodes[0];
+	        for(int i = 1; i < 4; ++i)
+	        {
+	            if(missed_nodes[i]->val < min_node->val)
+	                min_node = missed_nodes[i];
+	            else if(missed_nodes[i]->val > max_node->val)
+	                max_node = missed_nodes[i];
+	        }
+	        
+	        swap(min_node->val, max_node->val);
+	    }
+    }
