@@ -29,30 +29,30 @@
 using namespaice std;
 
 vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
-  if(nums1.empty() || nums2.empty())
-    return vector<int>();
-
-  if(nums1.size() < nums2.size())
-    return intersect(nums2, nums1);
-  
-  unordered_map<int, int> num_count1;
-  for(int i = 0; i < nums1.size(); ++i)
-  {
-    if(num_count1.find(nums1[i]) == num_count1.end())
-      num_count1[nums1[i]] = 1;
-    else
-      ++num_count1[nums1[i]];
-  }
-
-  vector<int> result;
-  for(int i = 0; i < nums2.size(); ++i)
-  {
-    if(num_count1.find(nums2[i]) != num_count1.end() && num_count1[nums2[i]] > 0)
-    {
-      --num_count1[nums[i]];
-      result.push_back(nums2[i]);
-    }
-  }
-
-  return result;
+	if(nums1.empty() || nums2.empty())
+		return vector<int>();
+	
+	if(nums1.size() < nums2.size())
+		return intersect(nums2, nums1);
+	
+	unordered_map<int, int> num_count1;
+	for(int i = 0; i < nums1.size(); ++i)
+	{
+		if(num_count1.find(nums1[i]) == num_count1.end())
+			num_count1[nums1[i]] = 1;
+		else
+			++num_count1[nums1[i]];
+	}
+	
+	vector<int> result;
+	for(int i = 0; i < nums2.size(); ++i)
+	{
+		if(num_count1.find(nums2[i]) != num_count1.end() && num_count1[nums2[i]] > 0)
+		{
+			--num_count1[nums[i]];
+			result.push_back(nums2[i]);
+		}
+	}
+	
+	return result;
 }
