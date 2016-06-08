@@ -16,36 +16,71 @@ When s3 = "aadbbbaccc", return false.
 
 using namespace std;
 
-bool isInterleave(string s1, string s2, string s3) {
-        int len1 = s1.size();
-        int len2 = s2.size();
-        if(len1 + len2 != s3.size())
+bool isInterleaving(const string& s1, const string& s2, const string& s3)
+{
+	if(s1.size() + s2.size() != s3.size())
 		return false;
-        if(len1 == 0)
-		return s3 == s2;
-        if(len2 == 0)
-		return s3 == s1;
-	
-        vector<vector<int> > aux(len1 + 1, vector<int>(len2 + 1, 0));
-        aux[0][0] = 1;
-        for(int i = 1; i <= len1; ++i)
-		aux[i][0] = ((s1[i - 1] == s3[i - 1]) & aux[i - 1][0]);
-        
-        for(int j = 1; j <= len2; ++j)
-		aux[0][j] = ((s2[j - 1] == s3[j - 1]) & aux[0][j - 1]);
-        
-        for(int i = 1; i <= len1; ++i)
-        {
-		for(int j = 1; j <= len2; ++j)
+
+	if(s1.empty())
+		return s2 == s3;
+	else if(s2.empty())
+		return s1 == s3;
+
+	int row = s1.size();
+	int col = s2.size();
+	vector<vector<int> > dp(row + 1, vector<int>(col + 1, -1));
+
+	dp[0][0] = 0;
+
+	for(int i = 0; i < s1.size(); ++i)
+	{
+		if(s1[i] != s3[i])
 		{
-			if(s3[i + j - 1] == s1[i - 1])
-				aux[i][j] = aux[i - 1][j];
-			if(s3[i + j - 1] == s2[j - 1])
-				aux[i][j] |= aux[i][j - 1];
+			for(int j = i + 1; j <= row; ++j)
+				dp[j][0] = 0;
+			break;
 		}
-        }
+		dp[i + 1][0] = 1;
+	}
+
+	for(int i = 0; i < s2.size(); ++i)
+	{
+		if(s2[i] != s3[i])
+		{
+			for(int j = i + 1; j <= col; ++j)
+				dp[0][j] = 0;
+			break;
+		}
+		dp[0][i + 1] = 1;
+	}
+
+	for(int i = 0; i < row; ++i)
+	{
+		for(int j = 0; j < col; ++j)
+		{
+			if(dp[i + 1][j + 1] != -1)
+				continue;
+			cout << i << ": " << s1[i] << ", " << j << ": " << s2[j] << ", " << i + j + 1 << ": " << s3[i + j + 1] << endl;
+			if(s1[i] == s3[i + j + 1] && s2[j] == s3[i + j + 1])
+				dp[i + 1][j + 1] = (dp[i][j + 1] || dp[i + 1][j]);
+			else if(s1[i] == s3[i + j + 1])
+				dp[i + 1][j + 1] = dp[i][j + 1];
+			else if(s2[j] == s3[i + j + 1])
+				dp[i + 1][j + 1] = dp[i + 1][j];
+			else
+				dp[i + 1][j + 1] = 0;
+		}
+	}
+
+	cout << endl;
+	for(int i = 0; i <= row; ++i)
+	{
+		for(int j = 0; j <= col; ++j)
+			cout << dp[i][j] << ", ";
+		cout << endl;
+	}
 	
-        return aux[len1][len2];
+	return dp[row][col];
 }
 
 int main()

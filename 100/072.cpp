@@ -1,18 +1,4 @@
-/*
-  Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)
-  You have the following 3 operations permitted on a word:
-  a) Insert a character
-  b) Delete a character
-  c) Replace a character
-
-  Solution:
-  Use dynamic programming. The minimal distance of the current position is nothing but
-  the edit distance of end in the last position, 
-  if the the char of two string at the current position are equal;
-  the 1 + minimal operations of the above three 
-*/
-
-
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -40,6 +26,7 @@ int minDistance(string word1, string word2)
 	{
 		for(int i2 = 0; i2 < col; ++i2)
 		{
+			cout << i1 << " - " << word1[i1] << ", " << i2 << " - " << word2[i2] << endl;
 			if(word1[i1] == word2[i2])
 				dp[i1 + 1][i2 + 1] = dp[i1][i2];
 			else
@@ -47,6 +34,22 @@ int minDistance(string word1, string word2)
 		}
 	}
 
+	for(int i = 0; i <= row; ++i)
+	{
+		for(int j = 0; j <= col; ++j)
+		{
+			cout << dp[i][j] << ",";
+		}
+		cout << endl;
+	}
+	
 	return dp[row][col];
 }
 
+int main()
+{
+  string word1 = "abcdefg";  //7
+  string word2 = "bdf";  //3
+
+  cout << minDistance(word1, word2) << endl;
+}

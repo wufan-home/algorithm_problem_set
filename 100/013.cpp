@@ -1,15 +1,18 @@
 /*
   Given a roman numeral, convert it to an integer.
   Input is guaranteed to be within the range from 1 to 3999.
-
   Solution:
   Scan the string from the last char to the first, 
   if the mapped value of the current one is smaller than the previous one,
   minus the mapped value of the current char.
   Otherwise, add the value.
+
+  Solutions:
+  Run from the last char of the string: If the current value is smaller than its right one,
+  use the total value to substract the value of the char; 
+  otherwise, add the value to the total value.
 */
 
-#include <iostream>
 #include <string>
 
 using namespace std;
@@ -31,15 +34,4 @@ int romanToInt(string s) {
 		result += (rton[s[i]] < rton[s[i + 1]] ? -1 : 1) * rton[s[i]];
 
 	return result;
-}
-
-int main()
-{
-	cout << romanToInt("MM") << endl;
-	cout << romanToInt("MMC") << endl;
-	cout << romanToInt("MMD") << endl;
-	cout << romanToInt("MMDC") << endl;
-	cout << romanToInt("MMDCXL") << endl;
-	cout << romanToInt("DCXXI") << endl;
-	return 1;
 }

@@ -4,30 +4,39 @@
 
 using namespace std;
 
-void GetPerm(vector<int> nums, int cur, int size, vector<vector<int> >& perms)
-{
-  if(cur == size - 1)
-    perms.push_back(nums);
-  else
-    {
-      for(int i = cur; i < size; ++i)
-	{
-	  if (i != cur && nums[i] == nums[cur]) continue;
-	  swap(nums[cur], nums[i]);
-	  GetPerm(nums, cur + 1, size, perms);
-	}
-    }
-}
+vector<vector<int> > permuteUnique(vector<int>& nums) {
+        vector<vector<vector<int> > >perms_alt(2, vector<vector<int> >());
 
-vector<vector<int> > permuteUnique(vector<int> &nums) {
-  // write your code here
-  vector<vector<int> > perms;
-  if(nums.empty())
-    return perms;
-  
-  sort(nums.begin(), nums.end());
-  GetPerm(nums, 0, nums.size(), perms);
-  return perms;
+	if(nums.empty())
+		return perms_alt[0];
+
+	perms_alt[0].push_back(vector<int>(1, nums[0]));
+	if(nums.size() == 1)
+		return perms_alt[0];
+
+	sort(nums.begin(), nums.end());
+	
+	int size = nums.size();
+	for(int i = 1; i < size; ++i)
+	{
+		int last = (i - 1) % 2;
+		int current = i % 2;
+		for(int j = perms_alt[last].size() - 1; j >= 0; --j)
+		{
+			vector<int> perm = perms_alt[last][j];
+			perm.push_back(nums[i]);
+			perms_alt[current].push_back(perm);
+			for(int l = perm.size() - 1; l > 0; --l)
+			{
+				swap(perm[l], perm[l - 1]);
+				if(perm[l] != perm[l - 1])
+					perms_alt[current].push_back(perm);
+			}
+		}
+		perms_alt[last].clear();
+	}
+
+	return perms_alt[(nums.size() - 1) % 2];
 }
 
 int main()

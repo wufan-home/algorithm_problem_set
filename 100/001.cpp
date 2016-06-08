@@ -1,20 +1,17 @@
 /*
-  Given an array of integers, return indices of the two numbers such that they add up to a specific target.
-
+  Given an array of integers, 
+  return indices of the two numbers such that they add up to a specific target.
   You may assume that each input would have exactly one solution.
-
   Example:
   Given nums = [2, 7, 11, 15], target = 9,
-
   Because nums[0] + nums[1] = 2 + 7 = 9,
   return [0, 1].
   UPDATE (2016/2/13):
-  The return format had been changed to zero-based indices. Please read the above updated description carefully.
+  The return format had been changed to zero-based indices. 
+  Please read the above updated description carefully.
 
   Solution:
-  1) Build up a new array of elemlents each of which consititutes of value and index. Sort a new array.
-     Use the binary search to find the solution and push the indices to the result.
-  2) Use the hash table to test whether the index of the difference of target and the current value has been added to the hash table.
+  1. Two-pointers:
 */
 
 #include <iostream>
@@ -25,23 +22,13 @@
 
 using namespace std;
 
-static bool Compare(const pair<int, int>& l, const pair<int, int>& r)
+static bool Compare(const pair<int, int> l, const pair<int, int> r)
 {
 	return l.first <= r.first;
 }
 
 vector<int> twoSum(vector<int>& nums, int target) {
 	vector<int> r;
-        if(nums.size() < 2)
-		return r;
-
-	if(nums.size() == 2)
-	{
-		r.push_back(0);
-		r.push_back(1);
-		return r;
-	}
-
 	vector<pair<int, int> > nums1;
 	for(int i = 0; i < nums.size(); ++i)
 		nums1.push_back(make_pair(nums[i], i));

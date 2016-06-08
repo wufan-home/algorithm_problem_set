@@ -15,68 +15,108 @@
 
 #include <iostream>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <vector>
 
 using namespace std;
 
-string minWindow(const string &source, const string &target)
+typedef map<char, int>::iterator IT;
+
+char FindMissingChar(map<char, int>& current, map<char, int>& total)
 {
-        if(source.empty() && target.empty())
-            return "";
-
-	unordered_map<char, int> hash;
-	unordered_set<char> more;
-	unordered_map<char, int> cached;
-	for(int i = 0; i < target.size(); ++i)
+	char missing = '\0';
+	for(IT c = current.begin(), t = total.begin();
+	    c != current.end() && t != total.end(); ++c, ++t)
 	{
-		char c = target[i];
-		if(hash.find(c) == hash.end())
+		if(c->second < t->second)
 		{
-			hash[c] = 0;
-			cached[c] = 0;
-			more.insert(target[i]);
-		}
-		++hash[target[i]];
-	}
-	
-	
-        string result("");
-	for(int back = 0, front = 0; front < source.size(); ++front)
-	{
-		char c = source[front];
-		if(cached.find(c) != cached.end())
-		{
-			++cached[c];
-			if(cached[c] >= hash[c])
-				more.erase(c);
-		}
-
-		for(;back <= front && more.empty(); ++back)
-		{
-			if(result.empty() || front - back + 1 < result.size())
-				result = source.substr(back, front - back + 1);
-
-			char c = source[back];
-			if(hash.find(c) != hash.end())
-			{
-				if(--cached[c] < hash[c])
-					more.insert(c);
-			}
+			missing = c->first;
+			break;
 		}
 	}
-	
-        return result;
+	return missing;
 }
 
+string minWindow(string s, string t) {
+        if(s.empty() || s.size() < t.size())
+		return "";
+	
+	int ssize = s.size();
+	int tsize = t.size();
+	map<char, int> total;
+	map<char, int> current;
+	vector<bool> existed(128, false);
+	for(int i = 0; i < tsize; ++i)
+	{
+		if(total.find(t[i]) == total.end())
+		{
+			total[t[i]] = 1;
+			current[t[i]] = 0;
+			existed[t[i]] = true;
+		}
+		else
+			++total[t[i]];
+	}
+
+	int l = 0;
+	for(; l < ssize; ++l)
+	{
+		if(existed[s[l]])
+			break;
+	}
+	if(l == ssize)
+		return "";
+
+	int start = l;
+	int end = l;
+	char last_less = '\0';
+	for(int r = l; r < ssize; ++r)
+	{
+		if(!existed[s[r]])
+			continue;
+
+		++current[s[r]];
+    
+		if(current[s[r]] < total[s[r]] ||
+		   (last_less != '\0' && current[last_less] < total[last_less]) ||
+		   (last_less = FindMissingChar(current, total)) != '\0')
+			continue;
+
+		if(start == end || r - l < end - start)
+		{
+			start = l;
+			end = r;
+		}
+
+		while(1)
+		{
+			if(start == end || r - l < end - start)
+			{
+				start = l;
+				end = r;
+			}
+
+			++l;
+			if(!existed[s[l - 1]])
+				continue;
+
+			--current[s[l - 1]];
+			if(current[s[l - 1]] < total[s[l - 1]])
+				break;
+		}
+	}
+
+	if(start == end && tsize > 1)
+		return "";
+	return s.substr(start, end - start + 1);
+}
 
 int main()
 {
-	cout << "abcde, " << "db: "<< minWindow("abcde", "db") << endl;
-	cout << "ADOBECODEBANC, " << "ABC:"<< minWindow("ADOBECODEBANC", "ABC") << endl;
-	cout << "aa, " << "aa: "<< minWindow("aa", "aa") << endl;
-	cout << "cabwefgewcwaefgcf, " << "cae: " << minWindow("cabwefgewcwaefgcf", "cae") << endl;
-	cout << "babb, " << "baba: " << minWindow("babb", "baba") << endl;
-	cout << "a, " << "a: "<< minWindow("a", "a") << endl;
+	cout << minWindow("ADOBECODEBANC", "ABC") << endl;
+	cout << minWindow("aa", "aa") << endl;
+	cout << minWindow("cabwefgewcwaefgcf", "cae") << endl;
+	cout << minWindow("babb", "baba") << endl;
+	cout << minWindow("a", "a") << endl;
 	return 1;
 }
