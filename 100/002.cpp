@@ -7,8 +7,8 @@
 
   Solution: Let two pointers, each of which runs from one head of two linked-lists,
   run until both of them are NULL. 
-  Build a new node by the sum of two values from the two linked-lists.
-  In the end, add a new node if the overflow is 1 after the loop.
+  Build a new node by the sum of two values from the two linked-lists and add it to a new linked-list.
+  In the end, add a new node to the new linked-list, if the overflow is 1 after the loop.
 */
 
 #include <climits>
