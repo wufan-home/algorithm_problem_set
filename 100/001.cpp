@@ -11,10 +11,24 @@
   Please read the above updated description carefully.
 
   Solution:
-  1. Two-pointers:
+  1. Two-pointers method: Construct a new array, each element of which consist of value and its index.
+     Sort this array by the values: Need to override the internal-defined compare function. 
+     Use two pointers search from two end-points of the new array: move the end pointer to the left,
+     if the sum of two values are smaller than the target; move the left pointer to the right, 
+     if the sum is larger than the target.
+     Return the array of two indices if the sum is equal to the target.
+     Time complexity: O(nlogn) - The sort part costs the most part of the time.
+     Space complexity: O(n).
+
+  2. Hash-set method: Use a hash set to store indices of elements.
+     Starting from the left side of the array, 
+     check if the substraction of target and the current element.
+     If so, return the stored index and the current index.
+     If not, store the index of the current element to the hash set.
+     Time complexity: O(n) - The checking of existence of the difference is O(1).
+     Space complexity: O(n).
 */
 
-#include <iostream>
 #include <vector>
 #include <utility>
 #include <algorithm>
