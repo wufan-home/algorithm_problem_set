@@ -17,7 +17,7 @@
 */
 
 bool check_symmetric(TreeNode *p, TreeNode *q)
-    {
+{
         return ((p == NULL && q == NULL) || 
                 (p != NULL &&
                  q != NULL &&
@@ -25,26 +25,8 @@ bool check_symmetric(TreeNode *p, TreeNode *q)
                  check_symmetric(p->left, q->right) &&
                  check_symmetric(p->right, q->left)));
         
-    }
-
-    bool isSymmetric(TreeNode* root) {
-            return (root == NULL || check_symmetric(root->left, root->right));
-    }
-
-bool isSymmetricAux(TreeNode *l, TreeNode *r)
-{
-        if((l == NULL && r == NULL) ||
-	   (l != NULL && r != NULL && l->val == r->val &&
-	    isSymmetricAux(l->left, r->right) &&
-	    isSymmetricAux(l->right, r->left)))
-	   return true;
-	   
-    	return false;
 }
-    
+
 bool isSymmetric(TreeNode* root) {
-        if(!root)
-    		return true;
-    
-    	return isSymmetricAux(root->left, root->right);
+            return (root == NULL || check_symmetric(root->left, root->right));
 }
