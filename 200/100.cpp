@@ -1,14 +1,7 @@
-void connect(TreeLinkNode *root)
-{
-	if(root == NULL)
-		return;
+/*
+  Given two binary trees, write a function to check if they are equal or not.
+  Two binary trees are considered equal 
+  if they are structurally identical and the nodes have the same value.
+*/
 
-	if(root->left != NULL)
-		root->left->next = root->right;
 
-	if(root->right != NULL && root->next != NULL)
-		root->right->next = root->next->left;
-
-	connect(root->left);
-	connect(root->right);
-}
