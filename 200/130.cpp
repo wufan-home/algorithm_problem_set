@@ -1,3 +1,18 @@
+/*
+  Given a 2D board containing 'X' and 'O', capture all regions surrounded by 'X'.
+  A region is captured by flipping all 'O's into 'X's in that surrounded region.
+  For example,
+  X X X X
+  X O O X
+  X X O X
+  X O X X
+  After running your function, the board should be:
+  X X X X
+  X X X X
+  X X X X
+  X O X X
+*/
+
 #include <iostream>
 #include <queue>
 #include <utility>
@@ -62,33 +77,4 @@ void solve(vector<vector<char> >& board) {
 				board[i][j] = 'X';
 		}
 	}
-}
-
-int main()
-{
-	//["XOXOXO","OXOXOX","XOXOXO","OXOXOX"]
-	//["OXOOXOXOOO","OOOOOXOOXO","OOOOOOOOXO","OOOOOOXXXO","OOOOOXOOOX","OOOOOOOOOX","OOOOXOOOOO","OOOOXOOOXO","XXOOOOOOOO","OOOOXOXOOX"]
-	/*vector<vector<char> > board(1, vector<char>({'X', 'O', 'X', 'O', 'X', 'O'}));
-	board.push_back(vector<char>({'O', 'X', 'O', 'X', 'O', 'X'}));
-	board.push_back(vector<char>({'X', 'O', 'X', 'O', 'X', 'O'}));
-	board.push_back(vector<char>({'O', 'X', 'O', 'X', 'O', 'X'}));*/
-	vector<vector<char> > board(1, vector<char>({'X', 'O', 'X'}));
-	board.push_back(vector<char>({'X', 'O', 'X'}));
-	board.push_back(vector<char>({'X', 'O', 'X'}));
-	for(int i = 0; i < board.size(); ++i)
-	{
-		for(int j = 0; j < board[0].size(); ++j)
-			cout << board[i][j] << " ";
-		cout << endl;
-	}
-	cout << "--------" << endl;
-	solve(board);
-	for(int i = 0; i < board.size(); ++i)
-	{
-		for(int j = 0; j < board[0].size(); ++j)
-			cout << board[i][j] << " ";
-		cout << endl;
-	}
-	return 1;
-	
 }
