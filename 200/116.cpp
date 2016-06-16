@@ -29,5 +29,14 @@ After calling your function, the tree should look like:
     4->5->6->7 -> NULL
 */
 
+void connect(TreeLinkNode *root) {
+        if(root->left == NULL)
+		return;
 
+	root->left->next = root->right;
+	if(root->next)
+		root->right->next = root->next->left;
+	connect(root->left);
+	connect(root->right);
+}
 
