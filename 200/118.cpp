@@ -14,7 +14,6 @@
 
 */
 
-#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -37,20 +36,4 @@ vector<vector<int> > generate(int numRows) {
 	}
 
 	return rv;
-}
-
-int main()
-{
-	for(int i = 1; i <= 10; ++i)
-	{
-		vector<vector<int> > rv = generate(i);
-		for(int j = 0; j < rv.size(); ++j)
-		{
-			for(int k = 0; k < rv[j].size(); ++k)
-				cout << rv[j][k] << ", ";
-			cout << endl;
-		}
-		cout << endl;
-	}
-	return 1;
 }
