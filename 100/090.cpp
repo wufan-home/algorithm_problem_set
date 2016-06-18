@@ -1,11 +1,20 @@
-#include <algorithm>
-#include <iostream>
-#include <vector>
-
-using namespace std;
+/*
+  Given a collection of integers that might contain duplicates, nums, return all possible subsets.
+  Note: The solution set must not contain duplicate subsets.
+  For example,
+  If nums = [1,2,2], a solution is:
+  [
+    [2],
+    [1],
+    [1,2,2],
+    [2,2],
+    [1,2],
+    []
+  ]
+*/
 
 void Generate(vector<int>& nums, int start,
-	      vector<int>& subset, vector<vector<int> >& rv)
+	      vector<int>& subset, vector<vector<int> >& result)
 {
 	for(int i = start; i < nums.size();)
 	{
@@ -15,7 +24,7 @@ void Generate(vector<int>& nums, int start,
 		for(int j = cur; j < i; ++j)
 		{
 			subset.push_back(nums[j]);
-			rv.push_back(subset);
+			result.push_back(subset);
 			Generate(nums, i, subset, rv);
 		}
 		subset = cur_v;
@@ -24,25 +33,12 @@ void Generate(vector<int>& nums, int start,
 
 vector<vector<int> > subsetsWithDup(vector<int>& nums)
 {
-	vector<vector<int> > rv;
+	vector<vector<int> > result;
 	if(nums.empty())
-		return rv;
+		return result;
 
 	sort(nums.begin(), nums.end());
 	vector<int> subset;
-	Generate(nums, 0, subset, rv);
-	return rv;
-}
-
-int main()
-{
-	vector<int> nums({-1, 0, 2, 4});
-	vector<vector<int> > rv = subsetsWithDup(nums);
-	for(int i = 0; i < rv.size(); ++i)
-	{
-		for(int j = 0; j < rv[i].size(); ++j)
-			cout << rv[i][j] << ", ";
-		cout << endl;
-	}
-	return 1;
+	Generate(nums, 0, subset, result);
+	return result;
 }
