@@ -1,41 +1,32 @@
-#include <iostream>
-#include <string>
-#include <unordered_map>
-#include <stdio.h>
-#include <string.h>
+/*
+  Given two strings s and t, determine if they are isomorphic.
+  Two strings are isomorphic if the characters in s can be replaced to get t.
+  All occurrences of a character must be replaced with another character 
+  while preserving the order of characters. No two characters may map to the same character but a character may map to itself.
+  For example,
+  Given "egg", "add", return true.
+  Given "foo", "bar", return false.
+  Given "paper", "title", return true.
+  Note:
+  You may assume both s and t have the same length.
+*/
 
-using namespace std;
 
-bool isIsomorphic(string s, string t)
-{
-	if(s.size() != t.size())
-		return false;
+bool isIsomorphic(string s, string t) {            
+        unordered_map<char, char> maps;
+        vector<bool> used(256, false);
+        for(int i = 0; i < s.size(); ++i)
+        {
+            if(maps.find(s[i]) == maps.end())
+            {
+                if(used[t[i]])
+                    return false;
 
-	int image[256];
-	memset(image, -1, 256 * sizeof(int));
-	int preimage[256];
-	memset(preimage, -1, 256 * sizeof(int));
-	for(int i = 0; i < s.size(); ++i)
-	{
-		int i_index = t[i];
-		int pi_index = s[i];
-		cout << pi_index << ", " << i_index << endl;
-		cout << image[pi_index] << ", " << preimage[i_index] << endl;
-		if(image[pi_index] == -1 && preimage[i_index] == -1)
-		{
-			image[pi_index] = i_index;
-			preimage[i_index] = pi_index;
-		}
-		else if(preimage[i_index] != pi_index)
-			return false;
-	}
-
-	return true;
-}
-
-int main()
-{
-	cout << isIsomorphic("foo", "app") << endl;
-	cout << isIsomorphic("13", "24") << endl;
-	return 1;
+                maps[s[i]] = t[i];
+                used[t[i]] = true;
+            }
+            else if(maps[s[i]] != t[i])
+                return false;
+        }
+        return true;
 }
