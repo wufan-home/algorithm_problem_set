@@ -23,12 +23,11 @@ ListNode *detectCycle(ListNode *head) {
 		return NULL;
 
 	fast = head;
-	do
+	while(slow != fast)
 	{
 		slow = slow->next;
 		fast = fast->next;
 	}
-	while(slow != fast);
 
 	return fast;
 }
