@@ -23,7 +23,7 @@ int numIslands(vector<vector<char> >& grid)
 		return 0;
 
 	int offset[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-	int rv = 0;
+	int result = 0;
 	for(int i = 0; i < grid.size(); ++i)
 	{
 		for(int j = 0; j < grid[0].size(); ++j)
@@ -31,7 +31,7 @@ int numIslands(vector<vector<char> >& grid)
 			if(grid[i][j] == '0' || grid[i][j] == '#')
 				continue;
 
-			++rv;
+			++result;
 			queue<pair<int, int> > pt_queue;
 			pt_queue.push(make_pair(i, j));
 			while(!pt_queue.empty())
@@ -64,5 +64,5 @@ int numIslands(vector<vector<char> >& grid)
 		}
 	}
 
-	return rv;
+	return result;
 }
