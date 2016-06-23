@@ -33,7 +33,11 @@ int findKthLargest(vector<int>& nums, int k) {
 		if (left_size == k)
 			return nums[index];
 		else if (left_size > k)
-			start = index + 1;
+		{
+			start = index + 1;  
+			// Since the size of the subarray from index to the end is bigger than k,
+			// you only need to consider the sub-array from the next element of index + 1.
+		}
 		else
 		{
 			k -= left_size;
