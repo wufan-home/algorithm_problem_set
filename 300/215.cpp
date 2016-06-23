@@ -42,6 +42,8 @@ int findKthLargest(vector<int>& nums, int k) {
 		{
 			k -= left_size;
 			end = index - 1;
+			// Since the sub-array from the index is smaller than k,
+			// you only need to consider the sub-array end with the index - 1.
 		}
 	}
 }
