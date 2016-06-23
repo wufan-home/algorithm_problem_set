@@ -26,12 +26,13 @@ int findKthLargest(vector<int>& nums, int k) {
 	
 	int start = 0;
 	int end = nums.size() - 1;
+	int index = -1;
 	while (k > 0)
 	{
-		int index = Partition(nums, start, end, start + (end + 1 - start) / 2);
+		index = Partition(nums, start, end, start + (end + 1 - start) / 2);
 		int right_size = end + 1 - index;
 		if (right_size == k)
-			return nums[index];
+			break;
 		else if (right_size > k)
 		{
 			start = index + 1;  
@@ -46,4 +47,6 @@ int findKthLargest(vector<int>& nums, int k) {
 			// you only need to consider the sub-array end with the index - 1.
 		}
 	}
+	
+	return nums[index];
 }
