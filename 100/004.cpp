@@ -2,6 +2,11 @@
   There are two sorted arrays nums1 and nums2 of size m and n respectively. 
   Find the median of the two sorted arrays. 
   The overall run time complexity should be O(log (m+n)).
+  
+  Solution: The key idea of the solution of this problem is to find the k-th element of the combined arries.
+  If the index k is bigger or equal than the left of the new array, the left part will be discarded 
+  (move the start index to the next of the middle index of the array 1), and substract the size of the discarded part.
+  Else, move the end index of the array2 to the previous index of the middle index of the array2.
 */
 
 #include "stdafx.h"
@@ -30,9 +35,22 @@ double findKth(const vector<int>& nums1, int s1, int e1,
 		if (nums1[m1] > nums2[m2])
 			return findKth(nums2, s2, e2, nums1, s1, e1, k);
 		else if (k >= m1 - s1 + 1 + m2 - s2)
+		{
+			// Magic number m1 - s1 + 1 + m2 - s2:
+			// Notice that k is the index of the element we need.
+			// If k is larger or equal than the index of the last element ((m1 + 1 - s1) + (m2 + 1 - s2) - 1) of
+			// the combined array of nums1 and nums2,
+			// the left part of nums1 do not need to be considered,
+			// and the index k should substract the size of this part (m1 + 1 - s1).
 			return findKth(nums1, m1 + 1, e1, nums2, s2, e2, k - (m1 + 1 - s1));
+		}
 		else
+		{
+			// Since k is smaller than the last index of two array,
+			// we only need to consider the combined array from start to
+			// the previous index of the last index.
 			return findKth(nums1, s1, e1, nums2, s2, m2 - 1, k);
+		}
 	}
 }
 
