@@ -7,8 +7,9 @@
   You may assume k is always valid, 1 ≤ k ≤ array's length.
 */
 
-int Partition(vector<int>& nums, int start, int end, int index)
+int Partition(vector<int>& nums, int start, int end)
 {
+	int index = start + (end + 1 - start) / 2;
 	swap(nums[index], nums[end]);
 	int l = start - 1;
 	for (int i = start; i < end; ++i)
@@ -29,7 +30,7 @@ int findKthLargest(vector<int>& nums, int k) {
 	int index = -1;
 	while (k > 0)
 	{
-		index = Partition(nums, start, end, start + (end + 1 - start) / 2);
+		index = Partition(nums, start, end);
 		int right_size = end + 1 - index;
 		if (right_size == k)
 			break;
