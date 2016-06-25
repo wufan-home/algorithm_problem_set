@@ -9,7 +9,6 @@
   Else, move the end index of the array2 to the previous index of the middle index of the array2.
 */
 
-#include "stdafx.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
