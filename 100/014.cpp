@@ -1,9 +1,7 @@
-#include <iostream>
-#include <string>
-#include <algorithm>
-#include <vector>
+/*
+  Write a function to find the longest common prefix string amongst an array of strings.
+*/
 
-using namespace std;
 
 string longestCommonPrefix(vector<string>& strs) {
   string prefix("");
@@ -25,9 +23,4 @@ string longestCommonPrefix(vector<string>& strs) {
   }
 
   return result;
-}
-
-int main()
-{
-  return 1;
 }
