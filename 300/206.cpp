@@ -15,7 +15,7 @@ ListNode* reverseList(ListNode* head) {
         return reverse->next;
 }
 
-ListNode *Reverse(ListNode *head, ListNode* &tail)
+ListNode* Reverse(ListNode* head, ListNode* &tail)
 {
     	if(head == NULL)
     		return NULL;
@@ -32,7 +32,7 @@ ListNode *Reverse(ListNode *head, ListNode* &tail)
     	else
     	{
     	    tail->next = temp;
-    		tail = tail->next;
+	    tail = tail->next;
     	}
 
     	return reverse;
@@ -40,9 +40,6 @@ ListNode *Reverse(ListNode *head, ListNode* &tail)
     
 ListNode* reverseList(ListNode* head)
 {
-    	if(head == NULL)
-    		return NULL;
-    
         ListNode *tail = NULL;
     	return Reverse(head, tail);
 }
