@@ -12,12 +12,6 @@
   Solution:
   Recursive method.
 */
-#include <iostream>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
-using namespace std;
 
 void GetCombinations(const string& str, int index, string& comb, vector<string>& result,
 		     unordered_map<char, vector<char> >& num_map_char)
@@ -59,9 +53,4 @@ vector<string> letterCombinations(string digits)
 	GetCombinations(digits, 0, comb, result, num_map_char);
 
 	return result;
-}
-
-int main()
-{
-	return 1;
 }
