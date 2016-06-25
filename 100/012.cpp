@@ -1,11 +1,7 @@
-// 12.cpp : Defines the entry point for the console application.
-//
-
-#include "stdafx.h"
-#include <string>
-#include <iostream>
-
-using namespace std;
+/*
+  Given an integer, convert it to a roman numeral.
+  Input is guaranteed to be within the range from 1 to 3999.
+*/
 
 string AddChar(int num, char single, char five, char ten) {
 	string result("");
@@ -81,10 +77,3 @@ string intToRoman(int num) {
 
 	return result;
 }
-
-int main()
-{
-	cout << intToRoman(1200) << endl;
-    return 0;
-}
-
