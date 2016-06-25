@@ -13,10 +13,6 @@
   otherwise, add the value to the total value.
 */
 
-#include <string>
-
-using namespace std;
-
 int romanToInt(string s) {
         if(s.empty())
 		return 0;
