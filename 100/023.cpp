@@ -1,57 +1,55 @@
-#include <iostream>
-#include <vector>
-#include <climits>
+//
 
-using namespace std;
-
-struct ListNode
+ListNode *MergeTwoLists(ListNode *l, ListNode *r)
 {
-	ListNode(int v) : val(v), next(NULL) {}
-	int val;
-	ListNode *next;
-};
-
-
-ListNode *MergeTwoLists(ListNode *l1, ListNode *l2)
-{
-	ListNode *dummy = new ListNode(INT_MIN);
-	ListNode *cur = dummy;
-	while(l1 != NULL || l2 != NULL)
-	{
-		ListNode *next = ((l1 == NULL ? INT_MAX : l1->val) <=
-				  (l2 == NULL ? INT_MAX : l2->val) ?
-				  l1 : l2);
-		cur->next = next;
-		cur = cur->next;
-		next == l1 ? l1 = l1->next : l2 = l2->next;
-	}
-	return dummy->next;
+        ListNode *dummy = new ListNode(INT_MIN);
+        for(ListNode *cur = dummy; l || r;)
+        {
+            ListNode* &moving = ((l ? l->val : INT_MAX) <= (r ? r->val : INT_MAX)) ? l : r;
+            cur->next = moving;
+            moving = moving->next;
+            cur = cur->next;
+        }
+        return dummy->next;
 }
 
-ListNode* mergeKLists(vector<ListNode*>& lists) {
-        if(lists.empty())
-		return NULL;
-
-	if(lists.size() == 1)
-		return lists[0];
-
-	for(int i = 1; i < lists.size(); i *= 2)
-	{
-		for(int j = 0; j + i < lists.size(); j += 2 * i)
-			lists[j] = MergeTwoLists(lists[j], lists[j + i]);
-	}
-
-	return lists[0];
+ListNode* mergeKLists(vector<ListNode*>& lists)
+{
+        for(int i = 1; i < lists.size(); i *= 2)
+        {
+            for(int j = 0; j + i < lists.size(); j += 2 * i)
+                lists[j] = MergeTwoLists(lists[j], lists[j + i]);
+        }
+        return lists.empty() ? NULL : lists[0];
 }
 
-int main()
+class CompareClass
+    {
+    public:
+        bool operator() (const pair<ListNode *, int>& l, const pair<ListNode *, int>& r) const
+        {
+            return (l.first ? l.first->val : INT_MAX) > (r.first ? r.first->val : INT_MAX);
+        }
+    };
+
+ListNode* mergeKLists1(vector<ListNode*>& lists) 
 {
-	vector<ListNode*> lists;
-	for(int i = 0; i < 9; ++i)
-		lists.push_back(new ListNode(i + 1));
-	ListNode *rv = mergeKLists(lists);
-	for(; rv != NULL; rv = rv->next)
-		cout << rv->val << (rv->next ? "->" : "");
-	cout << endl;
-	return 1;
+        ListNode *dummy = new ListNode(INT_MIN);
+        priority_queue<pair<ListNode *, int>, vector<pair<ListNode *, int> >, CompareClass> pq;
+        for(int i = 0; i < lists.size(); ++i)
+        {
+            if(lists[i])
+                pq.push(make_pair(lists[i], i));
+        }
+
+        for(ListNode *cur = dummy; !pq.empty(); cur = cur->next)
+        {
+            cur->next = pq.top().first;
+            int index = pq.top().second;
+            lists[index] = lists[index]->next;
+            pq.pop();
+            if(lists[index])
+                pq.push(make_pair(lists[index], index));
+        }
+        return dummy->next;
 }
