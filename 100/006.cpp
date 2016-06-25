@@ -11,12 +11,13 @@
    Write the code that will take a string and make this conversion given a number of rows:
    string convert(string text, int nRows);
    convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
+
+   Solution: 1. Put every characters of the string into the right position (right slot) in an array by the rule.
+   Combine these strings into the result.
+   2. Put the characters by the method: k * range + i, k * range + range - i (k = 0, 1, ...).
+   Notice that: 1) When i == 0 || i = (range / 2 + 1), put only once each time.
+   2) Need to check k * range + range - i seperately.
 */
-
-#include <string>
-#include <vector>
-
-using namespace std;
 
 string convert(string s, int numRows) {
         if(s.empty() || numRows <= 1)
