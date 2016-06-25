@@ -23,6 +23,6 @@ string longestPalindrome(string s) {
                 start = l;
             }
         }
-        
+
         return s.substr(start, max_len);
 }
