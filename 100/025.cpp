@@ -1,78 +1,46 @@
-#include <iostream>
-#include <climits>
+/*
+  Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
+  If the number of nodes is not a multiple of k then left-out nodes in the end should remain as it is.
+  You may not alter the values in the nodes, only nodes itself may be changed.
+  Only constant memory is allowed.
+  For example,
+  Given this linked list: 1->2->3->4->5
+  For k = 2, you should return: 2->1->4->3->5
+  For k = 3, you should return: 3->2->1->4->5
+*/
 
-using namespace std;
-
-struct ListNode
+ListNode* reverseKGroup(ListNode* head, int k)
 {
-	ListNode(int v) : val(v), next(NULL) {}
+        if(head == NULL || k == 0)
+            return head;
 
-	int val;
-	ListNode *next;
-};
+        int count = 0;
+        for(ListNode *cur = head; cur != NULL; cur = cur->next, ++count) {}
+        if(k > count)
+            return head;
 
-ListNode* reverseKGroup(ListNode* head, int k) {
-        if(head == NULL || head->next == NULL || k == 0)
-		return head;
+        ListNode *dummy = new ListNode(INT_MIN);
+        ListNode *tail = dummy;
+        while(head != NULL)
+        {
+		ListNode *cur = head;
+		int i = 0;
+		for(; i < k && head != NULL; ++i, head = head->next) {}
 
-	int total = 0;
-	for(ListNode *front = head;
-	    front != NULL;
-	    front = front->next, ++total) {}
-	if(k > total)
-		return head;
-
-	ListNode *dummy = new ListNode(INT_MIN);
-	ListNode *cur = dummy;
-	for(ListNode *front = head; front != NULL;)
-	{	
-		ListNode *new_tail = NULL;
-		for(int i = 0; i < k; ++i)
+		if(i < k)
+			tail->next = cur;
+		else
 		{
-			if(front == NULL)
-				break;
-
-			ListNode *temp = front;
-			front = front->next;
-			if(cur->next == NULL)
+			ListNode *start = tail;
+			tail = cur; // The local head of the old list is the tail of the new list.
+			while(cur != head)
 			{
-				new_tail = temp;
-				new_tail->next = NULL;
-				cur->next = temp;
-			}
-			else
-			{
-				
-				ListNode *temp_next = cur->next;
-				cur->next = temp;
-				temp->next = temp_next;
+				ListNode *temp = start->next;
+				start->next = cur;
+				cur = cur->next;
+				start->next->next = temp;
 			}
 		}
-		cur = new_tail;
-		total -= k;
-		if(total < k)
-		{
-			cur->next = front;
-			break;
-		}
-	}
-
-	return dummy->next;
-}
-
-int main()
-{
-	ListNode *head = new ListNode(1);
-	ListNode *cur = head;
-	for(int i = 2; i <= 11; ++i, cur = cur->next)
-		cur->next = new ListNode(i);
-
-	for(cur = head; cur != NULL; cur = cur->next)
-		cout << cur->val << "->";
-	cout << endl;
-	head = reverseKGroup(head, 3);
-	for(cur = head; cur != NULL; cur = cur->next)
-		cout << cur->val << "->";
-	cout << endl;
-	return 1;
+        }
+        return dummy->next;
 }
