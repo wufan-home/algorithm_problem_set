@@ -1,64 +1,30 @@
-// 24.cpp : Defines the entry point for the console application.
-//
+/*
+  Given a linked list, swap every two adjacent nodes and return its head.
+  For example,
+  Given 1->2->3->4, you should return the list as 2->1->4->3.
+  Your algorithm should use only constant space. 
+  You may not modify the values in the list, only nodes itself can be changed.
+*/
 
-#include "stdafx.h"
-#include <iostream>
-
-using namespace std;
-
-typedef struct ListNode
+ListNode* swapPairs(ListNode* head)
 {
-	ListNode(int val) : val(val), next(NULL) {}
-	int val;
-	ListNode *next;
-} ListNode;
-
-ListNode* swapPairs(ListNode* head) {
-	if (head == NULL || head->next == NULL)
-		return head;
-
-	ListNode *result = NULL;
-	ListNode *p_cur = NULL;
-	while (head != NULL)
-	{
-		if (head->next == NULL)
-		{
-			p_cur->next = head;
-			head = NULL;
-		}
-		else
-		{
-			ListNode *temp = head;
-			head = head->next->next;
-			if (result == NULL)
-			{
-				result = temp->next;
-				p_cur = temp->next;
-			}
-			else
-			{
-				p_cur->next = temp->next;
-				p_cur = p_cur->next;
-			}
-
-			p_cur->next = temp;
-			p_cur = temp;
-		}
-	}
-
-	return result;
+            ListNode *dummy = new ListNode(INT_MIN);
+            ListNode *ncur = dummy;
+            for(ListNode *ocur = head; head != NULL; ocur = head)
+            {
+		    head = head->next;
+		    if(head) 
+			    head = head->next;
+                    
+		    if(ocur->next)
+		    {
+			    ncur->next = ocur->next;
+			    ncur = ncur->next;
+		    }
+                
+		    ncur->next = ocur;
+		    ncur = ncur->next;
+            }
+            ncur->next = NULL;
+            return dummy->next;
 }
-
-int main()
-{
-	ListNode *head = new ListNode(1);
-	head->next = new ListNode(2);
-	head = swapPairs(head);
-	while (head != NULL) 
-	{
-		cout << head->val << ", ";
-		head = head->next;
-	}
-    return 0;
-}
-
