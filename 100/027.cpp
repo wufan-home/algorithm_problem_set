@@ -11,30 +11,13 @@
   Your function should return length = 2, with the first two elements of nums being 2.
 */
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 int removeElement(vector<int>& nums, int val)
 {
-	int read = 0, write = nums.size() - 1;
-	while(read < write)
-	{
-		if(nums[read] == val)
-			swap(nums[read], nums[write--]);
-		else
-			++read;
-	}
-
-	return (nums.empty() ||
-		(read == 0 && nums[read] == val) ?
-		0 : (nums[read] == val ? read : read + 1));
-}
-
-int main()
-{
-	vector<int> nums({4, 5});
-	cout << removeElement(nums, 5) << endl;
-	return 1;
+        int write = -1;
+        for(int read = 0; read < nums.size(); ++read)
+        {
+		if(nums[read] != val)
+			nums[++write] = nums[read];
+        }
+        return write + 1;
 }
