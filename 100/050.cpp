@@ -1,7 +1,11 @@
 /*
   Implement pow(x, n).
 
-  Solution: The basic idea of the solution is: x^n = ((x^2)^(n/2))(*x when n > 0 or *x^(-1) when n < 0).
+  Solution: The basic idea of the solution is: 
+  x^n = ((x^2)^(n/2))(*x when n > 0 or *x^(-1) when n < 0), if n is odd,
+        ((x^2)^(n/2)), if n is even.
+
+  Since n/2 = 0 if n = 1 and x^0 = 1, the corner cases of 1 and -1 are covered by the above recursion.
 */
 
 double myPow(double x, int n)
