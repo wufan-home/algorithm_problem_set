@@ -19,96 +19,27 @@
   isMatch("aab", "c*a*b") → true
 */
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <queue>
-
-using namespace std;
-
-bool isMatch(const string& s, const string& p) {
-	if(s.empty())
-		return true;
-
-	bool result = false;
-	for(int pi = 0; pi < p.size(); ++pi)
-	{
-		if(result)
-			break;
-
-		if(p[pi] == '*')
-			continue;
-		if(p[pi] == '.')
-			result = isMatch(s.substr(1), p.substr(pi + 1));
-		else if(s[0] == p[pi])
-		{
-			if(s.size() > 1 && s[1] == '*')
-			{
-				
-			}
-		}
-			
-	}
-	
-	return result;
+bool helper(const string& s, int si, const string& p, int pi)
+{
+    	if(si == s.size())
+    		return pi == p.size() || (pi < p.size() - 1 && p[pi + 1] == '*' && helper(s, si, p, pi + 2));
+    	else
+    	{
+    		if(pi == p.size() - 1)
+    			return (p[pi] == s[si] || p[pi] == '.') && si == s.size() - 1;
+    		else
+    		{
+    			if(p[pi + 1] == '*')
+    				return ((p[pi] == s[si] || p[pi] == '.') &&
+    					helper(s, si + 1, p, pi)) || helper(s, si, p, pi + 2);
+    			else
+    				return (p[pi] == s[si] || p[pi] == '.') &&
+    					helper(s, si + 1, p, pi + 1);
+    		}
+    	}
 }
 
-int main()
+bool isMatch(const string& s, const string& p)
 {
-  cout << "s = " << "a" << ", p = " << "aa" << ": "
-       << (isMatch("a", "aa") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-  
-  cout << "s = " << "aa" << ", p = " << "a" << ": "
-       << (isMatch("aa", "a") ? "Match!" : "Dismatch!") << endl; //Expected: Dismatch.
-
-  cout << "s = " << "aa" << ", p = " << "baa" << ": "
-       << (isMatch("aa", "baa") ? "Match!" : "Dismatch!") << endl; //Expected: Match.
-
-  cout << "s = " << "aa" << ", p = " << "aa" << ": "
-       << (isMatch("aa", "aa") ? "Match!" : "Dismatch!") << endl; //Expected: Match.
-
-  cout << "s = " << "aa" << ", p = " << ".a" << ": "
-       << (isMatch("aa", ".a") ? "Match!" : "Dismatch!") << endl; //Expected: Match.
-
-  cout << "s = " << "aa" << ", p = " << ".." << ": "
-       << (isMatch("aa", "..") ? "Match!" : "Dismatch!") << endl; //Expected: Match.
-
-  cout << "s = " << "aa" << ", p = " << "b." << ": "
-       << (isMatch("aa", "b.") ? "Match!" : "Dismatch!") << endl; //Expected: Dis.
-
-  cout << "s = " << "aa" << ", p = " << ".b" << ": "
-       << (isMatch("aa", ".b") ? "Match!" : "Dismatch!") << endl; //Expected: Dis.
-
-  /*
-  cout << "s = " << "aa" << ", p = " << "a." << ": "
-       << (isMatch("aa", "a*") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-  
-  cout << "s = " << "aa" << ", p = " << "a*" << ": "
-       << (isMatch("aa", "a*") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-
-  cout << "s = " << "aa" << ", p = " << ".*" << ": "
-       << (isMatch("aa", ".*") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-
-  cout << "s = " << "a" << ", p = " << "a*" << ": "
-       << (isMatch("a", "a*") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-
-  cout << "s = " << "abc" << ", p = " << "a*c" << ": "
-       << (isMatch("abc", "a*c") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-
-  cout << "s = " << "abc" << ", p = " << "a.c" << ": "
-       << (isMatch("abc", "a.c") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-
-  cout << "s = " << "abc" << ", p = " << "a.*c" << ": "
-       << (isMatch("abc", "a.*c") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-
-  cout << "s = " << "abc" << ", p = " << "a*.c" << ": "
-       << (isMatch("abc", "a*.c") ? "Match!" : "Dismatch!") << endl; //Expected: match.
-
-  cout << "s = " << "b" << ", p = " << "a*" << ": "
-       << (isMatch("b", "a*") ? "Match!" : "Dismatch!") << endl; //Expected: Dismatch.
-
-  cout << "s = " << "b" << ", p = " << "*" << ": "
-       << (isMatch("b", "*") ? "Match!" : "Dismatch!") << endl; //Expected: Dismatch.
-  */
-  return 1;
+    	return helper(s, 0, p, 0);
 }
