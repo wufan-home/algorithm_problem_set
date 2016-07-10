@@ -1,50 +1,29 @@
-#include <iostream>
-#include <vector>
+/*
+  Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+  If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+  The replacement must be in-place, do not allocate extra memory.
+  Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+  1,2,3 → 1,3,2
+  3,2,1 → 1,2,3
+  1,1,5 → 1,5,1
 
-using namespace std;
+  Solution: 
+*/
 
-void nextPermutation(vector<int>& nums) {
-  if(nums.empty())
-    return;
-
-  int last = nums.size() - 1;
-  int start = last;
-  for(; start > 0; --start) {
-    if(nums[start] > nums[start - 1])
-      break;
-  }
-
-  if(start != 0) {
-    for(int i = last; i >= start; --i) {
-      if((i == last && nums[i] > nums[start - 1])
-	 || (nums[i] > nums[start - 1] && nums[i + 1] < nums[start - 1])) {
-	int temp = nums[i];
-	nums[i] = nums[start - 1];
-	nums[start - 1] = temp;
-	break;
-      }
-    }
-  }
-
-  for(; start <= last; ++start, --last) {
-    int temp = nums[start];
-    nums[start] = nums[last];
-    nums[last] = temp;
-  }
-}
-
-int main()
+vector<int> nextPermutation(vector<int> &nums)
 {
-  vector<int> nums;
-  nums.push_back(1);
-  nums.push_back(2);
-  nums.push_back(3);
-  nums.push_back(4);
-  for(int i = 0; i < 24; ++i) {
-    nextPermutation(nums);
-    for(int j = 0; j < 4; ++j)
-      cout << nums[j] << ", ";
-    cout << endl;
-  }
-  return 1;
+        int cur = nums.size() - 1;
+        for(; cur > 0; --cur)
+        {
+		if(nums[cur] > nums[cur - 1])
+		{
+			int j = nums.size() - 1;
+			for(; j >= cur && nums[j] <= nums[cur - 1]; --j) {}
+			swap(nums[cur - 1], nums[j]);
+			break;
+		}
+        }
+        for(int l = cur, r = nums.size() - 1; l < r; ++l, --r)
+		swap(nums[l], nums[r]);
+        return nums;
 }
