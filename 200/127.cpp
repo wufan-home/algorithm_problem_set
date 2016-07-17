@@ -12,42 +12,47 @@
   return its length 5.
 */
 
-int GetMinimalPath(const string& start, const string& end, unordered_map<string, vector<string> >& adj)
+int GetMinimalPath(const string& start, const string& end, 
+                       unordered_map<string, vector<string> >& adj,
+                       unordered_map<string, int>& dis)
 {
-        int min_len = INT_MAX;
-        for(int i = 0; i < adj[start].size(); ++i)
-        {
-		if(adj[start][i] == end)
+	vector<string>& nbs = adj[start];
+	for(int i = 0; i < nbs.size(); ++i)
+	{
+		if(nbs[i] == end)
 		{
-			min_len = 2;
+			dis[start] = 2;
 			break;
 		}
 		else
 		{
-			int len = GetMinimalPath(adj[start][i], end, adj);
-			min_len = min(min_len, len == INT_MAX ? len : 1 + len);
+			int len = dis[nbs[i]] != INT_MAX ? dis[nbs[i]] : GetMinimalPath(nbs[i], end, adj, dis);
+			dis[start] = min(dis[start], len == INT_MAX ? len : 1 + len);
 		}
-        }
-        return min_len;
+	}
+	return dis[start];
 }
-    
+        
 int ladderLength(string beginWord, string endWord, unordered_set<string>& wordList)
 {
-        wordList.insert(endWord);
-    	wordList.erase(beginWord);
-    	if(wordList.empty())
-		return 0;
-
-    	int len = beginWord.size();
-    	unordered_map<string, vector<string> > adj;
-    	queue<string> word_queue;
-    	word_queue.push(beginWord);
-    	while(!word_queue.empty())
-    	{
+	wordList.insert(endWord);
+	wordList.erase(beginWord);
+	if(wordList.empty())
+    		return 0;
+	
+	int len = beginWord.size();
+	unordered_map<string, vector<string> > adj;
+	unordered_map<string, int> dis;
+        
+	queue<string> word_queue;
+	word_queue.push(beginWord);
+	while(!word_queue.empty())
+	{
 		string cur = word_queue.front();
 		word_queue.pop();
 		adj[cur] = vector<string>();
-    	    
+		dis[cur] = INT_MAX;
+            	
 		for(int i = 0; i < len; ++i)
 		{
 			string s = cur;
@@ -63,8 +68,8 @@ int ladderLength(string beginWord, string endWord, unordered_set<string>& wordLi
 			}
 			cur = s;
 		}
-    	}
-    	
-    	int min_len = GetMinimalPath(beginWord, endWord, adj);
-    	return min_len == INT_MAX ? 0 : min_len;
+	}
+        
+	int min_len = GetMinimalPath(beginWord, endWord, adj, dis);
+	return min_len == INT_MAX ? 0 : min_len;
 }
