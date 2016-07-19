@@ -12,6 +12,83 @@
   return its length 5.
 */
 
+#include <string>
+#include <queue>
+#include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+
+using namespace std;
+
+int ladderLength(string beginWord, string endWord, unordered_set<string>& wordList)
+{
+        wordList.erase(beginWord);
+        wordList.erase(endWord);
+        if(wordList.empty())
+		return 0;
+            
+        int len = beginWord.size();
+
+        queue<string> left_q;
+        left_q.push(beginWord);
+        unordered_map<string, int> left_dis;
+        left_dis[beginWord] = 0;
+
+	queue<string> right_q;
+        left_q.push(endWord);
+        unordered_map<string, int> right_dis;
+        right_dis[endWord] = 0;
+
+	while(!left_q.empty() && !right_q.empty())
+        {
+		string l = left_q.front();
+		left_q.pop();
+		for(int i = 0; i < len; ++i)
+		{
+			string s = l;
+			for(char ch = 'a'; ch <= 'z'; ++ch)
+			{
+				l[i] = ch;
+				if(wordList.find(l) != wordList.end() && left_dis.find(l) == left_dis.end())
+				{
+					if(right_dis.find(l) != right_dis.end())
+						return left_dis[s] + right_dis[l];
+					
+					left_dis[l] = left_dis[s] + 1;
+					left_q.push(l);
+				}
+			}
+			l = s;
+		}
+		
+		string r = right_q.front();
+		right_q.pop();
+		for(int i = 0; i < len; ++i)
+		{
+			string s = r;
+			for(char ch = 'a'; ch <= 'z'; ++ch)
+			{
+				r[i] = ch;
+				if(wordList.find(r) != wordList.end() && right_dis.find(r) == right_dis.end())
+					right_dis[r] = right_dis[s] + 1;
+			}
+			r = s;
+		}
+        }
+	
+        return 0;
+}
+
+int main()
+{
+	string start = "a";
+	string end = "c";
+	unordered_set<string> dict({"a", "b", "c"});
+	cout << ladderLength(start, end, dict) << endl;
+	return 1;
+}
+
+/*
 int GetMinimalPath(const string& start, const string& end, 
                        unordered_map<string, vector<string> >& adj,
                        unordered_map<string, int>& dis)
@@ -73,3 +150,4 @@ int ladderLength(string beginWord, string endWord, unordered_set<string>& wordLi
 	int min_len = GetMinimalPath(beginWord, endWord, adj, dis);
 	return min_len == INT_MAX ? 0 : min_len;
 }
+*/
