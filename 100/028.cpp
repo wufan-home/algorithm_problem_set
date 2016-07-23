@@ -2,6 +2,8 @@
    Implement strStr().
    Returns the index of the first occurrence of needle in haystack, 
    or -1 if needle is not part of haystack. 
+   Solution: 1) Brute-force.
+   2) KMP or other methods.
 */
 
 #include <string>
@@ -27,9 +29,4 @@ int strStr(string haystack, string needle) {
 			return i;
 	}
 	return -1;
-}
-
-int strStr1(string haystack, string needle)
-{
-	
 }
