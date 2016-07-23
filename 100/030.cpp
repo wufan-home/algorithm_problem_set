@@ -1,84 +1,83 @@
-#include <iostream>
-#include <vector>
-#include <set>
-#include <map>
-#include <string>
+/*
+  You are given a string, s, and a list of words, words, 
+  that are all of the same length. Find all starting indices of substring(s) in s 
+  that is a concatenation of each word in words exactly once and without any intervening characters.
+  For example, given:
+  s: "barfoothefoobarman"
+  words: ["foo", "bar"]
+  You should return the indices: [0,9].
+  (order does not matter).
 
-using namespace std;
+  Solution: This code seems not pass one case on the leetcode...
+  "dlmogiklbqfggokuonfgugiyammwvwhbjvrqgdbjtipcwzwmobtjjdhmpvknrsqbpjtvmwfifukbwgokjjvvmeheatttljwdupygofotcywygmksvipkmyqmrjifueiouiukoldqlzquocojkdvzdlnuuvbqajewubgiolazmsvaujmfohervtorppipbolvrtdfefhqxcrrofycmewjykbnzjeazrxrkayohfgekzwyewctbyczidokoskojihvkflslryxruvxrzquytvgyjsndddmnkhzrstclsbeowchwsbwnwemhxbkcgwpqfqjzmmlenpumrckmdgzcmnjjqulwscoytyxhkklzahntjzfphhruwadnwpjptypmwovizijzqzuzycogjhahkdugugxoemccbymagvbyuxytzobkwbsigoobuoraatedrqfamiyigydhpeslhmvoajrxzixabcfvslxgvvpbwujlzdygptureloetogxslsmyrtuokxkeivflvmcoiutwkzryfoqsidtzypqkmaqxywktknisjdoteisjykdhpyipnyzcbqzzolsyycsjfjdjrxupjayzyhqohqqiirjyccwdgoomxtxqqugcwedwntkxlcfvvrtatpfbgtnfnnwfjchfikdwgotrsanorgqmyvoeqdldshldlsiufoslencwprmhyevwzlcqrpvlzgpkbzggnytrnxqdpekpjhnivraogwzfeoqfoynbzgvmelpvpbkyjxjgojuwhtcmkurysfbrnwerjvozxazixionukkbfonpihpcorwbpcvzxjaukzejksxeejhkxxzhgpjuihvxjqyhaydmaivkcuqhdztcyulelvyteutokrxmscasmwepswyyxrawnmazjbsnvndhfcwzfwrruxinvilsbnopbroksiapwfydkwcptvipstepbphffyugrktlsvaqaatkxxbssmhmhmbidjpijjravklofnghnaumxvesjoeqcibhtqsccjextpnaeuhtwdgvbknkaubccemvuezyndwiujkyftrbxxzykmkkilpkrdhohgmwjigduqdbjvdgueggqrtbeknwnvkubysnjysdowgztjipnowghpjmbwkorwkvuckfaciqaprvazlqqjyxahlbdxpxvzusdexfiivlzogbotrgerfeathgqydmxzgcddhnleykthmjcfphzwnzpvfgtkutjavoffcrjcdejrpoxevydkxsffabruwbwtrcytvkyyqhqgvpmsnpdmiktinlflmdffffzcrxbigtqeicyxudlcofmdqtpexwjebkhtjidsdtwlvwkpavtqaitsbkyagifiumdewgwzzumwqyoqtjgwrcqvmpvtzadtogxmmvnlrzjixxathjpylhvzwruvtxpkdowrmkedlonjloeuxtvkcqjzjeuddlnhalamvfrhvfsitwdsryetqnu"
+  ["pbolvrtdfefhqxcrrofyc","mewjykbnzjeazrxrkayoh","fgekzwyewctbyczidokos","kojihvkflslryxruvxrzq","uytvgyjsndddmnkhzrstc","lsbeowchwsbwnwemhxbkc","gwpqfqjzmmlenpumrckmd","gzcmnjjqulwscoytyxhkk","lzahntjzfphhruwadnwpj","ptypmwovizijzqzuzycog","jhahkdugugxoemccbymag","vbyuxytzobkwbsigoobuo","raatedrqfamiyigydhpes","lhmvoajrxzixabcfvslxg","vvpbwujlzdygptureloet","ogxslsmyrtuokxkeivflv","mcoiutwkzryfoqsidtzyp","qkmaqxywktknisjdoteis","jykdhpyipnyzcbqzzolsy","ycsjfjdjrxupjayzyhqoh","qqiirjyccwdgoomxtxqqu","gcwedwntkxlcfvvrtatpf","bgtnfnnwfjchfikdwgotr","sanorgqmyvoeqdldshldl","siufoslencwprmhyevwzl","cqrpvlzgpkbzggnytrnxq"]
+*/
 
-void Recover(map<string, int>& orig, map<string, int>& backup)
+vector<int> findSubstring(string s, vector<string>& words)
 {
-  for(map<string, int>::iterator it = orig.begin(); it != orig.end(); ++it) {
-    map<string, int>::iterator itb = backup.find(it->first);
-    if(itb != backup.end())
-      it->second = itb->second;
-  }
-}
+        vector<int> results;
+    	if(s.empty() || words.empty())
+    		return results;
+    
+    	unordered_map<string, int> word_count;
+    	for(int i = 0; i < words.size(); ++i)
+    	{
+    		if(word_count.find(words[i]) == word_count.end())
+    			word_count[words[i]] = 0;
+    		++word_count[words[i]];
+    	}
 
-vector<int> findString(const string& s, vector<string> words)
-{
-  vector<int> results;
-  if(s.empty() || words.empty())
-    return results;
+	int len = words[0].size();
+    	unordered_map<string, queue<int> > substr_index;
+	vector<bool> finished(false);
+    	for(int i = 0; i < s.size(); ++i)
+    	{
+    		if(word_count.find(s.substr(i, len)) == word_count.end() || finished[i])
+    			continue;
+    
+    		int start = i;
+		substr_index.clear();
+    		for(int j = i; j < s.size(); j += len)
+    		{
+			string str = s.substr(j, len);
+    			if(word_count.find(str) == word_count.end())
+    				break;
+			
+    			if(substr_index.find(str) == substr_index.end())
+    				substr_index[str] = queue<int>();
 
-  map<string, int> word_frequency;
-  map<string, int> word_frequency_backup;
-  for(int i = 0; i < words.size(); ++i) {
-    if(word_frequency.find(words[i]) == word_frequency.end()) {
-      word_frequency[words[i]] = 1;
-      word_frequency_backup[words[i]] = 1;
-    } else {
-      ++word_frequency[words[i]];
-      ++word_frequency_backup[words[i]];
-    }
-  }
-  
-  int search_size = words[0].size();
-  int total_search_size = search_size * words.size();
-  int total_search_size_backup = total_search_size;
-  for(int i = 0; i + total_search_size_backup <= s.size(); ++i) {
-    Recover(word_frequency, word_frequency_backup);
-    total_search_size = total_search_size_backup;
-    for(int j = i; j + search_size <= s.size(); j += search_size) {
-      string temp = s.substr(j, search_size);
-      map<string, int>::iterator it = word_frequency.find(temp);
-      if(it == word_frequency.end() || it->second == 0)
-	break;
-      else {
-	total_search_size -= search_size;
-	if(total_search_size == 0) {
-	  results.push_back(i);
-	  break;
-	} else
-	  --it->second;
-      }
-    }
-  }
-  
-  return results;
-}
-
-int main()
-{
-  vector<string> words;
-  /*words.push_back("foo");
-  words.push_back("bar");
-  vector<int> results = findString("barfoothefoobarman", words);
-  for(int i = 0; i < results.size(); ++i)
-    cout << i + 1 << " - " << results[i] << endl;
-
-  results = findString("foobarfoobar", words);
-  cout << results.size() << endl;
-  for(int i = 0; i < results.size(); ++i)
-    cout << i + 1 << " - " << results[i] << endl;
-  */
-  words.clear();
-  words.push_back("word");
-  words.push_back("good");
-  words.push_back("best");
-  words.push_back("good");
-  vector<int> results = findString("wordgoodgoodgoodbestword", words);
-  for(int i = 0; i < results.size(); ++i)
-    cout << i + 1 << " - " << results[i] << endl;
-  return 1;
+			substr_index[str].push(j);
+			if(substr_index[str].size() > word_count[str])
+    			{
+    				start = substr_index[str].front() + len;
+    				for(unordered_map<string, queue<int> >::iterator it = substr_index.begin();
+				    it != substr_index.end(); ++it)
+    				{
+    					while(it->second.size() && it->second.front() < start)
+    						it->second.pop();
+    				}
+    			}
+    			
+			
+			bool found = (substr_index.size() == word_count.size());
+			for(unordered_map<string, queue<int> >::iterator it = substr_index.begin();
+			    it != substr_index.end(); ++it)
+			{
+				if(it->second.size() != word_count[it->first])
+				{
+					found = false;
+					break;
+				}
+			}
+			
+			if(found && !finished[start])
+			{
+				results.push_back(start);
+				finished[start] = true;
+			}
+    			
+    		}
+    	}
+      
+    	return results;
 }
