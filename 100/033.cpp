@@ -28,7 +28,7 @@ int Search(const vector<int>& nums, int target)
 			if(nums[l] <= target && target <= nums[mid])
 				r = mid;
 			else
-				l = mid + 1;
+				l = mid + 1; //Note: We do not always use r - 1.
 		}
 	}
 	return nums.empty() || nums[l] != target ? -1 : l;
