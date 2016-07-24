@@ -8,55 +8,55 @@
   You should return the indices: [0,9].
   (order does not matter).
 
-  Solution: This code seems not pass one case on the leetcode...
-  "dlmogiklbqfggokuonfgugiyammwvwhbjvrqgdbjtipcwzwmobtjjdhmpvknrsqbpjtvmwfifukbwgokjjvvmeheatttljwdupygofotcywygmksvipkmyqmrjifueiouiukoldqlzquocojkdvzdlnuuvbqajewubgiolazmsvaujmfohervtorppipbolvrtdfefhqxcrrofycmewjykbnzjeazrxrkayohfgekzwyewctbyczidokoskojihvkflslryxruvxrzquytvgyjsndddmnkhzrstclsbeowchwsbwnwemhxbkcgwpqfqjzmmlenpumrckmdgzcmnjjqulwscoytyxhkklzahntjzfphhruwadnwpjptypmwovizijzqzuzycogjhahkdugugxoemccbymagvbyuxytzobkwbsigoobuoraatedrqfamiyigydhpeslhmvoajrxzixabcfvslxgvvpbwujlzdygptureloetogxslsmyrtuokxkeivflvmcoiutwkzryfoqsidtzypqkmaqxywktknisjdoteisjykdhpyipnyzcbqzzolsyycsjfjdjrxupjayzyhqohqqiirjyccwdgoomxtxqqugcwedwntkxlcfvvrtatpfbgtnfnnwfjchfikdwgotrsanorgqmyvoeqdldshldlsiufoslencwprmhyevwzlcqrpvlzgpkbzggnytrnxqdpekpjhnivraogwzfeoqfoynbzgvmelpvpbkyjxjgojuwhtcmkurysfbrnwerjvozxazixionukkbfonpihpcorwbpcvzxjaukzejksxeejhkxxzhgpjuihvxjqyhaydmaivkcuqhdztcyulelvyteutokrxmscasmwepswyyxrawnmazjbsnvndhfcwzfwrruxinvilsbnopbroksiapwfydkwcptvipstepbphffyugrktlsvaqaatkxxbssmhmhmbidjpijjravklofnghnaumxvesjoeqcibhtqsccjextpnaeuhtwdgvbknkaubccemvuezyndwiujkyftrbxxzykmkkilpkrdhohgmwjigduqdbjvdgueggqrtbeknwnvkubysnjysdowgztjipnowghpjmbwkorwkvuckfaciqaprvazlqqjyxahlbdxpxvzusdexfiivlzogbotrgerfeathgqydmxzgcddhnleykthmjcfphzwnzpvfgtkutjavoffcrjcdejrpoxevydkxsffabruwbwtrcytvkyyqhqgvpmsnpdmiktinlflmdffffzcrxbigtqeicyxudlcofmdqtpexwjebkhtjidsdtwlvwkpavtqaitsbkyagifiumdewgwzzumwqyoqtjgwrcqvmpvtzadtogxmmvnlrzjixxathjpylhvzwruvtxpkdowrmkedlonjloeuxtvkcqjzjeuddlnhalamvfrhvfsitwdsryetqnu"
-  ["pbolvrtdfefhqxcrrofyc","mewjykbnzjeazrxrkayoh","fgekzwyewctbyczidokos","kojihvkflslryxruvxrzq","uytvgyjsndddmnkhzrstc","lsbeowchwsbwnwemhxbkc","gwpqfqjzmmlenpumrckmd","gzcmnjjqulwscoytyxhkk","lzahntjzfphhruwadnwpj","ptypmwovizijzqzuzycog","jhahkdugugxoemccbymag","vbyuxytzobkwbsigoobuo","raatedrqfamiyigydhpes","lhmvoajrxzixabcfvslxg","vvpbwujlzdygptureloet","ogxslsmyrtuokxkeivflv","mcoiutwkzryfoqsidtzyp","qkmaqxywktknisjdoteis","jykdhpyipnyzcbqzzolsy","ycsjfjdjrxupjayzyhqoh","qqiirjyccwdgoomxtxqqu","gcwedwntkxlcfvvrtatpf","bgtnfnnwfjchfikdwgotr","sanorgqmyvoeqdldshldl","siufoslencwprmhyevwzl","cqrpvlzgpkbzggnytrnxq"]
+  Solution: 
 */
 
 vector<int> findSubstring(string s, vector<string>& words)
 {
-        vector<int> results;
-    	if(s.empty() || words.empty())
-    		return results;
+	vector<int> results;
+	if(s.empty() || words.empty())
+		return results;
     
-    	unordered_map<string, int> word_count;
-    	for(int i = 0; i < words.size(); ++i)
-    	{
-    		if(word_count.find(words[i]) == word_count.end())
-    			word_count[words[i]] = 0;
-    		++word_count[words[i]];
-    	}
+	unordered_map<string, int> word_count;
+	for(int i = 0; i < words.size(); ++i)
+	{
+		if(word_count.find(words[i]) == word_count.end())
+			word_count[words[i]] = 0;
+		++word_count[words[i]];
+	}
 
 	int len = words[0].size();
-    	unordered_map<string, queue<int> > substr_index;
-	vector<bool> finished(false);
-    	for(int i = 0; i < s.size(); ++i)
-    	{
-    		if(word_count.find(s.substr(i, len)) == word_count.end() || finished[i])
-    			continue;
-    
-    		int start = i;
+	unordered_map<string, queue<int> > substr_index;
+	for(int i = 0; i < len; ++i)
+	{
+		int start = i;
 		substr_index.clear();
-    		for(int j = i; j < s.size(); j += len)
-    		{
+		for(int j = i; j < s.size(); j += len)
+		{
 			string str = s.substr(j, len);
-    			if(word_count.find(str) == word_count.end())
-    				break;
+			if(i == 1)
+				cout << start << ": " << str << endl;
+			if(word_count.find(str) == word_count.end())
+			{
+				start = j + len;
+				substr_index.clear();
+				continue;
+			}
 			
-    			if(substr_index.find(str) == substr_index.end())
-    				substr_index[str] = queue<int>();
+			if(substr_index.find(str) == substr_index.end())
+				substr_index[str] = queue<int>();
 
 			substr_index[str].push(j);
 			if(substr_index[str].size() > word_count[str])
-    			{
-    				start = substr_index[str].front() + len;
-    				for(unordered_map<string, queue<int> >::iterator it = substr_index.begin();
+			{
+				start = substr_index[str].front() + len;
+				for(unordered_map<string, queue<int> >::iterator it = substr_index.begin();
 				    it != substr_index.end(); ++it)
-    				{
-    					while(it->second.size() && it->second.front() < start)
-    						it->second.pop();
-    				}
-    			}
+				{
+					while(it->second.size() && it->second.front() < start)
+						it->second.pop();
+				}
+			}
     			
 			
 			bool found = (substr_index.size() == word_count.size());
@@ -69,15 +69,11 @@ vector<int> findSubstring(string s, vector<string>& words)
 					break;
 				}
 			}
-			
-			if(found && !finished[start])
-			{
-				results.push_back(start);
-				finished[start] = true;
-			}
-    			
-    		}
-    	}
+
+			if(found)
+				results.push_back(start);    			
+		}
+	}
       
-    	return results;
+	return results;
 }
