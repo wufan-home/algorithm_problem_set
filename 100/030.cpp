@@ -34,8 +34,6 @@ vector<int> findSubstring(string s, vector<string>& words)
 		for(int j = i; j < s.size(); j += len)
 		{
 			string str = s.substr(j, len);
-			if(i == 1)
-				cout << start << ": " << str << endl;
 			if(word_count.find(str) == word_count.end())
 			{
 				start = j + len;
