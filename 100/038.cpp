@@ -1,8 +1,3 @@
-#include <iostream>
-#include <string>
-
-using namespace std;
-
 string countAndSay(int n) {
 	string rv = "1";
         for(int i = 2; i <= n; ++i)
@@ -23,10 +18,31 @@ string countAndSay(int n) {
 	return rv;
 }
 
-int main()
-{
-	for(int i = 1; i < 10; ++i)
-		cout << countAndSay(i) << endl;
-
-	return 1;
-}
+string DoCount(string& str)
+    {
+        string result("");
+        str.push_back('#');
+        char ch = str[0];
+        int count = 1;
+        for(int i = 1; i < str.size(); ++i)
+        {
+            if(str[i] != str[i - 1])
+            {
+                result.push_back(count + '0');
+                result.push_back(ch);
+                count = 1;
+                ch = str[i];
+            }
+            else
+                ++count;
+        }
+        return result;
+    }
+    
+    string countAndSay(int n) 
+    {
+        string result("1");
+        for(int i = 1; i < n; ++i)
+            result = DoCount(result);
+        return result;
+    }
