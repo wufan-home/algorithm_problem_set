@@ -1,59 +1,35 @@
-#include <vector>
-#include <iostream>
-
-using namespace std;
-
-int searchInsert(vector<int>& nums, int target) {
-	if(nums.empty() || target < nums[0])
-		return 0;
-
-	if(target > nums[nums.size() - 1])
-		return nums.size();
-
-	int rv = INT_MIN;
-	for(int start = 0, end = nums.size() - 1; start <= end;)
-	{
-		int mid = start + (end - start + 1) / 2;
-		if(nums[mid] == target || mid == end)
-		{
-			rv = (nums[start] == target ? start : mid);
-			break;
-		}
-		else if(nums[mid] > target)
-			end = mid;
-		else
-			start = mid;
-	}
-
-	return rv;
-}
-
 /*
-  In some cases, especially for the case to find the maximal lower bound,
-  we do not need to care about the values that greater or equal to the 
-  given value. Then, 
- */
-int searchInsert2(vector<int>& nums, int target) {
-	if(nums.empty() || target < nums[0])
-		return 0;
+  Given a sorted array and a target value,
+  return the index if the target is found.
+  If not, return the index where it would be if it were inserted in order.
+  You may assume no duplicates in the array.
+  Here are few examples.
+  [1,3,5,6], 5 → 2
+  [1,3,5,6], 2 → 1
+  [1,3,5,6], 7 → 4
+  [1,3,5,6], 0 → 0
+*/
 
-	if(target > nums[nums.size() - 1])
-		return nums.size();
-
-	int rv = INT_MIN;
-	for(int start = 0, end = nums.size() - 1; start <= end;)
-	{
-		int mid = start + (end - start + 1) / 2;
-		if(nums[mid] == target || mid == end)
-		{
-			rv = (nums[start] == target ? start : mid);
-			break;
-		}
-		else if(nums[mid] > target)
-			end = mid;
-		else
-			start = mid;
-	}
-
-	return rv;
+int searchInsert(vector<int>& nums, int target)
+{
+    vector<int>::iterator lower = lower_bound(nums.begin(), nums.end(), target);     
+    return lower - nums.begin();
 }
+
+int searchInsert(vector<int>& nums, int target)
+{
+    if(nums[nums.size() - 1] < target)
+        return nums.size();
+    int l = 0;
+    int r = nums.size() - 1;
+    while(l < r)
+    {
+        int mid = l + (r - l) / 2;
+        if(nums[mid] >= target)
+            r = mid;
+        else
+            l = mid + 1;
+    }
+    return l;
+}
+
