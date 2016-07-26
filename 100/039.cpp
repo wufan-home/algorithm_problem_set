@@ -1,83 +1,48 @@
-// 39.cpp : Defines the entry point for the console application.
-//
+/*
+	 Given a set of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
 
-#include "stdafx.h"
-#include <vector>
-#include <algorithm>
-#include <iostream>
+The same repeated number may be chosen from C unlimited number of times.
 
-using namespace std;
+Note:
 
-void CombinationSumAux(vector<int>& candidates, int end, int target,
-	vector<int>& result, vector<vector<int> >& results)
+    All numbers (including target) will be positive integers.
+    The solution set must not contain duplicate combinations.
+
+For example, given candidate set [2, 3, 6, 7] and target 7,
+A solution set is:
+
+[
+  [7],
+  [2, 2, 3]
+]
+
+*/
+
+void DoCombination(vector<int>& candidates, int target, int index, vector<int>& numbers, vector<vector<int> >& results)
 {
-	if (target == 0)
+	if(target == 0)
+		results.push_back(numbers);
+	else if(candidates[0] <= target)
 	{
-		vector<int> new_vec;
-		for (int i = result.size() - 1; i >= 0; --i)
-			new_vec.push_back(result[i]);
-		results.push_back(new_vec);
-		return;
-	}
-
-	for (int i = end; i >= 0; --i)
-	{
-		if (target < candidates[i])
-			continue;
-
-		result.push_back(candidates[i]);
-		CombinationSumAux(candidates, i, target - candidates[i], result, results);
-		result.erase(result.end() - 1);
+		for(int i = index; i >= 0; --i)
+		{
+			if(candidates[i] <= target)
+			{
+				numbers.push_back(candidates[i]);
+				DoCombination(candidates, target - candidates[i], i, numbers, results);
+				numbers.pop_back();
+			}
+		}
 	}
 }
 
 vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
 	vector<vector<int> > results;
-
 	if (candidates.empty())
 		return results;
 
 	sort(candidates.begin(), candidates.end());
 	vector<int> numbers;
-	int j = -1;
-	for (int i = 0; i < candidates.size(); ++i)
-	{
-		if (candidates[i] > target)
-			break;
-
-		if (j == -1 || candidates[i] > numbers[j])
-		{
-			numbers.push_back(candidates[i]);
-			++j;
-		}
-	}
-
-	if (!numbers.empty())
-	{
-		vector<int> result;
-		for (int end = numbers.size() - 1; end >= 0; --end)
-		{
-			result.push_back(candidates[end]);
-			CombinationSumAux(numbers, end, target - candidates[end], result, results);
-			result.erase(result.end() - 1);
-		}
-	}
-
+	DoCombination(candidates, target, candidates.size() - 1, numbers, results);
 	return results;
 }
-
-int main()
-{
-	int a[] = { 1, 2 };
-	vector<int> nums(a, a + sizeof(a) / sizeof(int));
-	vector<vector<int> > results = combinationSum(nums, 2);
-	for (int i = 0; i < results.size(); ++i)
-	{
-		for (int j = 0; j < results[i].size(); ++j)
-			cout << results[i][j] << ", ";
-
-		cout << endl;
-	}
-    return 0;
-}
-
