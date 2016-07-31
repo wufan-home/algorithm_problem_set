@@ -1,57 +1,51 @@
 /*
-  Given two numbers represented as strings, return multiplication of the numbers as a string.
- */
+  Given two numbers represented as strings, 
+  return multiplication of the numbers as a string.
 
-#include <string>
-#include <iostream>
+  Note:
+  The numbers can be arbitrarily large and are non-negative.
+  Converting the input string to integer is NOT allowed.
+  You should NOT use internal library such as BigInteger.
+*/
 
-using namespace std;
+string multiply(string num1, string num2)
+{
+	while(num1[0] == '0')
+		num1.erase(num1.begin());
 
-string multiply(string num1, string num2) {
+	while(num2[0] == '0')
+		num2.erase(num2.begin());
+
 	if(num1.empty() || num2.empty())
-		return "";
-	
-	if(num1 == "0" || num2 == "0")
 		return "0";
 
-	if(num1 == "1")
-		return num2;
-	else if(num2 == "1")
-		return num1;
-
-	int size1 = num1.size();
-	int size2 = num2.size();
-        string product(size1 + size2, '0');
-	for(int i = size2 - 1, start_index = product.size() - 1; i >= 0; --i, --start_index)
+	int len1 = num1.size();
+	int len2 = num2.size();
+	string result(len1 + len2, '0');
+	for(int i = 1; i <= len2; ++i)
 	{
-		if(num2[i] == '0')
+		if(num2[len2 - i] == '0')
 			continue;
 
-		int overflow_last = 0;
-		int j = 0;
-		for(; j < size1; ++j)
+		int start = len1 + len2 - i;
+		int overflow = 0;
+		for(int j = 1; j <= len1; ++j)
 		{
-			int prod = (num1[size1 - 1 - j] - '0') * (num2[i] - '0')
-				+ overflow_last + product[start_index - j] - '0';
-			overflow_last = prod / 10;
-			product[start_index - j] = prod % 10 + '0';
+			int product = (result[start] - '0') + (num2[len2 - i] - '0') * (num1[len1 - j] - '0') + overflow;
+			overflow = product / 10;
+			result[start--] = '0' + product % 10;
 		}
-
-		product[start_index - j] = product[start_index - j] + overflow_last;			
+		
+		while(overflow)
+		{
+			int sum = (result[start] - '0') + overflow;
+			overflow = sum / 10;
+			result[start--] = '0' + sum % 10;
+		}
 	}
 
-	int start = 0;
-	for(;start < product.size() && product[start] == '0'; ++start) {}
-	return product.substr(start);
-}
+	while(result[0] == '0')
+		result.erase(result.begin());
 
-
-int main()
-{
-	//cout << multiply("0", "0") << endl;
-	//cout << multiply("0", "1") << endl;
-	//cout << multiply("1", "2") << endl;
-	cout << multiply("11", "11") << endl;
-
-	return 1;
+	return result;
 }
