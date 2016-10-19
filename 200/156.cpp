@@ -19,18 +19,31 @@ return the root of the binary tree [4,5,2,#,#,3,1].
 
 */
 
-#include "tree.h"
+    TreeNode *GetUpsideDownBinaryTree(TreeNode *root, TreeNode* &right_most)
+    {
+        TreeNode *new_root = NULL;
+        if(!root->left)
+        {
+            right_most = root;
+            new_root = root;
+        }
+        else
+        {
+            new_root = GetUpsideDownBinaryTree(root->left, right_most);
+            root->left = NULL;
+            right_most->left = root->right;
+            root->right = NULL;
+            right_most->right = root;
+            right_most = right_most->right;
+        }
+        
+        return new_root;
+    }
 
-#include <iostream>
+    TreeNode* upsideDownBinaryTree(TreeNode* root) {
+        if(!root || !root->left)
+            return root;
 
-using namespace std;
-
-TreeNode UpsideDownBinaryTree(TreeNode *root)
-{
-  
-}
-
-int main()
-{
-  return 1;
-}
+        TreeNode *right_most = NULL;
+        return GetUpsideDownBinaryTree(root, right_most);
+    }
