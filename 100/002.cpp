@@ -11,39 +11,45 @@
   In the end, add a new node to the new linked-list, if the overflow is 1 after the loop.
 */
 
-#include <climits>
-
-struct ListNode
-{
-	int val;
-	ListNode *next;
-};
-
-using namespace std;
-
-ListNode *addLists(ListNode *l1, ListNode *l2)
-{
-    if(l1 == NULL)
-        return l2;
-
-    if(l2 == NULL)
-        return l1;
-
-    ListNode *dummy = new ListNode(INT_MIN);
-    ListNode *cur = dummy;
-    int overflow = 0;
-    for(ListNode *p1 = l1, *p2 = l2; p1 || p2 || overflow;)
-    {
-        int value = (p1 ? p1->val : 0) + (p2 ? p2->val : 0) + overflow;
-        overflow = value / 10;
-        value %= 10;
-        cur->next = new ListNode(value);
-        cur = cur->next;
-        if(p1)
-            p1 = p1->next;
-        if(p2)
-            p2 = p2->next;
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode *sum_head = NULL;
+        ListNode *sum_current = NULL;
+        ListNode *current = NULL;
+        int overflow = 0;
+        while(l1 || l2)
+        {
+            int sum = overflow + (l1 ? l1->val : 0) + (l2 ? l2->val : 0);
+            overflow = sum / 10;
+            sum %= 10;
+            
+            current = l1 ? l1 : l2;
+            current->val = sum;
+            l1 = l1 ? l1->next : NULL;
+            l2 = l2 ? l2->next : NULL;
+            current->next = NULL;
+            
+            if(sum_current == NULL)
+            {
+                sum_current = current;
+                sum_head = sum_current;
+            }
+            else
+            {
+                sum_current->next = current;
+                sum_current = current;
+            }
+        }
+        
+        if(overflow)
+            sum_current->next = new ListNode(overflow);
+        
+        return sum_head;
     }
-
-    return dummy->next;
-}
