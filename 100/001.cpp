@@ -36,36 +36,43 @@
 
 using namespace std;
 
-static bool Compare(const pair<int, int> l, const pair<int, int> r)
-{
-	return l.first <= r.first;
-}
-
-vector<int> twoSum(vector<int>& nums, int target) {
-	vector<int> r;
-	vector<pair<int, int> > nums1;
-	for(int i = 0; i < nums.size(); ++i)
-		nums1.push_back(make_pair(nums[i], i));
-
-	sort(nums1.begin(), nums1.end(), Compare);
-
-	for(int start = 0, end = nums1.size() - 1; start < end;)
-	{
-		if(nums1[start].first + nums1[end].first == target)
-		{
-			r.push_back(nums1[start].second);
-			r.push_back(nums1[end].second);
-			sort(r.begin(), r.end());
-			break;
-		}
-		else if(nums1[start].first + nums1[end].first > target)
-			for(--end; end > start && nums1[end].first == nums1[end + 1].first; --end) {}
-		else
-			for(++start; start < end && nums1[start].first == nums1[start - 1].first; ++start) {}
-	}
-
-	return r;
-}
+static bool compare(const pair<int, int>& l, const pair<int, int>& r)
+    {
+        return l.first <= r.first;
+    }
+    
+    static void fillIndexToResult(vector<int>& result, int i1, int i2)
+    {
+        result.push_back(min(i1, i2));
+        result.push_back(max(i1, i2));
+    }
+    
+    vector<int> twoSum(vector<int>& nums, int target) 
+    {
+        vector<int> result;
+        
+        vector<pair<int, int>> value_to_index_list;
+        for(int i = 0; i < nums.size(); ++i)
+            value_to_index_list.push_back(make_pair(nums[i], i));
+            
+        sort(value_to_index_list.begin(), value_to_index_list.end(), compare);
+        
+        for(int li = 0, ri = value_to_index_list.size() - 1; li < ri;)
+        {
+            const int sum = value_to_index_list[li].first + value_to_index_list[ri].first;
+            if(sum == target)
+            {
+                fillIndexToResult(result, value_to_index_list[li].second, value_to_index_list[ri].second);
+                break;
+            }
+            else if(sum < target)
+                for(++li; li < ri && value_to_index_list[li].first == value_to_index_list[li - 1].first; ++li) {}
+            else
+                for(--ri; li < ri && value_to_index_list[ri].first == value_to_index_list[ri + 1].first; --ri) {}
+        }
+        
+        return result;
+    }
 
 vector<int> twoSum1(vector<int>& nums, int target) {
         vector<int> result;
