@@ -67,33 +67,23 @@ vector<int> twoSum(vector<int>& nums, int target) {
 	return r;
 }
 
-vector<int> twoSum1(vector<int>& nums, int target)
-{
-	vector<int> rv;
-	if(nums.size() < 2)
-		return rv;
-
-	if(nums.size() == 2)
-	{
-		rv.push_back(0);
-		rv.push_back(1);
-		return rv;
-	}
-
-	unordered_map<int, int> hash_map;
-	for(int i = 0; i < nums.size(); ++i)
-	{
-		unordered_map<int, int>::iterator it = hash_map.find(target - nums[i]);
-		if(it != hash_map.end())
-		{
-			rv.push_back(i);
-			rv.push_back(it->second);
-			sort(rv.begin(), rv.end());
-			break;
-		}
-
-		hash_map[nums[i]] = i;
-	}
-
-	return rv;
-}
+vector<int> twoSum1(vector<int>& nums, int target) {
+        vector<int> result;
+        unordered_map<int, int> value_to_index;
+        for(int i = 0; i < nums.size(); ++i)
+        {
+            const unordered_map<int, int>::iterator index_of_diff_it 
+                = value_to_index.find(target - nums[i]);
+            if(index_of_diff_it != value_to_index.end())
+            {
+                const int cached_index = index_of_diff_it->second;
+                result.push_back(min(i, cached_index));
+                result.push_back(max(i, cached_index));
+                break;
+            }
+            
+            value_to_index[nums[i]] = i;
+        }
+        
+        return result;
+    }
