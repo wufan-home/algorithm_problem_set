@@ -23,22 +23,18 @@
 	    We do not need to update the start pointer.
 */
 
-#include <string>
-#include <vector>
-
-using namespace std;
-
-int lengthOfLongestSubstring(string s) {
-	int max_len = 0;
-	int start = 0;
-	vector<int> found(256, -1);
-	for(int i = 0; i < s.size(); ++i)
-	{
-		if(found[s[i]] != -1)
-			start = found[s[i]] >= start ? found[s[i]] + 1 : start;
-
-		found[s[i]] = i;
-		max_len = max(max_len, i - start + 1);
-	}
-	return max_len;
-}
+int lengthOfLongestSubstring(string s) 
+    {
+        int max_length = 0;
+        vector<int> char_to_index(256, -1);
+        for(int start = 0, end = 0; end < s.size(); ++end)
+        {
+            const int alphabet_index = (int)s[end];
+            if(char_to_index[alphabet_index] >= start)
+                start = char_to_index[alphabet_index] + 1;
+            char_to_index[alphabet_index] = end;
+            max_length = max(max_length, end - start + 1);
+        }
+        
+        return max_length;
+    }
