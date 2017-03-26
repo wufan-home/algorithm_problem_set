@@ -19,47 +19,21 @@
    2) Need to check k * range + range - i seperately.
 */
 
-string convert(string s, int numRows) {
-        if(s.empty() || numRows <= 1)
-		return s;
+    string convert(string s, int numRows) {
+        string result = s;
+	    if(numRows == 1)
+	        return s;
 
-	vector<string> lines(numRows, string(s.size(), '\0'));
-	vector<int> index(numRows, 0);
-	int step = 1;
-	int line = 0;
-	for(int i = 0; i < s.size(); ++i, line += step)
-	{
-		lines[line][index[line]++] = s[i];
-		if(i != 0 && i % (numRows - 1) == 0)
-			step *= -1;
-	}
-
-	string result(s.size(), '\0');
-	for(int i = 0, write = 0; i < numRows; ++i)
-	{
-		for(int j = 0; lines[i][j] != '\0'; ++j)
-			result[write++] = lines[i][j];
-	}
-
-	return result;
-}
-
-string convert1(string s, int numRows) {
-	if(s.empty() || numRows <= 1)
-		return s;
-
-	string result(s.size(), '\0');
-	int range = 2 * numRows - 2;
-	for(int i = 0, write = 0; i < numRows; ++i)
-	{
-		for(int j = 0; j + i < s.size(); j += range)
-		{
-			result[write++] = s[j + i];
-			if(i != 0 && i != numRows - 1 && j + range - i < s.size())
-				result[write++] = s[j + range - i];
-		}
-				
-	}
-
-	return result;
-}
+	    const int unit_length = 2 * numRows - 2;
+	    int index = 0;
+	    for(int i = 0; i < numRows; ++i)
+	    {
+	        for(int j = 0; j * unit_length + i < s.size(); ++j)
+	        {
+	            result[index++] = s[j * unit_length + i];
+	            if(i != 0 && i != unit_length - i && j * unit_length + unit_length - i < s.size())
+	                result[index++] = s[j * unit_length + unit_length - i];
+	        }
+	    }
+	    return result;
+    }
