@@ -56,7 +56,6 @@ public:
     }
     
     double findMedian() {
-        //cout << "Left = " << (left_pq.size() ? left_pq.top() : INT_MIN) << ", right = " << right_pq.top() << endl;
         const int total_size = left_pq.size() + right_pq.size();
         if(total_size % 2 != 0)
         {
