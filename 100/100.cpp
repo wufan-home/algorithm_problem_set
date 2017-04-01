@@ -5,9 +5,18 @@
 */
 
 bool isSameTree(TreeNode* p, TreeNode* q) {
-	// Recursive: DFS
+	// Recursive: DFS.
+	// This is the pre-order trasversal.
 	return (p == NULL && q == NULL) ||
 	    (p != NULL && q != NULL && p->val == q->val && isSameTree(p->left, q->left) && isSameTree(p->right, q->right));
+	
+	// This is the in-order trasversal.
+	return (p == NULL && q == NULL) ||
+	    (p != NULL && q != NULL && isSameTree(p->left, q->left) && p->val == q->val && isSameTree(p->right, q->right));
+	
+	// This is the post-order trasversal.
+	return (p == NULL && q == NULL) ||
+	    (p != NULL && q != NULL && isSameTree(p->left, q->left) && isSameTree(p->right, q->right) && p->val == q->val);
 }
 
 bool isSameTree(TreeNode* p, TreeNode* q) {
