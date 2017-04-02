@@ -43,3 +43,36 @@ void recoverTree(TreeNode* root)
 	for(int i = 0; i < candidate_values.size(); ++i)
 	    candidates[i]->val = candidate_values[i];
 }
+
+TreeNode *findIncorrectNodes(TreeNode *root, TreeNode *lastNode, vector<TreeNode *>& candidates, vector<int>& candidate_values)
+{
+	if(root->left)
+		lastNode = findIncorrectNodes(root->left, lastNode, candidates, candidate_values);
+
+	if(lastNode != NULL && lastNode->val > root->val)
+	{
+		candidates.push_back(lastNode);
+		candidate_values.push_back(lastNode->val);
+		candidates.push_back(root);
+		candidate_values.push_back(root->val);
+	}
+	lastNode = root;
+
+	if(root->right)
+		lastNode = findIncorrectNodes(root->right, lastNode, candidates, candidate_values);
+
+	return lastNode;
+}
+
+void recoverTree(TreeNode* root) 
+{
+	vector<TreeNode *> candidates;
+	vector<int> candidate_values;
+
+	TreeNode *lastNode = NULL;
+	findIncorrectNodes(root, lastNode, candidates, candidate_values);
+
+	sort(candidate_values.begin(), candidate_values.end());
+	for(int i = 0; i < candidate_values.size(); ++i)
+		candidates[i]->val = candidate_values[i];
+}
