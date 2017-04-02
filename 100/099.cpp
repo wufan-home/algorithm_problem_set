@@ -16,8 +16,8 @@ void recoverTree(TreeNode* root)
 	{
 		if(curNode)
 		{
-		stackForTree.push(curNode);
-		curNode = curNode->left;
+			stackForTree.push(curNode);
+			curNode = curNode->left;
 		}
 		else
 		{
