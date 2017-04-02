@@ -6,6 +6,7 @@
 
 void recoverTree(TreeNode* root) 
 {
+	// Inorder trasversal.
 	vector<TreeNode *> candidates;
 	vector<int> candidate_values;
 
@@ -42,6 +43,7 @@ void recoverTree(TreeNode* root)
 		candidates[i]->val = candidate_values[i];
 }
 
+//======================
 TreeNode *findIncorrectNodes(TreeNode *root, TreeNode *lastNode, vector<TreeNode *>& candidates, vector<int>& candidate_values)
 {
 	if(root->left)
@@ -64,6 +66,7 @@ TreeNode *findIncorrectNodes(TreeNode *root, TreeNode *lastNode, vector<TreeNode
 
 void recoverTree(TreeNode* root) 
 {
+	// Inorder trasversal, recursive.
 	vector<TreeNode *> candidates;
 	vector<int> candidate_values;
 
