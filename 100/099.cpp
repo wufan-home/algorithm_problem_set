@@ -1,63 +1,45 @@
-// 099.cpp : Defines the entry point for the console application.
-//
+/*
+	Two elements of a binary search tree (BST) are swapped by mistake.
+	Recover the tree without changing its structure.
+	Note: A solution using O(n) space is pretty straight forward. Could you devise a constant space solution?
+*/
 
-#include "stdafx.h"
-#include <iostream>
-#include <vector>
-#include <stack>
-
-using namespace std;
-
-struct TreeNode
+void recoverTree(TreeNode* root) 
 {
-	int val;
-	TreeNode *left;
-	TreeNode *right;
-	TreeNode(int v) : val(v), left(NULL), right(NULL) {}
-};
+	vector<TreeNode *> candidates;
+	vector<int> candidate_values;
 
-void recoverTree(TreeNode* root) {
-	if (root == NULL)
-		return;
-
-	stack<TreeNode *> node_stack;
-	TreeNode *p_cur = root;
-	TreeNode *last = NULL;
-	vector<TreeNode *> wrong_nodes;
-	while (p_cur || !node_stack.empty())
+	stack<TreeNode *> stackForTree;
+	TreeNode *curNode = root;
+	TreeNode *lastNode = NULL;
+	while(curNode != NULL || !stackForTree.empty())
 	{
-		if (p_cur)
-		{
-			node_stack.push(p_cur);
-			p_cur = p_cur->left;
-		}
-		else
-		{
-			p_cur = node_stack.top();
-			if (last && last->val > p_cur->val)
-			{
-				wrong_nodes.push_back(last);
-				wrong_nodes.push_back(p_cur);
-			}
+	    if(curNode)
+	    {
+		stackForTree.push(curNode);
+		curNode = curNode->left;
+	    }
+	    else
+	    {
+		curNode = stackForTree.top();
+		stackForTree.pop();
 
-			last = p_cur;
-			node_stack.pop();
-			p_cur = p_cur->right;
+		if(lastNode == NULL)
+		    lastNode = curNode;
+		else if(lastNode->val > curNode->val)
+		{
+		    candidates.push_back(lastNode);
+		    candidate_values.push_back(lastNode->val);
+		    candidates.push_back(curNode);
+		    candidate_values.push_back(curNode->val);
 		}
+
+		lastNode = curNode;
+		curNode = curNode->right;
+	    }
 	}
 
-	if (wrong_nodes.size() == 2)
-		swap(wrong_nodes[0]->val, wrong_nodes[1]->val);
-	else
-		swap(wrong_nodes[0]->val, wrong_nodes[3]->val);
+	sort(candidate_values.begin(), candidate_values.end());
+	for(int i = 0; i < candidate_values.size(); ++i)
+	    candidates[i]->val = candidate_values[i];
 }
-
-int main()
-{
-	TreeNode *head = new TreeNode(2);
-	head->left = new TreeNode(3);
-	head->right = new TreeNode(1);
-	recoverTree(head);
-    return 0;
-}
-
