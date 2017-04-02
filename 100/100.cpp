@@ -50,3 +50,73 @@ bool isSameTree(TreeNode* p, TreeNode* q) {
         
         return l_queue.empty() && r_queue.empty();
 }
+
+bool isSameTree(TreeNode* p, TreeNode* q) {
+	// DFS: Pre-order.
+        stack<TreeNode *> stackForLeftTree;
+        stack<TreeNode *> stackForRightTree;
+        
+        TreeNode *lCurNode = p;
+        TreeNode *rCurNode = q;
+        while(lCurNode != NULL || rCurNode != NULL || !stackForLeftTree.empty() || !stackForRightTree.empty())
+        {
+            if(!(lCurNode == NULL && rCurNode == NULL))
+            {
+                if(lCurNode == NULL || rCurNode == NULL || lCurNode->val != rCurNode->val)
+                    return false;
+                
+                stackForLeftTree.push(lCurNode);
+                lCurNode = lCurNode->left;
+                stackForRightTree.push(rCurNode);
+                rCurNode = rCurNode->left;
+            }
+            else
+            {
+                lCurNode = stackForLeftTree.top()->right;
+                stackForLeftTree.pop();
+                
+                rCurNode = stackForRightTree.top()->right;
+                stackForRightTree.pop();
+            }
+        }
+        
+        return stackForLeftTree.size() == stackForRightTree.size();
+    }
+
+bool isSameTree(TreeNode* p, TreeNode* q) {
+	//DFS: In-order.
+        stack<TreeNode *> stackForLeftTree;
+        stack<TreeNode *> stackForRightTree;
+        
+        TreeNode *lCurNode = p;
+        TreeNode *rCurNode = q;
+        while(lCurNode != NULL || rCurNode != NULL || !stackForLeftTree.empty() || !stackForRightTree.empty())
+        {
+            if(!(lCurNode == NULL && rCurNode == NULL))
+            {
+                if(lCurNode == NULL || rCurNode == NULL)
+                    return false;
+
+                stackForLeftTree.push(lCurNode);
+                lCurNode = lCurNode->left;
+                stackForRightTree.push(rCurNode);
+                rCurNode = rCurNode->left;
+            }
+            else
+            {
+                lCurNode = stackForLeftTree.top();
+                stackForLeftTree.pop();
+                
+                rCurNode = stackForRightTree.top();
+                stackForRightTree.pop();
+                
+                if(lCurNode->val != rCurNode->val)
+                    return false;
+                    
+                lCurNode = lCurNode->right;
+                rCurNode = rCurNode->right;
+            }
+        }
+        
+        return stackForLeftTree.size() == stackForRightTree.size();
+    }
