@@ -120,3 +120,51 @@ bool isSameTree(TreeNode* p, TreeNode* q) {
         
         return stackForLeftTree.size() == stackForRightTree.size();
     }
+
+bool isSameTree(TreeNode* p, TreeNode* q) {
+        stack<TreeNode *> stackForLeftTree;
+        stack<TreeNode *> stackForRightTree;
+        
+        TreeNode *lCurNode = p;
+        TreeNode *rCurNode = q;
+        
+        bool finishedCheckingRightSubtree = false;
+        
+        while(lCurNode != NULL || rCurNode != NULL || !stackForLeftTree.empty() || !stackForRightTree.empty())
+        {
+            if(!(lCurNode == NULL && rCurNode == NULL))
+            {
+                if(lCurNode == NULL || rCurNode == NULL)
+                    return false;
+
+                stackForLeftTree.push(lCurNode);
+                lCurNode = lCurNode->left;
+                stackForRightTree.push(rCurNode);
+                rCurNode = rCurNode->left;
+            }
+            else if(!finishedCheckingRightSubtree)
+            {
+                lCurNode = stackForLeftTree.top()->right;
+                rCurNode = stackForRightTree.top()->right;
+                finishedCheckingRightSubtree = (lCurNode == NULL && rCurNode == NULL);
+            }
+            else
+            {
+                lCurNode = stackForLeftTree.top();
+                stackForLeftTree.pop();
+                
+                rCurNode = stackForRightTree.top();
+                stackForRightTree.pop();
+                
+                if(lCurNode->val != rCurNode->val)
+                    return false;
+                
+                finishedCheckingRightSubtree = (stackForLeftTree.empty() ? false : lCurNode == stackForLeftTree.top()->right);
+                
+                lCurNode = NULL;
+                rCurNode = NULL;
+            }
+        }
+        
+        return stackForLeftTree.size() == stackForRightTree.size();
+    }
