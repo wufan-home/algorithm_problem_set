@@ -5,31 +5,36 @@
 */
 
 // Recursive.
-void maxDepthAux(TreeNode *root, int cur, int& max_length)
-{
-        if(root->left == NULL && root->right == NULL)
-        {
-		if(cur > max_length)
-			max_length = cur;
-        }
-        else
-        {
-		if(root->left)
-			maxDepthAux(root->left, cur + 1, max_length);
-                
-		if(root->right)
-			maxDepthAux(root->right, cur + 1, max_length);
-        }
-}
-    
-int maxDepth(TreeNode* root) {
+class Solution {
+public:
+    Solution() { maxDepthValue = 0; }
+
+    void detectDepth(const TreeNode *root, int curDepth)
+    {
         if(root == NULL)
-		return 0;
-	
-        int max_length = 0;
-        maxDepthAux(root, 1, max_length);
-        return max_length;
-}
+            return;
+            
+        if(root->left == NULL && root->right == NULL)
+            maxDepthValue = max(maxDepthValue, curDepth);
+        else 
+        {
+            if(root->left)
+                detectDepth(root->left, curDepth + 1);
+            
+            if(root->right)
+                detectDepth(root->right, curDepth + 1);
+        }
+    }
+    
+    int maxDepth(TreeNode* root) 
+    {
+        detectDepth(root, 1);
+        return maxDepthValue;
+    }
+    
+private:
+    int maxDepthValue;
+};
 
 // Iterative.
 int maxDepth1(TreeNode* root) {
