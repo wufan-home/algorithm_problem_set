@@ -3,77 +3,60 @@
   Input is guaranteed to be within the range from 1 to 3999.
 */
 
-string AddChar(int num, char single, char five, char ten) {
-	string result("");
-	switch (num) {
-	case 1:
-		result.push_back(single);
-		break;
-	case 2:
-		result.push_back(single);
-		result.push_back(single);
-		break;
-	case 3:
-		result.push_back(single);
-		result.push_back(single);
-		result.push_back(single);
-		break;
-	case 4:
-		result.push_back(single);
-		result.push_back(five);
-		break;
-	case 5:
-		result.push_back(five);
-		break;
-	case 6:
-		result.push_back(five);
-		result.push_back(single);
-		break;
-	case 7:
-		result.push_back(five);
-		result.push_back(single);
-		result.push_back(single);
-		break;
-	case 8:
-		result.push_back(five);
-		result.push_back(single);
-		result.push_back(single);
-		result.push_back(single);
-		break;
-	case 9:
-		result.push_back(single);
-		result.push_back(ten);
-		break;
-	}
-
-	return result;
-}
-
-string intToRoman(int num) {
-	int digits[4] = { 0, 0, 0, 0 };
-	for (int i = 0; i < 4; ++i) {
-		digits[3 - i] = num % 10;
-		num /= 10;
-	}
-
-	string result("");
-	for (int i = 0; i < 4; ++i) {
-		switch (i) {
-		case 0:
-			for (int i = 0; i < digits[i]; ++i)
-				result.push_back('M');
-			break;
-		case 1:
-			result.append(AddChar(digits[i], 'C', 'D', 'M'));
-			break;
-		case 2:
-			result.append(AddChar(digits[i], 'X', 'L', 'C'));
-			break;
-		case 3:
-			result.append(AddChar(digits[i], 'I', 'V', 'X'));
-			break;
-		}
-	}
-
-	return result;
-}
+class Solution {
+public:
+    string getExpressionByUnit(int digit, const char single, const char half, const char full)
+    {
+        string expression("");
+        if(digit == 4)
+        {
+            expression.push_back(single);
+            expression.push_back(half);
+        }
+        else if(digit == 9)
+        {
+            expression.push_back(single);
+            expression.push_back(full);
+        }
+        else
+        {
+            if(digit >= 5)
+            {
+                expression.push_back(half);
+                digit %= 5;
+            }
+            
+            for(int i = 0; i < digit; ++i)
+                expression.push_back(single);
+        }
+        
+        return expression;
+    }
+    
+    string intToRoman(int num) 
+    {
+        vector<int> digits(4, 0);
+        for(int i = 0, bound = 1000; i < 4; ++i, bound /= 10)
+        {
+            digits[i] = num / bound;
+            num %= bound;
+        }
+          
+        string expression("");  
+        expression.append(getExpressionByUnit(digits[0], thousand, '\0', '\0'));
+        expression.append(getExpressionByUnit(digits[1], hundred, five_hundred, thousand));
+        expression.append(getExpressionByUnit(digits[2], ten, fifty, hundred));
+        expression.append(getExpressionByUnit(digits[3], one, five, ten));
+        
+        return expression;
+    }
+    
+private:
+    const static char one = 'I';
+    const static char five = 'V';
+    const static char ten = 'X';
+    const static char fifty = 'L';
+    const static char hundred = 'C';
+    const static char five_hundred = 'D';
+    const static char thousand = 'M';
+};
