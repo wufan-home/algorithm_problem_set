@@ -11,27 +11,19 @@
 
 
 bool isPalindrome(int x) {
-        if(x < 0)
-		return false;
+        if(x < 0 || (x && x % 10 == 0))
+            return false;
+            
+        int stackForReverseDigits = 0;
+        while(x > stackForReverseDigits)
+        {
+            const int tailDigit = x % 10;
+            x /= 10;
+            if(x == stackForReverseDigits || x == 10 * stackForReverseDigits + tailDigit)
+                return true; 
 
-	// Magic number 1000000000:
-	// Notice that the largest positive integer is 2^31 - 1 = 2147483647.
-	// Divide this number won't get more than 1 digit.
-	// (Of course, we shall shrink this number until we get one digit by dividing this number.)
-	int upper = 1000000000;
-	while(upper > x)
-		upper /= 10;
-
-	int lower = 10;
-	while(lower <= upper)
-	{
-		if(x / upper != (x % lower))
-			return false;
-
-		x %= upper;
-		x /= lower;
-		upper /= 100; // Discard two digits in one round, then the bound shall divide 100.
-	}
-
-	return true;
-}
+            stackForReverseDigits = 10 * stackForReverseDigits + tailDigit;
+        }
+        
+        return x == 0;
+    }
