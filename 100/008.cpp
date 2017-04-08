@@ -24,32 +24,52 @@
 */
 
 
-int myAtoi(string str) {
-        int start = 0;
-    	for(; start < str.size() && str[start] == ' '; ++start) {}
-
-	bool neg = false;
-    	if(str[start] == '+' || str[start] == '-')
-    	{
-    		neg = (str[start] == '-');
-    		++start;
-    	}
-
-	if(!isdigit(str[start]))
-		return 0;
-
-	long long rv = 0;
-	for(int cur = start; cur < str.size(); ++cur)
-	{
-		if(!isdigit(str[cur]))
-			break;
-
-		rv = 10 * rv + str[cur] - '0';
-    		if(neg && -rv <= INT_MIN)
-    			return INT_MIN;
-		else if(!neg && rv >= INT_MAX)
-			return INT_MAX;
-	}
+	bool isSign(const char ch)
+    {
+        return ch == '+' || ch == '-';
+    }
     
-    	return (neg ? -1 : 1) * static_cast<int>(rv);
-}
+    bool isNumber(const char ch)
+    {
+        return ch >= '0' && ch <= '9';
+    }
+    
+    int myAtoi(string str) {
+        if(str.empty()) 
+            return 0;
+            
+        int cur = 0;
+        int sign = 1;
+        for(; cur < str.size(); ++cur)
+        {
+            if(str[cur] == ' ')
+                continue;
+
+            if(isSign(str[cur]))
+            {
+                sign = str[cur] == '+' ? 1 : -1;
+                ++cur;
+                break;
+            }
+            else if(isNumber(str[cur]))
+                break;
+            else
+                return 0;
+        }
+
+        int number = 0;
+        const int bound = INT_MAX / 10;
+        for(; cur < str.size() && isNumber(str[cur]); ++cur)
+        {
+            const int candidate = number * 10;
+            const int addin = str[cur] - '0';
+            if(number > bound || 
+              (sign == 1 && (-1) * candidate < addin - INT_MAX) || 
+              (sign == -1 && (-1) * candidate < addin + INT_MIN))
+                return sign == 1 ? INT_MAX : INT_MIN;
+                
+            number = candidate + addin;
+        }
+        
+        return sign * number;
+    }
