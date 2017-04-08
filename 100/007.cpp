@@ -15,6 +15,32 @@
   Solution: For such problems, we first remove the sign if needed.
 */
 
+int reverse(int x) 
+{
+	// This method avoid using long long.
+	// Then, it is a more generic method than that with long long. (machine independent)
+	if(x == 0 || x == INT_MAX || x == INT_MIN) // INT_MAX and INT_MIN cannot be reversed.
+	    	return 0;
+
+	const int positive = (int)abs(x);
+	const bool sign = x > 0;
+
+	const int reverse = 0;
+	const int bound = INT_MAX / 10;
+	while(positive)
+	{
+		const int candidate = reverse * 10;
+		const int addin = positive % 10;
+		if(reverse > bound || INT_MAX - candidate < addin) // Use substraction to avoid overflow.
+			return 0;
+
+		reverse = candidate + addin;
+		positive /= 10;
+	}
+
+	return (sign ? 1 : -1) * reverse;
+}
+
 int reverse(int x) {
 	long long rv = 0;
 	bool neg = (x < 0);
