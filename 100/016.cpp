@@ -5,32 +5,52 @@
   The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
 */
 
-int threeSumClosest(vector<int>& nums, int target) {
-        if(nums.size() < 3)
-		return INT_MIN;
+class Solution {
+public:
+    int moveIndex(const vector<int>& nums, int index, const bool moveForward)
+    {
+        if(nums.empty())
+            return -1;
 
-	int rv = 0;
-	int min_diff = INT_MAX;
-	sort(nums.begin(), nums.end());
-	for(int i = nums.size() - 1; i >= 2; --i)
-	{
-		for(int s = 0, e = i - 1; s < e;)
-		{
-			int val = nums[s] + nums[e] + nums[i];
-			if(abs(target - val) < min_diff)
-			{
-				rv = val;
-				max_diff = abs(target - val);
-			}
-			else if(val > t1)
-				for(--e; e > s && nums[e] == nums[e + 1]; --e) {}
-			else
-				for(++s; s < e && nums[s] == nums[s - 1]; ++s) {}
-		}
-		for(--i; i >= 2 && nums[i] == nums[i + 1]; --i) {}
-	}
-
-	return rv;
-}
-
-
+        if(moveForward)
+            for(++index; index < nums.size() && nums[index] == nums[index - 1]; ++index) {}
+        else
+            for(--index; index >= 0 && nums[index] == nums[index + 1]; --index) {}
+            
+        return index;
+    }
+    
+    int threeSumClosest(vector<int>& nums, int target) {
+        int minDifference = INT_MAX;
+        int desiredSum = INT_MIN; 
+        
+        if(nums.empty())
+            return minDifference;
+            
+        sort(nums.begin(), nums.end());
+        for(int i3 = nums.size() - 1; i3 > 0; i3 = moveIndex(nums, i3, false))
+        {
+            for(int i1 = 0, i2 = i3 - 1; i1 < i2;)
+            {
+                const int sum = nums[i1] + nums[i2] + nums[i3];
+                if(sum == target)
+                    return sum;
+                    
+                const int difference = (int) abs(target - sum);
+                if(difference < minDifference)
+                {
+                    minDifference = min(minDifference, difference);
+                    desiredSum = sum;
+                }
+                
+                
+                if(sum > target)
+                    i2 = moveIndex(nums, i2, false);
+                else
+                    i1 = moveIndex(nums, i1, true);
+            }
+        }
+        
+        return desiredSum;
+    }
+};
