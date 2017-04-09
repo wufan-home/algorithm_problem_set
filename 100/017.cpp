@@ -13,44 +13,57 @@
   Recursive method.
 */
 
-void GetCombinations(const string& str, int index, string& comb, vector<string>& result,
-		     unordered_map<char, vector<char> >& num_map_char)
-{
-	vector<char>& cs = num_map_char[str[index]];
-	for(int i = 0; i < cs.size(); ++i)
-	{
-		comb[index] = cs[i];
-		if(index == str.size() - 1)
-			result.push_back(comb);
-		else
-			GetCombinations(str, index + 1, comb, result, num_map_char);
-	}
-}
-
-vector<string> letterCombinations(string digits)
-{
+class Solution {
+public:
+    Solution()
+    {
+        m_number_to_chars[0] = vector<char>({' '});
+        m_number_to_chars[2] = vector<char>({'a', 'b', 'c'});
+        m_number_to_chars[3] = vector<char>({'d', 'e', 'f'});
+        m_number_to_chars[4] = vector<char>({'g', 'h', 'i'});
+        m_number_to_chars[5] = vector<char>({'j', 'k', 'l'});
+        m_number_to_chars[6] = vector<char>({'m', 'n', 'o'});
+        m_number_to_chars[7] = vector<char>({'p', 'r', 'q', 's'});
+        m_number_to_chars[8] = vector<char>({'t', 'u', 'v'});
+        m_number_to_chars[9] = vector<char>({'w', 'x', 'y', 'z'});
+    }
+    
+    vector<string>* poplulateCombinationsByIndex(const string& digits, int index)
+    {
+        vector<string>* newResults = new vector<string>();
+        
+        vector<string>* prevResults = NULL;
+        if(index < digits.size() - 1)
+            prevResults = poplulateCombinationsByIndex(digits, index + 1);
+            
+        const int key = digits[index] - '0';
+        const vector<char>& charVector = m_number_to_chars[key];
+        
+        for(int i = 0; i < charVector.size(); ++i)
+        {
+            string prefix(1, charVector[i]);
+            if(index == digits.size() - 1)
+                (*newResults).push_back(prefix);
+            else
+            {
+                for(int j = 0; j < (*prevResults).size(); ++j)
+                {
+                    string combination(prefix);
+                    combination.append((*prevResults)[j]);
+                    (*newResults).push_back(combination);
+                }
+            }
+        }
+        
+        return newResults;
+    }
+    
+    vector<string> letterCombinations(string digits) {
         if(digits.empty())
-		return vector<string>();
-
-	unordered_map<char, vector<char> > num_map_char;
-	num_map_char['0'] = vector<char>();
-	num_map_char['1'] = vector<char>();
-	int start = 0;
-	for(char c = '2'; c <= '9'; ++c)
-	{
-		int end = start + 3;
-		if(c == '7' || c == '9')
-			++end;
-
-		num_map_char[c] = vector<char>(end - start, 'a');
-		for(int i = start; i < end; ++i)
-			num_map_char[c][i - start] += i;
-		start = end;
-	}
-
-	vector<string> result;
-	string comb(digits.size(), 'a');
-	GetCombinations(digits, 0, comb, result, num_map_char);
-
-	return result;
-}
+            return vector<string>();
+        
+        return *(poplulateCombinationsByIndex(digits, 0));
+    }
+private:
+    unordered_map<int, vector<char>> m_number_to_chars;
+};
