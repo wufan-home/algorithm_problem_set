@@ -10,38 +10,47 @@
   ]
 */
 
-vector<vector<int> > threeSum(vector<int>& nums) {
-  vector<vector<int> > results;
-  
-  if(nums.empty())
-    return results;
-
-  sort(nums.begin(), nums.end());
-
-  for(int i = nums.size() - 1; i >= 2;) {
-    int start = 0;
-    int end = i - 1;
-    int target = 0 - nums[i];
-
-    while(start < end) {
-      vector<int> result;
-      if(nums[start] + nums[end] == target) {
-	result.push_back(nums[start]);
-	result.push_back(nums[end]);
-	result.push_back(nums[i]);
-
-	results.push_back(result);
-      }
-
-      if(nums[start] + nums[end] <= target)
-	for(++start; start <= end && start == start - 1; ++start) {}
-
-      if(nums[start] + nums[end] >= target)
-	for(--end; start <= end && end == end + 1; --end) {}
+class Solution {
+public:
+    int moveIndex(const vector<int>& nums, int index, const bool moveForward)
+    {
+        if(moveForward)
+            for(++index; index < nums.size() && nums[index] == nums[index - 1]; ++index) {}
+        else
+            for(--index; index >= 0 && nums[index] == nums[index + 1]; --index) {}
+            
+        return index;
     }
-
-    for(--i; nums[i] != nums[i + 1]; --i) {}
-  }
-
-  return results;
-}
+    
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> sums;
+        
+        sort(nums.begin(), nums.end());
+        for(int i3 = nums.size() - 1; i3 >= 0;)
+        {
+            int target = (-1) * nums[i3];
+            
+            for(int i1 = 0, i2 = i3 - 1; i1 < i2;)
+            {
+                if(nums[i1] + nums[i2] == target)
+                {
+                    vector<int> sum(1, nums[i1]);
+                    sum.push_back(nums[i2]);
+                    sum.push_back(nums[i3]);
+                    sums.push_back(sum);
+                    
+                    i1 = moveIndex(nums, i1, true);
+                    i2 = moveIndex(nums, i2, false);
+                }
+                else if(nums[i1] + nums[i2] > target)
+                    i2 = moveIndex(nums, i2, false);
+                else
+                    i1 = moveIndex(nums, i1, true);
+            }
+            
+            i3 = moveIndex(nums, i3, false);
+        }
+        
+        return sums;
+    }
+};
