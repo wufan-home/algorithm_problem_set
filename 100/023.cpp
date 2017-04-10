@@ -3,28 +3,50 @@
   Analyze and describe its complexity.
 */
 
-ListNode *MergeTwoLists(ListNode *l, ListNode *r)
-{
-        ListNode *dummy = new ListNode(INT_MIN);
-        for(ListNode *cur = dummy; l || r;)
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode *l1, ListNode *l2)
+    {
+        ListNode *head = NULL;
+        ListNode *cur = NULL;
+        while(l1 || l2)
         {
-		ListNode* &moving = ((l ? l->val : INT_MAX) <= (r ? r->val : INT_MAX)) ? l : r;
-		cur->next = moving;
-		moving = moving->next;
-		cur = cur->next;
+            ListNode *nodeWithSmallerValue = l1 ? (l2 ? (l1->val <= l2->val ? l1 : l2) : l1) : (l2 ? l2 : NULL);
+            
+            if(nodeWithSmallerValue == l1)
+                l1 = l1->next;
+            else
+                l2 = l2->next;
+            
+            if(head == NULL)
+            {
+                cur = nodeWithSmallerValue;
+                head = cur;
+            }
+            else
+            {
+                cur->next = nodeWithSmallerValue;
+                cur = cur->next;
+            }
+            
+            cur->next = NULL;
         }
-        return dummy->next;
-}
-
-ListNode* mergeKLists(vector<ListNode*>& lists)
-{
-        for(int i = 1; i < lists.size(); i *= 2)
+        
+        return head;
+    }
+    
+    ListNode* mergeKLists(vector<ListNode*>& lists) 
+    {
+        const int listSize = lists.size();
+        for(int step = 1; step < listSize; step *= 2)
         {
-		for(int j = 0; j + i < lists.size(); j += 2 * i)
-			lists[j] = MergeTwoLists(lists[j], lists[j + i]);
+            for(int i = 0; i + step < listSize; i += 2 * step)
+                lists[i] = mergeTwoLists(lists[i], lists[i + step]);
         }
-        return lists.empty() ? NULL : lists[0];
-}
+        
+        return listSize > 0 ? lists[0] : NULL;
+    }
+};
 
 struct Compare
 {
