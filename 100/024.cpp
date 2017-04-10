@@ -6,25 +6,42 @@
   You may not modify the values in the list, only nodes itself can be changed.
 */
 
-ListNode* swapPairs(ListNode* head)
-{
-            ListNode *dummy = new ListNode(INT_MIN);
-            ListNode *ncur = dummy;
-            for(ListNode *ocur = head; head != NULL; ocur = head)
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        ListNode *newHead = NULL;
+        ListNode *cur = NULL;
+        
+        if(head == NULL || head->next == NULL)
+            return head;
+            
+        for(ListNode *back = head, *front = head->next; ;)
+        {
+            ListNode *tempHead = front->next;
+            front->next = back;
+            back->next = NULL;
+            if(newHead == NULL)
             {
-		    head = head->next;
-		    if(head) 
-			    head = head->next;
-                    
-		    if(ocur->next)
-		    {
-			    ncur->next = ocur->next;
-			    ncur = ncur->next;
-		    }
-                
-		    ncur->next = ocur;
-		    ncur = ncur->next;
+                cur = front;
+                newHead = cur;
             }
-            ncur->next = NULL;
-            return dummy->next;
-}
+            else
+            {
+                cur->next = front;
+                cur = cur->next;
+            }
+            cur = cur->next;
+            
+            if(tempHead == NULL || tempHead->next == NULL)
+            {
+                cur->next = tempHead;
+                break;
+            }
+            
+            back = tempHead;
+            front = back->next;
+        }
+        
+        return newHead;
+    }
+};
