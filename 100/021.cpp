@@ -6,14 +6,34 @@
   should be moved.
 */
 
-ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        ListNode *dummy = new ListNode(INT_MIN);
-        for(ListNode *cur = dummy; l1 || l2;)
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode *head = NULL;
+        ListNode *cur = NULL;
+        while(l1 || l2)
         {
-            ListNode* &moving = ((l1 ? l1->val : INT_MAX) <= (l2 ? l2->val : INT_MAX)) ? l1 : l2;
-            cur->next = moving;
-            moving = moving->next;
-            cur = cur->next;
+            ListNode *nodeWithSmallerValue = l1 ? (l2 ? (l1->val <= l2->val ? l1 : l2) : l1) : (l2 ? l2 : NULL);
+            
+            if(nodeWithSmallerValue == l1)
+                l1 = l1->next;
+            else 
+                l2 = l2->next;
+
+            if(head == NULL)
+            {
+                cur = nodeWithSmallerValue;
+                head = cur;
+            }
+            else
+            {
+                cur->next = nodeWithSmallerValue;
+                cur = cur->next;
+            }
+            
+            cur->next = NULL;
         }
-        return dummy->next;
-}
+        
+        return head;
+    }
+};
