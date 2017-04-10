@@ -13,51 +13,58 @@
   Solution: The key of the solution is to cut off the branches that do not need to reach.
 */
 
-vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        vector<vector<int> > rv;
-        if(nums.size() < 4)
-    		return rv;
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+       sort(nums.begin(), nums.end());
+       for(int i4 = nums.size() - 1; i4 >= 0; i4 = moveIndex(nums, i4, false))
+           populateThreeSumForNewTarget(nums, 0, i4 - 1, target - nums[i4]);
+       
+       return results;
+    }
+private:
+    int moveIndex(const vector<int>& nums, int index, bool moveForward)
+    {
+        if(nums.empty())
+            return -1;
+            
+        if(moveForward)
+            for(++index; index < nums.size() && nums[index - 1] == nums[index]; ++index) {}
+        else
+            for(--index; index >= 0 && nums[index] == nums[index + 1]; --index) {}
+            
+        return index;
+    }
     
-    	sort(nums.begin(), nums.end());
-    	for(int i4 = nums.size() - 1; i4 >= 3;)
-    	{
-		if(nums[i4] + nums[i4 - 3] + nums[i4 - 2] + nums[i4 - 1] < target)
-			break;
-    	        
-		if(nums[i4] + nums[0] + nums[1] + nums[2] <= target)
-		{
-			for(int i3 = i4 - 1; i3 >= 2;)
-			{
-				if(nums[i4] + nums[i3] + nums[i3 - 2] + nums[i3 - 1] < target)
-					break;
-    		      
-				if(nums[i4] + nums[i3] + nums[1] + nums[0] <= target)
-				{
-					int t1 = target - nums[i3] - nums[i4];
-					for(int i1 = 0, i2 = i3 - 1; i1 < i2;)
-					{
-						int sum = nums[i1] + nums[i2];
-						if(t1 == sum)
-						{
-							vector<int> cand(1, nums[i1]);
-							cand.push_back(nums[i2]);
-							cand.push_back(nums[i3]);
-							cand.push_back(nums[i4]);
-							rv.push_back(cand);
-						}
-						if(sum > t1)
-							for(--i2; i1 < i2 && nums[i2] == nums[i2 + 1]; --i2) {}
-						else
-							for(++i1; i1 < i2 && nums[i1] == nums[i1 - 1]; ++i1) {}
-					}
-				}
-
-				for(--i3; i3 >= 2 && nums[i3] == nums[i3 + 1]; --i3) {}
-			}
-		}
+    void populateThreeSumForNewTarget(const vector<int>& nums, int start, int end, int target)
+    {
+        if(start >= end)
+            return;
+        
+        for(int i3 = end; i3 >= start; i3 = moveIndex(nums, i3, false))
+        {
+            const int newTarget = target - nums[i3];
+            for(int i1 = start, i2 = i3 - 1; i1 < i2; )
+            {
+                const int sum = nums[i1] + nums[i2];
+                if(sum == newTarget)
+                {
+                    vector<int> result(1, nums[i1]);
+                    result.push_back(nums[i2]);
+                    result.push_back(nums[i3]);
+                    result.push_back(nums[end + 1]);
+                    results.push_back(result);
+                    
+                    i1 = moveIndex(nums, i1, true);
+                    i2 = moveIndex(nums, i2, false);
+                }
+                else if(sum > newTarget)
+                    i2 = moveIndex(nums, i2, false);
+                else
+                    i1 = moveIndex(nums, i1, true);
+            }
+        }
+    }
     
-    		for(--i4; i4 >= 3 && nums[i4] == nums[i4 + 1]; --i4) {}
-    	}
-    
-    	return rv;
-}
+    vector<vector<int>> results;
+};
