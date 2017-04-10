@@ -19,28 +19,34 @@
   Use an index cur to determine the writing poision.
 */
 
-void Generate(string& result, int cur, int l_count, int r_count, int n, vector<string>& results)
-{
-        if(cur == result.size())
-            results.push_back(result);
-        else if(l_count < n)
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> results;
+        string result;
+        populateParenthesis(n, n, result, results);
+        return results;
+    }
+    
+private:
+    void populateParenthesis(int l, int r, string result, vector<string>& results)
+    {
+        if(l == 0)
         {
-            result[cur++] = '(';
-	    ++l_count;
-            for(; r_count <= l_count; ++r_count)
+            for(int i = 0; i < r; ++i)
+                result.push_back(')');
+                
+            results.push_back(result);
+        }
+        else
+        {
+            result.push_back('(');
+            populateParenthesis(l - 1, r, result, results);
+            if(l < r)
             {
-                Generate(result, cur, l_count, r_count, n, results);
-                result[cur++] = ')';
+                result[result.size() - 1] = ')';
+                populateParenthesis(l, r - 1, result, results);
             }
         }
-}
-    
-vector<string> generateParenthesis(int n) {
-        vector<string> results;
-        if(n == 0)
-            return results;
-            
-        string result(2 * n, '\0');
-        Generate(result, 0, 0, 0, n, results);
-        return results;
-}
+    }
+};
