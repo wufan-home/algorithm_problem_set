@@ -7,13 +7,17 @@
    It doesn't matter what you leave beyond the new length.
 */
 
-int removeDuplicates(vector<int>& nums)
-{
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
         int write = -1;
+        
         for(int read = 0; read < nums.size(); ++read)
         {
-		if(read == 0 || nums[write] != nums[read])
-			nums[++write] = nums[read];
+            if(write == -1 || nums[read] > nums[write])
+                nums[++write] = nums[read];
         }
+
         return write + 1;
-}
+    }
+};
