@@ -11,13 +11,16 @@
   Your function should return length = 2, with the first two elements of nums being 2.
 */
 
-int removeElement(vector<int>& nums, int val)
-{
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
         int write = -1;
         for(int read = 0; read < nums.size(); ++read)
         {
-		if(nums[read] != val)
-			nums[++write] = nums[read];
+            if(nums[read] != val)
+                nums[++write] = nums[read];
         }
+        
         return write + 1;
-}
+    }
+};
