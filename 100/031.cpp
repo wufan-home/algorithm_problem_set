@@ -6,24 +6,34 @@
   1,2,3 → 1,3,2
   3,2,1 → 1,2,3
   1,1,5 → 1,5,1
-
-  Solution: 
 */
 
-vector<int> nextPermutation(vector<int> &nums)
-{
-        int cur = nums.size() - 1;
-        for(; cur > 0; --cur)
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        if(nums.size() <= 1)
+            return;
+            
+        int index = nums.size() - 1;
+        for(; index >= 0; --index)
         {
-		if(nums[cur] > nums[cur - 1])
-		{
-			int j = nums.size() - 1;
-			for(; j >= cur && nums[j] <= nums[cur - 1]; --j) {}
-			swap(nums[cur - 1], nums[j]);
-			break;
-		}
+            if(index == 0 || nums[index] > nums[index - 1])
+                break;
         }
-        for(int l = cur, r = nums.size() - 1; l < r; ++l, --r)
-		swap(nums[l], nums[r]);
-        return nums;
-}
+        
+        if(index > 0)
+        {
+            for(int i = nums.size() - 1; i >= index; --i)
+            {
+                if(nums[i] > nums[index - 1])
+                {
+                    swap(nums[i], nums[index - 1]);
+                    break;
+                }
+            }
+        }
+        
+        for(int l = index, r = nums.size() - 1; l < r; ++l, --r)
+            swap(nums[l], nums[r]);
+    }
+};
