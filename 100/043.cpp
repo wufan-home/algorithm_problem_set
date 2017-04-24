@@ -8,44 +8,28 @@
   You should NOT use internal library such as BigInteger.
 */
 
-string multiply(string num1, string num2)
-{
-	while(num1[0] == '0')
-		num1.erase(num1.begin());
-
-	while(num2[0] == '0')
-		num2.erase(num2.begin());
-
-	if(num1.empty() || num2.empty())
-		return "0";
-
-	int len1 = num1.size();
-	int len2 = num2.size();
-	string result(len1 + len2, '0');
-	for(int i = 1; i <= len2; ++i)
-	{
-		if(num2[len2 - i] == '0')
-			continue;
-
-		int start = len1 + len2 - i;
-		int overflow = 0;
-		for(int j = 1; j <= len1; ++j)
-		{
-			int product = (result[start] - '0') + (num2[len2 - i] - '0') * (num1[len1 - j] - '0') + overflow;
-			overflow = product / 10;
-			result[start--] = '0' + product % 10;
-		}
-		
-		while(overflow)
-		{
-			int sum = (result[start] - '0') + overflow;
-			overflow = sum / 10;
-			result[start--] = '0' + sum % 10;
-		}
-	}
-
-	while(result[0] == '0')
-		result.erase(result.begin());
-
-	return result;
-}
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+        string product(num1.size() + num2.size(), '0');
+        
+        int start = product.size() - 1;
+        for(int i = num2.size() - 1; i >= 0; --i, --start)
+        {
+            int digit2 = num2[i] - '0';
+            int overflow = 0;
+            for(int j = num1.size() - 1; j >= 0; --j)
+            {
+                int write = start - (num1.size() - 1 - j);
+                int digitProduct = digit2 * (num1[j] - '0') + (product[write] - '0') + overflow;
+                product[write] = digitProduct % 10 + '0';
+                overflow = digitProduct / 10;
+            }
+            product[start - num1.size()] = overflow + '0';
+        }
+        
+        for(int i = 0; i < product.size() - 1 && product[i] == '0'; product.erase(i, 1)) {}
+        
+        return product;
+    }
+};
