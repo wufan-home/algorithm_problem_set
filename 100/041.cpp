@@ -8,32 +8,32 @@
   Show Similar Problems
 */
 
-int firstMissingPositive(vector<int>& nums)
-{
-	for(int i = 0; i < nums.size(); ++i)
-	{
-		while(nums[i] != i + 1)
-		{
-			if(nums[i] <= 0 || nums[i] > nums.size())
-			{
-				nums[i] = -1;
-				break;
-			}
-
-			if(nums[nums[i] - 1] != nums[i])
-				swap(nums[nums[i] - 1], nums[i]);
-			else
-				break;
-		}
-		
-		if(nums[i] != i + 1)
-			nums[i] = -1;
-	}
-	
-	for(int i = 0; i < nums.size(); ++i)
-	{
-		if(nums[i] == -1)
-			return i + 1;
-	}
-	return nums.size() + 1;
-}
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        const int maxNumber = nums.size();
+        
+        for(int i = 0; i < maxNumber; ++i)
+        {
+            while(i != nums[i] - 1)
+            {
+                if(nums[i] < 1 || nums[i] > maxNumber || nums[i] == nums[nums[i] - 1])
+                {
+                    nums[i] = -1;
+                    break;
+                }
+                
+                swap(nums[i], nums[nums[i] - 1]);
+            }
+        }
+        
+        int firstMissingPositive = 1;
+        for(; firstMissingPositive <= maxNumber; ++firstMissingPositive)
+        {
+            if(nums[firstMissingPositive - 1] == -1)
+                break;
+        }
+        
+        return firstMissingPositive;
+    }
+};
