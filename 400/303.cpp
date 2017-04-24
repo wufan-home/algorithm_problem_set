@@ -1,37 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <climits>
+/*
+	Given an integer array nums, find the sum of the elements between indices i and j (i ≤ j), inclusive.
 
-using namespace std;
+	Example:
+	Given nums = [-2, 0, 3, -5, 2, -1]
+
+	sumRange(0, 2) -> 1
+	sumRange(2, 5) -> -1
+	sumRange(0, 5) -> -3
+	Note:
+	You may assume that the array does not change.
+	There are many calls to sumRange function.
+*/
 
 class NumArray {
 public:
-	NumArray(const vector<int> &nums) {
-		m_empty = nums.empty();
+    NumArray(const vector<int>& nums) {
+        if(!nums.empty())
+        {
+            partial_sums.resize(nums.size(), 0);
+            partial_sums[0] = nums[0];
+            for(int i = 1; i < nums.size(); ++i)
+                partial_sums[i] = nums[i] + partial_sums[i - 1];
+        }
+    }
 
-		if(!m_empty)
-		{
-			m_sums.resize(nums.size());
-			m_sums[0] = nums[0];
-			for(int i = 1; i < m_sums.size(); ++i)
-				m_sums[i] = m_sums[i - 1] + nums[i];
-			for(int i = 1; i < m_sums.size(); ++i)
-				cout << m_sums[i] << ", ";
-			cout << endl;
-		}
-	}
-
-	int sumRange(int i, int j) {
-		return m_empty ? INT_MIN : m_sums[j] - (i ? m_sums[i - 1] : 0);
-	}
+    int sumRange(int i, int j) {
+            return partial_sums[j] - (i == 0 ? 0 : partial_sums[i - 1]);
+    }
 private:
-	bool m_empty;
-	vector<int> m_sums;
+    vector<int> partial_sums;
 };
-
-int main()
-{
-	NumArray a(vector<int>({-2,0,3,-5,2,-1}));
-	cout << a.sumRange(0, 2) << endl;
-	return 1;
-}
