@@ -7,23 +7,26 @@
 
 */
 
-void DoPermute(vector<int>& nums, int cur, vector<vector<int>>& permutes)
-{
-        if(cur == nums.size() - 1)
-		permutes.push_back(nums);
+class Solution {
+public:
+    void getPermutation(vector<int>& nums, int start, vector<vector<int>>& permutations)
+    {
+        if(start == nums.size() - 1)
+            permutations.push_back(nums);
         else
         {
-		for(int i = cur; i < nums.size(); ++i)
-		{
-			swap(nums[i], nums[cur]);
-			DoPermute(nums, cur + 1, permutes);
-			swap(nums[i], nums[cur]);
-		}
+            for(int i = start; i < nums.size(); ++i)
+            {
+                swap(nums[start], nums[i]);
+                getPermutation(nums, start + 1, permutations);
+                swap(nums[start], nums[i]);
+            }
         }
-}
-    
-vector<vector<int> > permute(vector<int>& nums) {
-        vector<vector<int>> permutes;
-        DoPermute(nums, 0, permutes);
-        return permutes;
-}
+    }
+
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> permutations;
+        getPermutation(nums, 0, permutations);
+        return permutations;
+    }
+};
