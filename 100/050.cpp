@@ -11,15 +11,19 @@
   The bit-operation has more scenarioes to apply.
 */
 
-double myPow(double x, int n)
-{
-    	if(x == 0)
-    		return 0;
-    	
-    	if(n == 0)
-    		return 1;
-        else if (n & 1 == 1) //Since n may be negative, do not use n%2 == 1.
-    		return myPow(x * x, (n + (n < 0 ? 1 : -1)) / 2) * (n > 0 ? x : 1/x);
-    	else
-    		return myPow(x * x, n / 2);
-}
+class Solution {
+public:
+    double myPow(double x, int n) 
+    {
+        if(n == 0)
+            return 1;
+            
+        if(x == 0 || x == 1 || n == 1)
+            return x;
+            
+        if(n & 1 == 1)
+            return (n < 0 ? 1 / x : x) * myPow(x * x, n / 2);
+        else
+            return myPow(x * x, n / 2);
+    }
+};
