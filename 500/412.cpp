@@ -12,7 +12,9 @@
  * This avoid us to check the number to be divisible by 15.
  */
 
-vector<string> fizzBuzz(int n) {
+class Solution {
+public:
+    vector<string> fizzBuzz(int n) {
         vector<string> outputs;
         for(int i = 1; i <= n; ++i)
         {
@@ -31,3 +33,4 @@ vector<string> fizzBuzz(int n) {
         
         return outputs;
     }
+};
