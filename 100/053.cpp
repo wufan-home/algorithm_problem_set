@@ -14,33 +14,20 @@
    2. Refer the book ITA.
 */
 
-#include <climits>
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-int maxSubArray(vector<int>& nums) {
-        if(nums.empty())
-    		return INT_MIN;
-    
-    	int max_sum = INT_MIN;
-    	int sum = 0;
-    	for(int i = 0; i < nums.size(); ++i)
-    	{
-    		sum += nums[i];
-    		max_sum = max(max_sum, sum);
-    		if(sum < 0)
-    			sum = 0;
-    	}
-    
-    	return max_sum;
-}
-
-int maxSubArray1(vector<int>& nums)
-{
-	if(nums.empty())
-		return INT_MIN;
-
-
-}
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int maxSum = INT_MIN;
+        
+        int sum = 0;
+        for(int i = 0; i < nums.size(); ++i)
+        {
+            sum += nums[i];
+            maxSum = max(maxSum, sum);
+            if(sum < 0)
+                sum = 0;
+        }
+        
+        return maxSum;
+    }
+};
