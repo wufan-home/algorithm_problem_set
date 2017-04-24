@@ -1,34 +1,36 @@
-#include <iostream>
-#include <cmath>
+/*
+	Given an array of strings, group anagrams together.
 
-using namespace std;
+	For example, given: ["eat", "tea", "tan", "ate", "nat", "bat"], 
+	Return:
 
-double MyPowAux(double x, long long n)
-{
-	if(n == 1)
-		return x;
-	else
-		return MyPowAux(x * x, n / 2) * (n % 2? x : 1);
-}
+	[
+	  ["ate", "eat","tea"],
+	  ["nat","tan"],
+	  ["bat"]
+	]
+*/
 
-
-double myPow(double x, int n) {
-	if(x == 0 || x == 1 || n == 1)
-		return x;
-	
-        if(n == 0)
-		return 1;
-
-	int index = (n < 0 ? -1 * n : n);
-	if(n < 0)
-		x = 1 / x;
-	bool neg = (x < 0);
-	x = fabs(x);
-
-	return (neg ? -1 : 1) * (n < 0 ? 1.0 / myPowAux(x, index) :  myPowAux(x, index));
-}
-
-int main()
-{
-	return 1;
-}
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, vector<string>> mapAnagrams;
+        
+        for(int i = 0; i < strs.size(); ++i)
+        {
+            string word = strs[i];
+            sort(word.begin(), word.end());
+            
+            if(mapAnagrams.find(word) == mapAnagrams.end())
+                mapAnagrams[word] = vector<string>(1, strs[i]);
+            else
+                mapAnagrams[word].push_back(strs[i]); 
+        }
+        
+        vector<vector<string>> anagrams;
+        for(unordered_map<string, vector<string>>::iterator it = mapAnagrams.begin(); it != mapAnagrams.end(); ++it)
+            anagrams.push_back(it->second);
+        
+        return anagrams;
+    }
+};
