@@ -5,17 +5,42 @@
   Return: 1 --> 2 --> 3 --> 4 --> 5
 */
 
-
-ListNode* removeElements(ListNode* head, int val) {
-	ListNode *dummy = new ListNode(INT_MIN);
-        dummy->next = head;
-        for(ListNode *cur = dummy; cur->next;)
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        ListNode *newHead = NULL;
+        ListNode *curNode = NULL;
+        while(head != NULL)
         {
-            if(cur->next->val == val)
-                cur->next = cur->next->next;
+            ListNode *tempNode = head;
+            head = head->next;
+            
+            if(tempNode->val == val)
+                delete tempNode;
             else
-                cur = cur->next;
+            {
+                if(newHead == NULL)
+                {
+                    newHead = tempNode;
+                    curNode = tempNode;
+                }
+                else
+                {
+                    curNode->next = tempNode;
+                    curNode = curNode->next;
+                }
+                curNode->next = NULL;
+            }
         }
         
-        return dummy->next;
-}
+        return newHead;
+    }
+};
