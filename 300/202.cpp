@@ -19,14 +19,39 @@
   Then, we can return false, when the sum of squares is in this range.
 */
 
-bool isHappy(int n) {
-        while(n >= 7)
-	{
-		int sum = 0;
-		for(; n ; n /= 10)
-			sum += (n % 10) * (n % 10);
-		n = sum;
-	}
+class Solution {
+public:
+    bool isHappy(int n) {
+         while(n >= 7)
+    	{
+    		int sum = 0;
+    		for(; n ; n /= 10)
+    			sum += (n % 10) * (n % 10);
+    		n = sum;
+    	}
+    
+    	return n == 1;
+    }
+};
 
-	return n == 1;
-}
+class Solution {
+public:
+    int calculateDigitSquareSum(int num)
+    {
+        int squareSum = 0;
+        for(; num != 0; num /= 10)
+            squareSum += (num % 10) * (num % 10);
+            
+        return squareSum;
+    }
+    
+    bool isHappy(int n) {
+        for(; n == 1 || n >= 7; n = calculateDigitSquareSum(n))
+        {
+            if(n == 1)
+                return true;
+        }
+        
+        return false;
+    }
+};
