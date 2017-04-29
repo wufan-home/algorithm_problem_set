@@ -19,3 +19,22 @@ int rangeBitwiseAnd1(int m, int n) {
         
         return m << bits;
 }
+
+class Solution {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        
+        int lower = 1;
+        while(lower < INT_MAX)
+        {
+            const int upper = lower == INT_MAX / 2 + 1 ? INT_MAX : 2 * lower - 1;
+            if(m == 0 || n == 0 || m == n)
+                return m;
+            else if(lower <= m && n <= upper)
+                return rangeBitwiseAnd(m ^ lower, n ^ lower) | lower;
+            else if(m < lower && lower <= n)
+                return 0;
+            lower = upper + 1;
+        }
+    }
+};
