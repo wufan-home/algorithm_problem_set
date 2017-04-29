@@ -39,29 +39,28 @@
 }
 */
 
-int countPrimes(int n) {
-	if(n <= 2)
+class Solution {
+public:
+    int countPrimes(int n) {
+        if(n <= 1)
             return 0;
-
-        int count = n - 2;
-        int bound = n / 2;
-        bool valid[n];
-        memset(valid, true, n * sizeof(bool));
-        for(int i = 2; i <= bound; ++i)
+            
+        int count = 0;
+        vector<bool> numbers(n, true);
+        for(int i = 1; i < numbers.size() - 1; ++i)
         {
-            if(valid[i])
+            if(numbers[i])
             {
-                long long start = i;
-                for(long long j = 2; start * j < n; ++j)
+                ++count;
+                int prime = i + 1;
+                for(int index = prime - 1; index < n; index += prime)
                 {
-                    if(valid[start * j])
-                    {
-                        valid[start * j] = false;
-                        --count;
-                    }
+                    if(numbers[index])
+                        numbers[index] = false;
                 }
             }
         }
         
         return count;
-}
+    }
+};
