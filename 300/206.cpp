@@ -3,43 +3,26 @@
   A linked list can be reversed either iteratively or recursively. Could you implement both?
 */
 
-ListNode* reverseList(ListNode* head) {
-        ListNode *reverse = new ListNode(INT_MIN);
-        while(head)
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode *newHead = NULL;
+        for(; head != NULL;)
         {
-            ListNode *temp = reverse->next;
-            reverse->next = head;
+            ListNode *tempNode = head;
             head = head->next;
-            reverse->next->next = temp;
+            tempNode->next = newHead;
+            newHead = tempNode;
         }
-        return reverse->next;
-}
-
-ListNode* Reverse(ListNode* head, ListNode* &tail)
-{
-    	if(head == NULL)
-    		return NULL;
-    
-    	ListNode *temp = head;
-    	head = head->next;
-    	temp->next = NULL;
-    	ListNode *reverse = Reverse(head, tail);
-    	if(reverse == NULL)
-    	{
-    	    reverse = temp;
-    	    tail = temp;
-    	}
-    	else
-    	{
-    	    tail->next = temp;
-	    tail = tail->next;
-    	}
-
-    	return reverse;
-}
-    
-ListNode* reverseList(ListNode* head)
-{
-        ListNode *tail = NULL;
-    	return Reverse(head, tail);
-}
+        
+        return newHead;
+    }
+};
