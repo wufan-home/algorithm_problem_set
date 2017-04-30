@@ -1,3 +1,87 @@
+/*
+	Given a 2D board and a word, find if the word exists in the grid.
+
+	The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+	For example,
+	Given board =
+
+	[
+	  ['A','B','C','E'],
+	  ['S','F','C','S'],
+	  ['A','D','E','E']
+	]
+	word = "ABCCED", -> returns true,
+	word = "SEE", -> returns true,
+	word = "ABCB", -> returns false.
+*/
+
+class Solution {
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        if(word.empty())
+            return false;
+            
+        for(int i = 0; i < board.size(); ++i)
+        {
+            for(int j = 0; j < board[0].size(); ++j)
+            {
+                if(board[i][j] != word[0])
+                    continue;
+                    
+                if(checkWordExistenceInBoard(board, word, i, j))
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+    
+private:
+    bool checkWordExistenceInBoard(const vector<vector<char>>& board, const string& word, int row, int col)
+    {
+        stack<pair<int, int>> stackForChar;
+        cached.clear();
+        
+        string candidate;
+        stackForChar.push(make_pair(row, col));
+        while(!stackForChar.empty())
+        {
+            int r = stackForChar.top().first;
+            int c = stackForChar.top().second;
+            if(cached.find(stackForChar.top()) != cached.end())
+            {
+                candidate.pop_back();
+                cached.erase(stackForChar.top());
+                stackForChar.pop();
+                continue;
+            }
+            
+            cached.insert(stackForChar.top());
+            candidate.push_back(board[r][c]);
+            if(candidate == word)
+                return true;
+            
+            if(candidate[candidate.size() - 1] != word[candidate.size() - 1])
+                continue;
+
+            for(int i = 0; i < 4; ++i)
+            {
+                pair<int, int> nextChar = make_pair(r + steps[i][0], c + steps[i][1]);
+                if(r + steps[i][0] >= 0 && r + steps[i][0] < board.size() &&
+                    c + steps[i][1] >= 0 && c + steps[i][1] < board[0].size() &&
+                    cached.find(nextChar) == cached.end())
+                        stackForChar.push(nextChar);
+            }
+        }
+        
+        return false;
+    }
+
+    int steps[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    set<pair<int, int>> cached;
+};
+
 #include <string>
 #include <iostream>
 #include <vector>
