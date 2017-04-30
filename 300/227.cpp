@@ -1,54 +1,86 @@
-#include <iostream>
-#include <string>
-#include <ctype.h>
-#include <climits>
+/*
+	Implement a basic calculator to evaluate a simple expression string.
 
-using namespace std;
+	The expression string contains only non-negative integers, +, -, *, / operators and empty spaces . The integer division should truncate toward zero.
 
-int calculate(string s) {
-        if(s.empty())
-		return INT_MIN;
+	You may assume that the given expression is always valid.
 
-	int rv = 0;
-	int cache = 1;
-	int cur_op_1 = 1;
-	int prev_op_1 = 1;
-	int cur_op_2 = 0;
-	for(int i = 0; i < s.size(); ++i)
-	{
-		if(isdigit(s[i]))
-		{
-			int num = 0;
-			for(; i < s.size() && isdigit(s[i]); ++i)
-				num = num * 10 + s[i] - '0';
-			--i;
-			if(cur_op_2 == 0)
-				cache = num;
-			else if(cur_op_2 == 1)
-				cache *= num;
-			else if(cur_op_2 == -1)
-				cache /= num;
-		}
-		else if(s[i] == '+' || s[i] == '-')
-		{
-			prev_op_1 = cur_op_1;
-			cur_op_1 = (s[i] == '+' ? 1 : -1);
-			rv += prev_op_1 * cache;
-			cur_op_2 = 0;
-		}
-		else if(s[i] == '*')
-			cur_op_2 = 1;
-		else if(s[i] == '/')
-			cur_op_2 = -1;
-	}
+	Some examples:
+	"3+2*2" = 7
+	" 3/2 " = 1
+	" 3+5 / 2 " = 5
+	Note: Do not use the eval built-in library function.
+*/
 
-	return rv += cur_op_1 * cache;
-}
+class Solution {
+public:
+    int calculate(string s) {
+        stack<int> stackForNumbers;
+        stack<char> stackForOperations;
+        
+        for(int i = 0; i < s.size();)
+        {
+            if(s[i] == ' ')
+                ++i;
+            else if(s[i] >= '0' && s[i] <= '9')
+                stackForNumbers.push(getNumber(s, i));
+            else 
+                cleanStack(stackForNumbers, stackForOperations, s[i++]);
+        }
+        
+        cleanStack(stackForNumbers, stackForOperations, '+');
+        return stackForNumbers.top();
+    }
+    
+private:
+    void cleanStack(stack<int>& stackForNumbers, stack<char>& stackForOperations, char lastOp)
+    {
+        while(1)
+        {
+            if(stackForOperations.empty() || getOperatorPriority(lastOp) > getOperatorPriority(stackForOperations.top()))
+                break;
+                
+            int r = stackForNumbers.top();
+            stackForNumbers.pop();
+            
+            int l = stackForNumbers.top();
+            stackForNumbers.pop();
+            
+            char op = stackForOperations.top();
+            stackForOperations.pop();
+            
+            stackForNumbers.push(doSimpleCalculation(l, r, op));
+        }
+        
+        stackForOperations.push(lastOp);
+    }
 
-int main()
-{
-	cout << calculate("5 + 1 / 2") << endl;
-	cout << calculate("3 * 4") << endl;
-	cout << calculate("1*2-3/4+5*6-7*8+9/10") << endl;
-	return 1;
-}
+    int getOperatorPriority(char op)
+    {
+        if(op == '+' || op == '-')
+            return 1;
+        else
+            return 2;
+    }
+    
+    int getNumber(const string& s, int& start)
+    {
+        int value = 0;
+        for(; start < s.size() && s[start] >= '0' && s[start] <= '9'; ++start)
+            value = value * 10 + s[start] - '0';
+            
+        return value;
+    }
+    
+    int doSimpleCalculation(int l, int r, char op)
+    {
+        if(op == '+')
+            return l + r;
+        else if(op == '-')
+            return l - r;
+        else if(op == '*')
+            return l * r;
+
+        return l / r;
+    }
+};
