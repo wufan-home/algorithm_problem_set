@@ -1,66 +1,67 @@
-#include <iostream>
-#include <string>
-#include <vector>
-
-using namespace std;
-
-class TrieNode {
-public:
-    // Initialize your data structure here.
-	TrieNode() : m_stop(false), next(26, NULL){}
-	
-	void FormAWord() { m_stop = true; }
-	bool IsAWord() { return m_stop; }
-	
-	vector<TrieNode *> next;
-private:
-	bool m_stop;
-};
+/*
+	Implement a trie with insert, search, and startsWith methods.
+	Note:
+	You may assume that all inputs are consist of lowercase letters a-z.
+*/
 
 class Trie {
 public:
+    /** Initialize your data structure here. */
     Trie() {
         root = new TrieNode();
     }
-
-    // Inserts a word into the trie.
-	void insert(string word) {
-		TrieNode *cur = root;
-		for(int i = 0; i < word.size(); ++i)
-		{
-			if(cur->next[word[i] - 'a'] == NULL)
-				cur->next[word[i] - 'a'] = new TrieNode();
-			cur = cur->next[word[i] - 'a'];
-			if(i == word.size() - 1)
-				cur->FormAWord();
-		}
-	}
-
-    // Returns if the word is in the trie.
-	bool search(string word) {
-		TrieNode *result = FindANode(word);
-		return (result != NULL && result->IsAWord());
-	}
-
-    // Returns if there is any word in the trie
-    // that starts with the given prefix.
-	bool startsWith(string prefix) {
-		return FindANode(prefix) != NULL;
-	}
-
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        TrieNode *curNode = root;
+        for(int i = 0; i < word.size(); ++i)
+        {
+            if(curNode->next[word[i] - 'a'] == NULL)
+               curNode->next[word[i] - 'a'] = new TrieNode(); 
+            
+            if(i == word.size() - 1)
+                curNode->next[word[i] - 'a']->wordStopsFlag = true;
+                
+            curNode = curNode->next[word[i] - 'a'];
+        }
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        TrieNode *curNode = root;
+        for(int i = 0; i < word.size(); ++i)
+        {
+            if(curNode->next[word[i] - 'a'] == NULL || (i == word.size() - 1 && curNode->next[word[i] - 'a']->wordStopsFlag == false))
+                return false;
+                
+            curNode = curNode->next[word[i] - 'a'];
+        }
+        
+        return true;
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        TrieNode *curNode = root;
+        for(int i = 0; i < prefix.size(); ++i)
+        {
+            if(curNode->next[prefix[i] - 'a'] == NULL)
+                return false;
+                
+            curNode = curNode->next[prefix[i] - 'a'];
+        }
+        
+        return true;
+    }
+    
 private:
-	TrieNode *FindANode(const string& prefix)
-	{
-		TrieNode *cur = root;
-		for(int i = 0; i < prefix.size(); ++i)
-		{
-			if(cur->next[prefix[i] - 'a'] == NULL)
-				return NULL;
+    struct TrieNode
+    {
+        vector<TrieNode *> next;
+        bool wordStopsFlag;
+        
+        TrieNode() : next(26, NULL), wordStopsFlag(false) {}
+    };
 
-			cur = cur->next[prefix[i] - 'a'];
-		}
-		return cur;
-	}
-	
-	TrieNode* root;
+    TrieNode *root;
 };
