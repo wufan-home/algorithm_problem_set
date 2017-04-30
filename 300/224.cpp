@@ -1,3 +1,72 @@
+/*
+	Implement a basic calculator to evaluate a simple expression string.
+
+	The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .
+
+	You may assume that the given expression is always valid.
+
+	Some examples:
+	"1 + 1" = 2
+	" 2-1 + 2 " = 3
+	"(1+(4+5+2)-3)+(6+8)" = 23
+	Note: Do not use the eval built-in library function.
+*/
+
+class Solution {
+public:
+	// Recursive.
+    int calculate(string s) {
+        if(s.empty())
+            return INT_MIN;
+          
+        int value = 0;
+        char op = '+';
+        for(int i = 0; i < s.size();)
+        {
+            if(s[i] == ' ')
+                ++i;
+            else if(s[i] >= '0' && s[i] <= '9')
+                value = value + (op == '+' ? 1 : -1) * getNumber(s, i);
+            else if(s[i] == '+' || s[i] == '-')
+                op = s[i++];
+            else if(s[i] == '(')
+                value = value + (op == '+' ? 1 : -1) * calculateByIndex(s, ++i);
+        }
+        
+        return value;
+    }
+    
+private:
+    int calculateByIndex(const string& s, int& index)
+    {
+        int value = 0;
+        char op = '+';
+        for(; index < s.size() && s[index] != ')';)
+        {
+            if(s[index] == ' ')
+                ++index;
+            else if(s[index] >= '0' && s[index] <= '9')
+                value = value + (op == '+' ? 1 : -1) * getNumber(s, index);
+            else if(s[index] == '+' || s[index] == '-')
+                op = s[index++];
+            else if(s[index] == '(')
+                value = value + (op == '+' ? 1 : -1) * calculateByIndex(s, ++index);
+        }
+
+        ++index;
+        return value;
+    }
+
+    int getNumber(const string& s, int& index)
+    {
+        int value = 0;
+        for(; index < s.size() && s[index] >= '0' && s[index] <= '9'; ++index)
+            value = 10 * value + s[index] - '0';
+        
+        return value;
+    }
+};
+
 #include <iostream>
 #include <string>
 #include <stack>
