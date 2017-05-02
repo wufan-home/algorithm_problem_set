@@ -9,38 +9,65 @@
   For k = 3, you should return: 3->2->1->4->5
 */
 
-ListNode* reverseKGroup(ListNode* head, int k)
-{
-        if(head == NULL || k == 0)
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        int size = 0;
+        for(ListNode *cur = head; cur != NULL; cur = cur->next, ++size) {}
+        
+        if(size == 0 || k > size || k == 1)
             return head;
 
-        int count = 0;
-        for(ListNode *cur = head; cur != NULL; cur = cur->next, ++count) {}
-        if(k > count)
-            return head;
-
-        ListNode *dummy = new ListNode(INT_MIN);
-        ListNode *tail = dummy;
-        while(head != NULL)
+        ListNode *newHead = NULL;
+        ListNode *tail = NULL;
+        for(ListNode *cur = head; cur != NULL;)
         {
-		ListNode *cur = head;
-		int i = 0;
-		for(; i < k && head != NULL; ++i, head = head->next) {}
+            ListNode *localHead = cur;
+            int i = 1;
+            for(; i < k && cur->next != NULL; ++i)
+                cur = cur->next;
 
-		if(i < k)
-			tail->next = cur;
-		else
-		{
-			ListNode *start = tail;
-			tail = cur; // The local head of the old list is the tail of the new list.
-			while(cur != head)
-			{
-				ListNode *temp = start->next;
-				start->next = cur;
-				cur = cur->next;
-				start->next->next = temp;
-			}
-		}
+            if(i < k)
+            {
+                tail->next = localHead;
+                break;
+            }
+
+            ListNode *temp = cur->next;
+            cur->next = NULL;
+            cur = temp;
+            
+            if(tail == NULL)
+                newHead = reverseList(localHead);
+            else
+                tail->next = reverseList(localHead);
+                
+            tail = localHead;
         }
-        return dummy->next;
-}
+        
+        return newHead;
+    }
+    
+private:
+    ListNode *reverseList(ListNode *head)
+    {
+        ListNode *newHead = NULL;
+        while(head)
+        {
+            ListNode *temp = head;
+            head = head->next;
+            temp->next = newHead;
+            newHead = temp;
+        }
+        return newHead;
+    }
+};
