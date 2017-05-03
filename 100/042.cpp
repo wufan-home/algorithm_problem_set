@@ -1,82 +1,69 @@
-// 42.cpp : Defines the entry point for the console application.
-//
+/*
+	Given n non-negative integers representing an elevation map where the width of each bar is 1, 
+	compute how much water it is able to trap after raining.
+	For example, 
+	Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
+*/
 
-#include "stdafx.h"
-#include <stack>
-#include <vector>
-#include <iostream>
-#include <algorithm>
-
-using namespace std;
-
-int trap(vector<int>& height) {
-	if (height.size() < 3)
-		return 0;
-
-	stack<int> barriers;
-	int start = 0;
-	for (; start < height.size() - 1; ++start)
-	{
-		if (height[start] > height[start + 1])
-			break;
-	}
-
-	if (start == height.size() - 1)
-		return 0;
-
-	barriers.push(start);
-	for (int i = start + 1; i < height.size(); ++i)
-	{
-		if (height[i] > height[i - 1])
-		{
-			if (barriers.size() == 1 || height[i] <= height[barriers.top()])
-				barriers.push(i);
-			else
-			{
-				while (barriers.size() > 1)
-				{
-					barriers.pop();
-					if (barriers.size() == 1 || height[i] <= height[barriers.top()])
-						break;
-
-					int temp = barriers.top();
-					barriers.pop();
-					if (height[temp] > height[barriers.top()])
-					{
-						barriers.push(temp);
-						break;
-					}
-				}
-				barriers.push(i);
-			}
-		}
-		else
-			barriers.push(i);
-	}
-
-	int max_volume = 0;
-	while (barriers.size() > 1)
-	{
-		int right_index = barriers.top();
-		int right = height[right_index];
-		barriers.pop();
-		int left_index = barriers.top();
-		int left = height[left_index];
-
-		int local_h = min(left, right);
-		for (int i = right_index - 1; i > left_index; --i)
-		{
-			max_volume += (local_h - height[i]);
-		}
-	}
-
-	return max_volume;
-}
-
-int main()
-{
-	int a[] = {0,1,0,2,1,0,1,3,2,1,2,1};
-	cout << trap(vector<int>(a, a + sizeof(a) / sizeof(int))) << endl;
-    return 0;
-}
-
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        if(height.size() < 3)
+            return 0;
+        
+        int waterAmount = 0;
+        stack<int> stackForPositions;
+        for(int i = 0; i < height.size(); ++i)
+        {
+            if(isIndexOfLocalPeak(height, i))
+            {
+                const int curHeight = height[i];
+                while(stackForPositions.size() > 1)
+                {
+                    const int lastHeight = height[stackForPositions.top()];
+                    if(lastHeight >= curHeight)
+                        break;
+                        
+                    stackForPositions.pop();
+                }
+                
+                if(stackForPositions.size() == 1 && height[stackForPositions.top()] <= curHeight)
+                {
+                    const int lastHeightIndex = stackForPositions.top();
+                    stackForPositions.pop();
+                    waterAmount += computeWaterAmount(height, lastHeightIndex, i);
+                }
+                
+                stackForPositions.push(i);
+            }
+        }
+        
+        while(stackForPositions.size() > 1)
+        {
+            int right = stackForPositions.top();
+            stackForPositions.pop();
+            waterAmount += computeWaterAmount(height, stackForPositions.top(), right);
+        }
+        
+        return waterAmount;
+    }
+    
+private:
+    bool isIndexOfLocalPeak(const vector<int>& height, int index)
+    {
+        return index == 0 || 
+                (index == height.size() - 1 && height[index] > height[index - 1]) || 
+                (height[index - 1] < height[index] && height[index] >= height[index + 1]) ||
+                (height[index - 1] <= height[index] && height[index] > height[index + 1]); 
+    }
+    
+    int computeWaterAmount(const vector<int>& height, int start, int end)
+    {
+        int waterAmount = 0;
+        int minHeight = min(height[start], height[end]);
+        for(int i = start + 1; i < end; ++i)
+            waterAmount += minHeight - (height[i] > minHeight ? minHeight : height[i]);
+            
+        return waterAmount;
+    }
+};
