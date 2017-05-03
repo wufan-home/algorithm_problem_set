@@ -27,7 +27,7 @@
   To avoid using a dummy node, we have a branch to deal with the coner case, 
   that is when n is the number of elements of the linked list.
   In this case, we should remove the node itself but not the next one as normal cases.
-  This is equivelant to have a pre-head and remove the next node of the pre-head. 
+  This is equivelant to have a pre-head and remove the next node of the pre-head.  
  */
 
     ListNode* removeNthFromEnd(ListNode* head, int n) {
