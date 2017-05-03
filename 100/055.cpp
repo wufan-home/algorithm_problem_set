@@ -14,18 +14,18 @@
    Update the farthest reachable position on each step.
 */
 
-#include <vector>
-
-using namespace std;
-
-bool canJump(vector<int>& nums) {
-        if(nums.size() <= 1)
-		return true;
-
-	int reachable = 0;
-	int size = nums.size();
-	for(int i = 0; i <= min(size - 1, reachable); ++i)
-		reachable = max(reachable, i + nums[i]);
-
-	return reachable >= size - 1;
-}
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int maxReachable = 0;
+        for(int i = 0; i < nums.size() - 1; ++i)
+        {
+            if(maxReachable >= nums.size() - 1 || i > maxReachable)
+                break;
+                
+            maxReachable = max(maxReachable, i + nums[i]);
+        }
+        
+        return maxReachable >= nums.size() - 1;
+    }
+};
