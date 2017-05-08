@@ -18,40 +18,60 @@ Given binary tree [3,9,20,null,null,15,7],
   
 */
 
-#include <vector>
-#include <queue>
-
-using namespace std;
-
-vector<vector<int> > levelOrderBottom(TreeNode* root) {
-	vector<vector<int> > result;
-	if(root == NULL)
-		return result;
-
-	TreeNode *cur = NULL;
-	queue<TreeNode *> node_queue;
-	node_queue.push(root);
-	int level = node_queue.size();
-	vector<int> line;
-	while(!node_queue.empty())
-	{
-		cur = node_queue.front();
-		node_queue.pop();
-		--level;
-
-		line.push_back(cur->val);
-		if(cur->left)
-			node_queue.push(cur->left);
-		if(cur->right)
-			node_queue.push(cur->right);
-
-		if(!level)
-		{
-			level = node_queue.size();
-			result.insert(result.begin(), line);
-			line.clear();
-		}
-	}
-
-	return result;
-}
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        if(root == NULL)
+            return vector<vector<int>>();
+            
+        stack<vector<int> *> stackForLevelValues;
+        queue<TreeNode *> queueForTreeNode;
+        
+        queueForTreeNode.push(root);
+        queueForTreeNode.push(NULL);
+        vector<int> *level = NULL;
+        while(!queueForTreeNode.empty())
+        {
+            TreeNode *cur = queueForTreeNode.front();
+            queueForTreeNode.pop();
+            if(cur == NULL)
+            {
+                stackForLevelValues.push(level);
+                level = NULL;
+                if(!queueForTreeNode.empty())
+                    queueForTreeNode.push(NULL);
+            }
+            else
+            {
+                if(level == NULL)
+                    level = new vector<int>();
+                    
+                (*level).push_back(cur->val);
+                
+                if(cur->left)
+                    queueForTreeNode.push(cur->left);
+                    
+                if(cur->right)
+                    queueForTreeNode.push(cur->right);
+            }
+        }
+        
+        vector<vector<int>> reverseLevels;
+        while(!stackForLevelValues.empty())
+        {
+            reverseLevels.push_back(*(stackForLevelValues.top()));
+            stackForLevelValues.pop();
+        }
+        
+        return reverseLevels;
+    }
+};
