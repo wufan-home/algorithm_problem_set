@@ -12,36 +12,40 @@
   the right sub-tree.
 */
 
-#include <vector>
-
-using namespace std;
-
-TreeNode *build(vector<int>& pre, int s1, int e1, vector<int>& in, int s2, int e2)
-{
-    	int v = pre[s1];
-    	int ltend = s2 - 1;
-	    int rtstart = e2 + 1;
-    	for(int i = s2; i <= e2; ++i)
-    	{
-    		if(in[i] == v)
-    		{
-    			ltend = i - 1;
-    			rtstart = i + 1;
-    			break;
-    		}
-    	}
-    	TreeNode *root = new TreeNode(v);
-    	if(s2 <= ltend)
-    		root->left = build(pre, s1 + 1, s1 + (ltend - s2) + 1, in, s2, ltend);
-    	if(rtstart <= e2)
-    		root->right = build(pre, s1 + (ltend - s2) + 2, e1, in, rtstart, e2);
-    	return root;
-}
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        return getTreeBuilt(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size() - 1);
+    }
     
-TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder)
-{
-        if(preorder.empty() || preorder.size() != inorder .size())
-		    return NULL;    
+private:
+    TreeNode *getTreeBuilt(vector<int>& preorder, int startpr, int endpr,
+                            vector<int>& inorder, int startin, int endin)
+    {
+        if(startin > endin)
+            return NULL;
 
-        return build(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size() - 1);
-}
+        int rootValue = preorder[startpr];
+        int indexInorder = startin;
+        for(; indexInorder <= endin && inorder[indexInorder] != rootValue; ++indexInorder) {}
+        
+        TreeNode *root = new TreeNode(rootValue);
+        
+        int leftSize = indexInorder - startin;
+        root->left = getTreeBuilt(preorder, startpr + 1, startpr + leftSize, inorder, startin, indexInorder - 1);
+        
+        int rightSize = endin - indexInorder;
+        root->right = getTreeBuilt(preorder, startpr + leftSize + 1, endpr, inorder, indexInorder + 1, endin);
+        
+        return root;
+    }
+};
