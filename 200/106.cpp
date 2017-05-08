@@ -7,37 +7,45 @@
   Similar with the problem 105.
 */
 
-#include <vector>
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        if(inorder.empty())
+            return NULL;
+        
+        return getTreeBuilt(inorder, 0, inorder.size() - 1, postorder, 0, postorder.size() - 1);
+    }
+    
+private:
+    TreeNode *getTreeBuilt(const vector<int>& inorder, int startin, int endin,
+                            const vector<int>& postorder, int startpost, int endpost)
+    {
+        if(startin > endin)
+            return NULL;
 
-using namespace std;
-
-TreeNode *build(vector<int>& in, int s1, int e1, vector<int>& po, int s2, int e2)
-{
-    	int v = po[e2];
-    	int ltend = s1 - 1;
-    	int rtstart = e1 + 1;
-    	for(int i = s1; i <= e1; ++i)
-    	{
-    		if(in[i] == v)
-    		{
-    			ltend = i - 1;
-    			rtstart = i + 1;
-    			break;
-    		}
-    	}
-    
-    	TreeNode *root = new TreeNode(v);
-    	if(s1 <= ltend)
-    		root->left = build(in, s1, ltend, po, s2, s2 + (ltend - s1));
-    	if(rtstart <= e1)
-    		root->right = build(in, rtstart, e1, po, s2 + (ltend - s1) + 1, e2 - 1);
-    	return root;
-}
-    
-TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder)
-{
-    	if(inorder.empty() || inorder.size() != postorder.size())
-    		return NULL;
-    
-    	return build(inorder, 0, inorder.size() - 1, postorder, 0, postorder.size() - 1);
-}
+        int rootValue = postorder[endpost];
+        int indexInorder = startin;
+        for(; indexInorder <= endin && inorder[indexInorder] != rootValue; ++indexInorder) {}
+        
+        
+        TreeNode *root = new TreeNode(rootValue);
+        
+        int leftSize = indexInorder - startin;
+        root->left = getTreeBuilt(inorder, startin, indexInorder - 1, postorder, startpost, startpost + leftSize - 1);
+        
+        int rightSize = endin - indexInorder - 1;
+        root->right = getTreeBuilt(inorder, indexInorder + 1, endin, postorder, startpost + leftSize, endpost - 1);
+        
+        return root;
+        
+    }
+};
