@@ -82,6 +82,7 @@ private:
                 swap(window[replace].first, window[replace - 1].first);
                 swap(window[replace].second, window[replace - 1].second);
             }
+        }
     }
 
     static bool compare(const pair<int, int>& l, const pair<int, int>& r)
