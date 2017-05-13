@@ -1,25 +1,45 @@
-void minDepthAux(TreeNode *root, int current_depth, int& min_depth)
-{
-	if(root->left == NULL && root->right == NULL)
-	{
-		if(min_depth == 1 || current_depth < min_depth)
-			min_depth = current_depth;
-	}
-	else
-	{
-		if(root->left != NULL)
-			minDepthAux(root->left, current_depth + 1, min_depth);
+/*
+	Given a binary tree, find its minimum depth.
 
-		if(root->right != NULL)
-			minDepthAux(root->right, current_depth + 1, min_depth);
-	}
-}
+	The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
+*/
 
-int minDepth(TreeNode* root) {
-	if(root == NULL)
-		return 0;
-
-	int min_depth = 1;
-	minDepthAux(root, 1, min_depth);
-	return min_depth;
-}
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    Solution() : minimumDepth(INT_MAX) {}
+    
+    int minDepth(TreeNode* root) {
+        if(root == NULL)
+            return 0;
+            
+        int curDepth = 1;
+        calculateDepth(root, curDepth);
+        return minimumDepth;
+    }
+private:
+    void calculateDepth(TreeNode *root, int curDepth)
+    {
+        if(root->left == NULL && root->right == NULL)
+        {
+            minimumDepth = min(minimumDepth, curDepth);
+            return;
+        }
+        
+        if(root->left)
+            calculateDepth(root->left, curDepth + 1);
+            
+        if(root->right)
+            calculateDepth(root->right, curDepth + 1);
+    }
+    
+    int minimumDepth;
+};
