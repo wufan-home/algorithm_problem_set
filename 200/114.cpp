@@ -27,15 +27,34 @@ Hints:
 If you notice carefully in the flattened tree, each node's right child points to the next node of a pre-order traversal.
 */
 
-void flatten(TreeNode* root) {
-        if(root == NULL)
-		return;
-
-	TreeNode *right = root->right;
-	root->right = root->left;
-	root->left = NULL;
-	TreeNode *cur = root;
-	for(; cur->right; cur = cur->right) {}
-	cur->right = right;
-	flatten(root->right);
-}
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        if(root == NULL || (root->left == NULL && root->right == NULL))
+            return;
+            
+        TreeNode *left = root->left;
+        flatten(left);
+        TreeNode *right = root->right;
+        flatten(right);
+        
+        if(left)
+        {
+            TreeNode *tail = left;
+            for(; tail->right != NULL; tail = tail->right) {}
+            TreeNode *temp = root->right;
+            root->left = NULL;
+            root->right = left;
+            tail->right = temp;
+        }
+    }
+};
