@@ -13,17 +13,25 @@ Given the below binary tree and sum = 22,
 return true, as there exist a root-to-leaf path 5->4->11->2 which sum is 22.
 */
 
-bool hasPathSum(TreeNode *root, int sum)
-{
-	if(root == NULL)
-		return false;
-	else if(root->left == NULL && root->right == NULL)
-		return root->val == sum;
-    	else
-    	{
-    		if(hasPathSum(root->left, sum - root->val) || hasPathSum(root->right, sum - root->val))
-    			return true;
-    
-    		return false;
-    	}
-}
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if(root == NULL)
+            return false;
+            
+        if(root->left == NULL && root->right == NULL)
+            return sum == root->val;
+        
+        return (root->left && hasPathSum(root->left, sum - root->val) == true) ||
+                (root->right && hasPathSum(root->right, sum - root->val) == true);
+    }
+};
