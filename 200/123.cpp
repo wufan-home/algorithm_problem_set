@@ -1,39 +1,41 @@
-#include <vector>
+/*
+	Say you have an array for which the ith element is the price of a given stock on day i.
 
-using namespace std;
+	Design an algorithm to find the maximum profit. You may complete at most two transactions.
 
-int maxProfit(vector<int>& prices) {
-	if(prices.empty())
-		return 0;
+	Note:
+	You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+*/
 
-	vector<int> max_profits_left(prices.size(), 0);
-	int min_price = prices[0];
-	for(int i = 1; i < prices.size(); ++i)
-	{
-		if(prices[i] - min_price > max_profits_left[i - 1])
-			max_profits_left[i] = prices[i] - min_price;
-		else
-			max_profits_left[i] = max_profits_left[i - 1];
-
-		if(prices[i] < min_price)
-			min_price = prices[i];
-	}
-
-	int max_profit = 0;
-	int max_price = *(prices.end() - 1);
-	int max_profit_right = 0;
-	for(int i = prices.size() - 2; i >= 0; --i)
-	{
-		if(max_price - prices[i] > max_profit_right)
-		{
-			max_profit_right = max_price - prices[i];
-			if(max_profit_right + max_profits_left[i] > max_profit)
-				max_profit = max_profit_right + max_profits_left[i];
-		}
-
-		if(prices[i] > max_price)
-			max_price = prices[i];
-	}
-
-	return max_profit;
-}
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if(prices.size() < 2)
+            return 0;
+        
+        int maxProfitFirstExchange = 0;
+        int lowest = prices[0];
+        vector<int> firstExchangeMaxProfits(prices.size(), 0);
+        for(int i = 1; i < prices.size(); ++i)
+        {
+            maxProfitFirstExchange = max(maxProfitFirstExchange, prices[i] - lowest);
+            firstExchangeMaxProfits[i] = maxProfitFirstExchange;
+            lowest = min(lowest, prices[i]);
+        }
+        
+        int maxProfit = 0;
+        int highestPrice = prices[prices.size() - 1];
+        for(int i = prices.size() - 1; i >= 0; --i)
+        {
+            if(prices[i] < highestPrice)
+                maxProfit = max(maxProfit, highestPrice - prices[i] + (i > 0 ? firstExchangeMaxProfits[i - 1] : 0));
+            else
+            {
+                maxProfit = max(maxProfit, i > 0 ? firstExchangeMaxProfits[i - 1] : 0);
+                highestPrice = prices[i];
+            }
+        }
+        
+        return maxProfit;
+    }
+};
