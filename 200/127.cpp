@@ -15,14 +15,12 @@
 class Solution {
 public:
     int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        if(find(wordList.begin(), wordList.end(), endWord) == wordList.end())
+            return 0;
+
         unordered_set<string> dict;
         for(int i = 0; i < wordList.size(); ++i)
-        {
-            if(wordList[i] == beginWord || wordList[i] == endWord)
-                continue;
-                
             dict.insert(wordList[i]);
-        }
         
         beginToWord[beginWord] = 1;
         queueFromBegin.push(beginWord);
@@ -50,7 +48,6 @@ public:
 private:
     int searchAdjacentWords(const string& word, const unordered_set<string>& dict, bool forward)
     {
-        //cout << "Now " << word << " ========== " << (forward ? "From start" : "From End") << endl;
         string cur = word;
         int len = cur.size();
         for(int i = 0; i < len; ++i)
@@ -64,36 +61,24 @@ private:
                 if(forward)
                 {
                     if(wordToEnd.find(cur) != wordToEnd.end())
-                    {
-                        /*cout << "forward " << word << " -> " << cur << endl;
-                        cout << beginToWord[word] << endl;
-                        cout << wordToEnd[cur] << endl;*/
                         return beginToWord[word] + wordToEnd[cur];
-                    }
                     
                     if(beginToWord.find(cur) != beginToWord.end())
                         continue;
 
                     beginToWord[cur] = beginToWord[word] + 1;
                     queueFromBegin.push(cur);
-                    //cout << cur << ": " << beginToWord[cur] << endl;
                 }
                 else
                 {
                     if(beginToWord.find(cur) != beginToWord.end())
-                    {
-                        /*cout << "backword " << cur << " -> " << word << endl;
-                        cout << wordToEnd[word] << endl;
-                        cout << beginToWord[cur] << endl;*/
                         return beginToWord[cur] + wordToEnd[word];
-                    }
                     
                     if(wordToEnd.find(cur) != wordToEnd.end())
                         continue;
 
                     wordToEnd[cur] = wordToEnd[word] + 1;
                     queueFromEnd.push(cur);
-                    //cout << cur << ": " << wordToEnd[cur] << ", " << "backward" << endl;
                 }
             }
             
