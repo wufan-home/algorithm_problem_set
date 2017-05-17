@@ -40,8 +40,12 @@ public:
 
     // Encodes a URL to a shortened URL.
     string encode(string longUrl) {
+        if(urlToIndex.find(longUrl) != urlToIndex.end())
+            return urlToIndex[longUrl].second;
+
         cachedUrl.push_back(longUrl);
         int index = cachedUrl.size() - 1;
+        urlToIndex[longUrl] = make_pair(index, "");
         
         string tempUrl;
         while(index)
@@ -56,6 +60,7 @@ public:
 
         string shortUrl = prefix;
         shortUrl.append(tempUrl);
+        urlToIndex[longUrl].second = shortUrl;
         
         return shortUrl;
     }
@@ -80,6 +85,7 @@ private:
     unordered_map<int, char> intToChar;
     unordered_map<char, int> charToInt;
     vector<string> cachedUrl;
+    unordered_map<string, pair<int, string>> urlToIndex;
     
     int bound;
     
