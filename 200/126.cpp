@@ -18,88 +18,144 @@
   All words contain only lowercase alphabetic characters.
 */
 
-void GetPath(const string& start, const string& end,
-	     unordered_map<string, vector<string> >& adj,
-	     vector<string>& path, vector<vector<string> >& pathes)
-{
-    	if(start == end)
-    		pathes.push_back(path);
-    	else
-    	{
-    		vector<string>& nbs = adj[start];
-    		for(int i = 0; i < nbs.size(); ++i)
-    		{
-    			path.push_back(nbs[i]);
-    			GetPath(nbs[i], end, adj, path, pathes);
-    			path.pop_back();
-    		}
-    	}
-}
-    
-vector<vector<string>> findLadders(string beginWord, string endWord, unordered_set<string> &wordList)
-{
-    	vector<vector<string> > ladders;
-    	if(wordList.empty())
-    		return ladders;
+class Solution {
+public:
+	Solution() : minPathLength(INT_MAX) {}
 
-	int len = beginWord.size();
-    	wordList.insert(endWord);
-    	wordList.erase(beginWord);
-	unordered_map<string, vector<string> > adj;
+	vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+		if (find(wordList.begin(), wordList.end(), endWord) == wordList.end())
+			return vector<vector<string>>(1, vector<string>());
 
-    	queue<string> word_queue;
-    	word_queue.push(beginWord);
-    	int level_size = word_queue.size();
+		unordered_set<string> dict;
+		dict.insert(beginWord);
+		dict.insert(endWord);
+		for (int i = 0; i < wordList.size(); ++i)
+			dict.insert(wordList[i]);
 
-	unordered_set<string> visited;
-	unordered_set<string> finished;
-    	bool found_end = false;
-    	while(level_size)
-    	{
-    		string cur = word_queue.front();
-    		word_queue.pop();
-    		--level_size;
-    		adj[cur] = vector<string>();
-    		for(int i = 0; i < len; ++i)
-    		{
-    			string str = cur;
-    			for(char c = 'a'; c <= 'z'; ++c)
-    			{
-    				cur[i] = c;
-    				if(cur == endWord)
-    				{
-					adj[str].push_back(cur);
-					found_end = true;
-    				}
-    				else if(wordList.find(cur) != wordList.end())
-    				{
-    					adj[str].push_back(cur);
-					if(visited.find(cur) == visited.end())
+		queueForPrevWords.push(beginWord);
+		wordToLengthAndPrevWords[beginWord] = make_pair(1, vector<string>());
+		queueForNextWords.push(endWord);
+		wordToLengthAndNextWords[endWord] = make_pair(1, vector<string>());
+		while (!queueForPrevWords.empty() && !queueForNextWords.empty())
+		{
+			string word = queueForPrevWords.front();
+			queueForPrevWords.pop();
+			findAdjacentWords(word, dict, true);
+
+			word = queueForNextWords.front();
+			queueForNextWords.pop();
+			findAdjacentWords(word, dict, false);
+		}
+
+		return paths;
+	}
+
+private:
+	void findAdjacentWords(const string& curWord, const unordered_set<string>& dict, bool forward)
+	{
+		string adjacentWord = curWord;
+		int wordLength = adjacentWord.size();
+		for (int i = 0; i < wordLength; ++i)
+		{
+			for (char c = 'a'; c <= 'z'; ++c)
+			{
+				adjacentWord[i] = c;
+				if (dict.find(adjacentWord) == dict.end() || adjacentWord == curWord)
+					continue;
+
+				if (forward)
+				{
+					if (wordToLengthAndNextWords.find(adjacentWord) != wordToLengthAndNextWords.end())
 					{
-						word_queue.push(cur);
-						visited.insert(cur);
-						finished.insert(cur);
+						int length = wordToLengthAndPrevWords[curWord].first + wordToLengthAndNextWords[adjacentWord].first;
+						if (minPathLength == INT_MAX || length == minPathLength)
+						{
+							minPathLength = length;
+							addPathsToCollection(curWord, adjacentWord);
+						}
 					}
-    				}
-    			}
-    			cur = str;
-    		}
+					else if (wordToLengthAndPrevWords.find(adjacentWord) != wordToLengthAndPrevWords.end() &&
+						wordToLengthAndPrevWords[curWord].first + 1 == wordToLengthAndPrevWords[adjacentWord].first)
+					{
+						wordToLengthAndPrevWords[adjacentWord].second.push_back(curWord);
+					}
+					else if (wordToLengthAndPrevWords.find(adjacentWord) == wordToLengthAndPrevWords.end())
+					{
+						wordToLengthAndPrevWords[adjacentWord] = make_pair(wordToLengthAndPrevWords[curWord].first + 1, vector<string>(1, curWord));
+						queueForPrevWords.push(adjacentWord);
+					}
+				}
+				else
+				{
+					if (wordToLengthAndNextWords.find(adjacentWord) != wordToLengthAndNextWords.end() &&
+						wordToLengthAndNextWords[curWord].first + 1 == wordToLengthAndNextWords[adjacentWord].first)
+					{
+						wordToLengthAndNextWords[adjacentWord].second.push_back(curWord);
+					}
+					else if (wordToLengthAndNextWords.find(adjacentWord) == wordToLengthAndNextWords.end())
+					{
+						wordToLengthAndNextWords[adjacentWord] = make_pair(wordToLengthAndNextWords[curWord].first + 1, vector<string>(1, curWord));
+						queueForNextWords.push(adjacentWord);
+					}
+				}
+			}
 
-    		if(level_size == 0 && !found_end)
-    		{
-    			level_size = word_queue.size();
-    			for(unordered_set<string>::iterator it = finished.begin(); it != finished.end(); ++it)
-				wordList.erase(*it);
-			finished.clear();
-    		}
-    	}
+			adjacentWord[i] = curWord[i];
+		}
+	}
 
-    	if(!found_end)
-    		return ladders;
+	void addPathsToCollection(const string& endFromBeginWord, const string& startToEndWord)
+	{
+		vector<vector<string>> pathsFromBeginWord = getPaths(endFromBeginWord, false);
+		vector<vector<string>> pathsToEndWord = getPaths(startToEndWord, true);
 
-    	vector<string> path;
-    	path.push_back(beginWord);
-    	GetPath(beginWord, endWord, adj, path, ladders);
-    	
-    	return ladders;
-}
+		for (int i = 0; i < pathsFromBeginWord.size(); ++i)
+		{
+			for (int j = 0; j < pathsToEndWord.size(); ++j)
+			{
+				paths.push_back(pathsFromBeginWord[i]);
+				for (int k = 0; k < pathsToEndWord[j].size(); ++k)
+					paths[paths.size() - 1].push_back(pathsToEndWord[j][k]);
+			}
+		}
+	}
+
+	vector<vector<string>> getPaths(const string& word, bool forward)
+	{
+		vector<vector<string>> collection;
+		unordered_map<string, pair<int, vector<string>>>& cachedPaths = forward ? wordToLengthAndNextWords : wordToLengthAndPrevWords;
+		if (cachedPaths[word].first == 1)
+			return vector<vector<string>>(1, vector<string>(1, word));
+
+		for (int i = 0; i < cachedPaths[word].second.size(); ++i)
+		{
+			vector<vector<string>> paths = getPaths(cachedPaths[word].second[i], forward);
+			for (int j = 0; j < paths.size(); ++j)
+			{
+				if (!forward)
+				{
+					collection.push_back(vector<string>(paths[i]));
+					collection[collection.size() - 1].push_back(word);
+				}
+				else
+				{
+					collection.push_back(vector<string>(1, word));
+					for (int k = 0; k < paths[j].size(); ++k)
+						collection[collection.size() - 1].push_back(paths[j][k]);
+				}
+			}
+		}
+
+		return collection;
+	}
+
+	vector<vector<string>> paths;
+
+	int minPathLength;
+
+	unordered_map<string, pair<int, vector<string>>> wordToLengthAndPrevWords;
+	queue<string> queueForNextWords;
+
+	unordered_map<string, pair<int, vector<string>>> wordToLengthAndNextWords;
+	queue<string> queueForPrevWords;
+};
