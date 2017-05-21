@@ -37,6 +37,16 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
 class Solution {
 public:
     vector<vector<int>> findLeaves(TreeNode* root) {
@@ -59,16 +69,14 @@ public:
             TreeNode *left = cur->left;
             if(left)
             {
-                int amountChildren = int(left->left != NULL) + int(left->right != NULL);
-                childToParentMap[left] = make_pair(amountChildren, cur);
+                childToParentMap[left] = make_pair(int(left->left != NULL) + int(left->right != NULL), cur);
                 queueForTreeNodes.push(left);
             }
 
             TreeNode *right = cur->right;
             if(right)
             {
-                int amountChildren = int(right->left != NULL) + int(right->right != NULL);
-                childToParentMap[right] = make_pair(amountChildren, cur);
+                childToParentMap[right] = make_pair(int(right->left != NULL) + int(right->right != NULL), cur);
                 queueForTreeNodes.push(right);
             }
             
@@ -82,9 +90,6 @@ public:
             queueForLeaves.pop();
             if(cur == NULL)
             {
-                if(queueForLeaves.empty())
-                    break;
-
                 leaves.push_back(vector<int>());
                 queueForLeaves.push(NULL);
                 continue;
