@@ -23,18 +23,19 @@ int rangeBitwiseAnd1(int m, int n) {
 class Solution {
 public:
     int rangeBitwiseAnd(int m, int n) {
-        
-        int lower = 1;
-        while(lower < INT_MAX)
+        int range = 0;
+        for(int i = 0; m != 0; ++i)
         {
-            const int upper = lower == INT_MAX / 2 + 1 ? INT_MAX : 2 * lower - 1;
-            if(m == 0 || n == 0 || m == n)
-                return m;
-            else if(lower <= m && n <= upper)
-                return rangeBitwiseAnd(m ^ lower, n ^ lower) | lower;
-            else if(m < lower && lower <= n)
-                return 0;
-            lower = upper + 1;
+            int digitm = m & 1;
+            int digitn = n & 1;
+            if(digitm != digitn)
+                range = 0;
+                
+            range |= (digitm << i);
+            m >>= 1;
+            n >>= 1;
         }
+        
+        return n == 0 ? range : 0;
     }
 };
