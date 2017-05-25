@@ -13,28 +13,36 @@
    
    The number of ways decoding "12" is 2. 
 */
-
-#include <iostream>
-#include <string>
-#include <vector>
-
-using namespace std;
-
-int numDecodings(string s) {
-	if(s.empty() || s[0] == '0')
-		return 0;
-	vector<int> aux(s.size() + 1, 1);
-	aux[1] = s[0] != '0' ? 1 : 0;
-	for(int i = 2; i <= s.size(); ++i)
-	{
-		aux[i] = (s[i - 1] != '0' ? aux[i - 1] : 0) +
-			((s[i - 2] != '0') && (s[i - 2] < '2' || (s[i - 2] == '2' && s[i - 1] < '7')) ? aux[i - 2] : 0);
-	}
-	return aux[s.size()];
-}
-
-int main()
-{
-	cout << numDecodings("100") << endl;
-	return 1;
-}
+class Solution {
+public:
+    int numDecodings(string s) {
+        if(s.empty())
+            return 0;
+            
+        cachedCodeNumbers = vector<int>(s.size(), -1);
+        getNumOfCodesByIndex(s, 0);
+        return cachedCodeNumbers[0];
+    }
+    
+private:
+    int getNumOfCodesByIndex(const string& s, int start)
+    {
+        if(s[start] == '0')
+        {
+            cachedCodeNumbers[start] = 0;
+            return 0;
+        }
+        
+        if(cachedCodeNumbers[start] >= 0)
+            return cachedCodeNumbers[start];
+        
+        cachedCodeNumbers[start] = start == s.size() - 1 ? 1 : getNumOfCodesByIndex(s, start + 1);
+        
+        if(start < s.size() - 1 && atoi(s.substr(start, 2).c_str()) <= 26)
+            cachedCodeNumbers[start] += start == s.size() - 2 ? 1 : getNumOfCodesByIndex(s, start + 2);
+            
+        return cachedCodeNumbers[start];
+    }
+    
+    vector<int> cachedCodeNumbers;
+};
