@@ -1,38 +1,23 @@
-// 88.cpp : Defines the entry point for the console application.
-//
+/*
+	Given two sorted integer arrays nums1 and nums2, merge nums2 into nums1 as one sorted array.
 
-#include "stdafx.h"
-#include <vector>
-#include <iostream>
+	Note:
+	You may assume that nums1 has enough space (size that is greater or equal to m + n) to hold additional elements from nums2. 
+	The number of elements initialized in nums1 and nums2 are m and n respectively.
+*/
 
-using namespace std;
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        for(int k = m + n - 1; k >= 0; --k)
+        {
+            if(n <= 0)
+                break;
 
-void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
-	if (n == 0 && m == 0)
-		return;
-
-	int n1 = m - 1;
-	int n2 = n - 1;
-	for (int i = m + n - 1; i >= 0; --i)
-	{
-		if (n2 < 0)
-			break;
-
-		if (n1 < 0)
-			nums1[i] = nums2[n2--];
-
-		nums1[i] = (nums2[n2] > nums1[n1] ? nums2[n2--] : nums1[n1--]);
-	}
-}
-
-int main()
-{
-	vector<int> nums1(1, 0);
-	vector<int> nums2(1, 1);
-	merge(nums1, 0, nums2, 1);
-	for (int i = 0; i < nums1.size(); ++i)
-		cout << nums1[i] << endl;
-
-    return 0;
-}
-
+            if(m <= 0 || nums2[n - 1] >= nums1[m - 1])
+                nums1[k] = nums2[--n];
+            else
+                nums1[k] = nums1[--m];
+        }       
+    }
+};
