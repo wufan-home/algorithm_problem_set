@@ -1,7 +1,5 @@
 /*
-    Given a non-empty integer array, find the minimum number of moves required to make all array elements equal, where a move is incrementing a selected element by 1 or decrementing a selected element by 1.
-
-    You may assume the array's length is at most 10,000.
+    Given a non-empty integer array of size n, find the minimum number of moves required to make all array elements equal, where a move is incrementing n - 1 elements by 1.
 
     Example:
 
@@ -9,12 +7,12 @@
     [1,2,3]
 
     Output:
-    2
+    3
 
     Explanation:
-    Only two moves are needed (remember each move increments or decrements one element):
+    Only three moves are needed (remember each move increments two elements):
 
-    [1,2,3]  =>  [2,2,3]  =>  [2,2,2]
+    [1,2,3]  =>  [2,3,3]  =>  [3,4,3]  =>  [4,4,4]
 */
 
 class Solution {
