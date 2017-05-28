@@ -43,3 +43,30 @@ private:
 
     vector<int> listOfNodeValues;
 };
+
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> listOfNodeValues;
+        
+        stack<TreeNode *> stackForInorderTraversal;
+        TreeNode *cur = root;
+        while(cur || !stackForInorderTraversal.empty())
+        {
+            if(cur)
+            {
+                stackForInorderTraversal.push(cur);
+                cur = cur->left;
+            }
+            else
+            {
+                cur = stackForInorderTraversal.top();
+                stackForInorderTraversal.pop();
+                listOfNodeValues.push_back(cur->val);
+                cur = cur->right;
+            }
+        }
+        
+        return listOfNodeValues;
+    }
+};
