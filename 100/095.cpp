@@ -1,52 +1,89 @@
-#include <iostream>
-#include <vector>
+/*
+	Given an integer n, generate all structurally unique BST's (binary search trees) that store values 1...n.
 
-using namespace std;
+	For example,
+	Given n = 3, your program should return all 5 unique BST's shown below.
 
-struct TreeNode
-{
-	int val;
-	TreeNode *left;
-	TreeNode *right;
+	   1         3     3      2      1
+		\       /     /      / \      \
+		 3     2     1      1   3      2
+		/     /       \                 \
+	   2     1         2                 3
+*/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<TreeNode*> generateTrees(int n) {
+        valueRangeToTreeNodes[""] = vector<TreeNode *>();
+        return getListOfTreeWithGivenRange(1, n);
+    }
+    
+private:
+    vector<TreeNode *>& getListOfTreeWithGivenRange(int start, int end)
+    {
+        if(start > end)
+            return valueRangeToTreeNodes[""];
+            
+        string range = to_string(start).append(to_string(end));
+        if(valueRangeToTreeNodes.find(range) != valueRangeToTreeNodes.end())
+            return valueRangeToTreeNodes[range];
+
+        valueRangeToTreeNodes[range] = vector<TreeNode *>();
+        if(start == end)
+        {
+            valueRangeToTreeNodes[range].push_back(new TreeNode(start));
+            return valueRangeToTreeNodes[range];
+        }
+        
+        for(int rootValue = start; rootValue <= end; ++rootValue)
+        {
+            vector<TreeNode *> &leftSubtrees = getListOfTreeWithGivenRange(start, rootValue - 1);
+            vector<TreeNode *> &rightSubtrees = getListOfTreeWithGivenRange(rootValue + 1, end);
+            
+            if(leftSubtrees.empty())
+            {
+                for(int i = 0; i < rightSubtrees.size(); ++i)
+                {
+                    TreeNode *root = new TreeNode(rootValue);
+                    root->right = rightSubtrees[i];
+                    valueRangeToTreeNodes[range].push_back(root);
+                }
+            }
+            else if(rightSubtrees.empty())
+            {
+                for(int i = 0; i < leftSubtrees.size(); ++i)
+                {
+                    TreeNode *root = new TreeNode(rootValue);
+                    root->left = leftSubtrees[i];
+                    valueRangeToTreeNodes[range].push_back(root);
+                }
+            }
+            else
+            {
+                for(int i = 0; i < leftSubtrees.size(); ++i)
+                {
+                    for(int j = 0; j < rightSubtrees.size(); ++j)
+                    {
+                        TreeNode *root = new TreeNode(rootValue);
+                        root->left = leftSubtrees[i];
+                        root->right = rightSubtrees[j];
+                        valueRangeToTreeNodes[range].push_back(root);
+                    }
+                }
+            }
+        }
+        
+        return valueRangeToTreeNodes[range];
+    }
+
+    unordered_map<string, vector<TreeNode *>> valueRangeToTreeNodes;
 };
-
-vector<TreeNode*> generateTrees(int n) {
-	if(n == 0)
-		return (vector<TreeNode *>(new TreeNode(0)));
-
-	map<int, vector<TreeNode *> *> subtrees;
-	for(int len = 1; len <= n; ++len)
-	{
-		vector<TreeNode *> *roots = new vector<TreeNode *>();
-		if(len == 1)
-		{
-			for(int root_val = 1; root_val <= n; ++i)
-				(*roots).push_back(new TreeNode(root_val));
-		}
-		else
-		{
-			for(int root_val = 1; root_val <= n; ++root_val)
-			{
-				int end = root_val + len - 1;
-				for(int i = root_val; i <= end; ++i)
-				{
-					if(i == root_val)
-					{
-						for(int j = i + 1; j <= end; ++j)
-						{
-							
-							
-						}
-					}
-					else if(i == end)
-					{}
-					else
-					{}
-				}
-			}
-		}
-
-		subtrees[len] = roots;
-	}
-	return subtrees[n];
-}
