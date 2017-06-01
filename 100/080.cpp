@@ -1,27 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+/*
+	Follow up for "Remove Duplicates":
+	What if duplicates are allowed at most twice?
 
-using namespace std;
+	For example,
+	Given sorted array nums = [1,1,1,2,2,3],
 
-int removeDuplicates(vector<int>& nums) {
-        if(nums.empty())
-		return 0;
+	Your function should return length = 5, with the first five elements of nums being 1, 1, 2, 2 and 3. 
+	It doesn't matter what you leave beyond the new length.
+*/
 
-	int end = 1;
-	for(int i = 2; i < nums.size(); ++i)
-	{
-		if(nums[end] > nums[end - 1] || nums[i] > nums[end])
-			nums[++end] = nums[i];
-	}
-
-	return end + 1;
-}
-
-int main()
-{
-	int a[] = {1, 2};
-	vector<int> nums(a, a + sizeof(a) / sizeof(int));
-	cout << removeDuplicates(nums) << endl;
-	return 1;
-}
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        if(nums.size() < 2)
+            return nums.size();
+            
+        int write = 0;
+        for(int read = 1; read < nums.size(); ++read)
+        {
+            if(nums[read] > nums[write])
+                nums[++write] = nums[read];
+            else if(nums[read] == nums[write])
+            {
+                if(read == 1 || nums[write] > nums[write - 1])
+                    nums[++write] = nums[read];
+            }
+        }
+        
+        return write + 1;
+    }
+};
