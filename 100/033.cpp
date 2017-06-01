@@ -9,27 +9,34 @@
   For the rotated part, use the recursive part.
 */
 
-int Search(const vector<int>& nums, int target)
-{
-	int l = 0;
-	int r = nums.size() - 1;
-	while(l < r)
-	{
-		int mid = l + (r + 1 - l) / 2;
-		if(nums[mid] <= nums[r])
-		{
-			if(nums[mid] <= target && target <= nums[r])
-				l = mid;
-			else
-				r = mid - 1;
-		}
-		else
-		{
-			if(nums[l] <= target && target <= nums[mid])
-				r = mid;
-			else
-				l = mid + 1; //Note: We do not always use r - 1.
-		}
-	}
-	return nums.empty() || nums[l] != target ? -1 : l;
-}
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        if(nums.empty())
+            return -1;
+            
+        for(int l = 0, r = nums.size() - 1; l <= r;)
+        {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] == target)
+                return mid;
+            
+            if(nums[mid] < nums[r])
+            {
+                if(nums[mid] < target && target <= nums[r])
+                    l = mid + 1;
+                else
+                    r = mid;
+            }
+            else
+            {
+                if(nums[l] <= target && target < nums[mid])
+                    r = mid;
+                else
+                    l = mid + 1;
+            }
+        }
+        
+        return -1;
+    }
+};
