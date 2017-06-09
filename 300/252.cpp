@@ -22,3 +22,57 @@ bool canAttendMeetings(vector<Interval>& intervals)
         
         return true;
 }
+
+// Using the quick sort.
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    bool canAttendMeetings(vector<Interval>& intervals) {
+        if(intervals.size() <= 1)
+            return true;
+            
+        return sortedIntervalsWithCheckingIntersection(intervals, 0, intervals.size() - 1);
+    }
+    
+private:
+    bool sortedIntervalsWithCheckingIntersection(vector<Interval>& intervals, int start, int end)
+    {
+        if(start >= end)
+            return true;
+
+        int write = start - 1;
+        for(int i = start; i < end; ++i)
+        {
+            if(checkTwoIntervalsIntersection(intervals[i], intervals[end]))
+                return false;
+                
+            if(intervals[i].end <= intervals[end].start)
+                swapIntervals(intervals[++write], intervals[i]);
+        }
+        swapIntervals(intervals[++write], intervals[end]);
+
+        return sortedIntervalsWithCheckingIntersection(intervals, start, write - 1) && 
+                sortedIntervalsWithCheckingIntersection(intervals, write + 1, end);
+    }
+    
+    bool checkTwoIntervalsIntersection(const Interval &l, const Interval& r)
+    {
+        return (l.start == r.start && l.end == r.end) || 
+               (l.start > r.start && l.start < r.end) || (l.end > r.start && l.end < r.end) || 
+               (r.start > l.start && r.start < l.end) || (r.end > l.start && r.end < l.end);
+    }
+    
+    void swapIntervals(Interval &l, Interval &r)
+    {
+        swap(l.start, r.start);
+        swap(l.end, r.end);
+    }
+};
