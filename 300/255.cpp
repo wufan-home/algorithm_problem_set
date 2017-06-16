@@ -35,3 +35,29 @@ public:
         return true;
     }
 };
+
+class Solution {
+public:
+    bool verifyPreorder(vector<int>& preorder) {
+        if(preorder.size() <= 2)
+            return true;
+            
+        int minValue = INT_MIN;
+        int prevIndex = -1;
+        for(int i = 0; i < preorder.size(); ++i)
+        {
+            if(preorder[i] < minValue)
+                return false;
+                
+            if(i == 0 || preorder[i] > preorder[i - 1])
+            {
+                while(prevIndex > -1 && preorder[i] > preorder[prevIndex])
+                    minValue = preorder[prevIndex--];
+            }
+            
+            preorder[++prevIndex] = preorder[i];
+        }
+        
+        return true;
+    }
+};
