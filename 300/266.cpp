@@ -7,27 +7,17 @@
 
 class Solution {
 public:
-	bool canPermutePalindrome(string s)
-	{
-		if(s.size() <= 1)
-			return true;
-
-		int size = s.size();
-		int count[256];
-		memset(count, 256, 0);
-		for(int i = 0; i < size; ++i)
-		{
-			if(++count[s[i]] == 3)
-				return false;
-		}
-
-		int count1 = 0;
-		for(int i = 0; i < 256; ++i)
-		{
-			if(count[i] == 1)
-				++count1;
-		}
-
-		return ((size & 0) ? count1 == 0 : count1 == 1);
-	}
-}
+    bool canPermutePalindrome(string s) {
+        vector<int> charCount(256, 0);
+        
+        for(int i = 0; i < s.size(); ++i)
+            ++charCount[s[i]];
+            
+        int oddNumCount = 0;
+        for(int i = 0; i < 256; ++i)
+            oddNumCount += charCount[i] % 2;
+            
+        return (s.size() % 2 == 0 && oddNumCount == 0) ||
+            (s.size() % 2 == 1 && oddNumCount == 1);
+    }
+};
