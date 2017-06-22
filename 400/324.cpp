@@ -12,6 +12,7 @@
    Can you do it in O(n) time and/or in-place with O(1) extra space? 
  */
 
+// O(1) space and O(n^2) time.
 class Solution {
 public:
     void wiggleSort(vector<int>& nums) {
@@ -30,6 +31,24 @@ public:
         {
             for(int j = read; j > write; --j)
                 swap(nums[j - 1], nums[j]);
+        }
+    }
+};
+
+// O(n) space and O(nlogn) time
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        if(nums.size() <= 1)
+            return;
+            
+        vector<int> temp = nums;
+        sort(temp.begin(), temp.end());
+        int first = nums.size() / 2 + (nums.size() % 2 == 0 ? -1 : 0);
+        int second = nums.size() - 1;
+        for(int i = 0; i < nums.size(); ++i)
+        {
+            nums[i] = i & 1 ? temp[second--] : temp[first--];
         }
     }
 };
