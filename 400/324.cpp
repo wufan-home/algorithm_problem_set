@@ -12,7 +12,24 @@
    Can you do it in O(n) time and/or in-place with O(1) extra space? 
  */
 
-void wiggleSort(vector<int>& nums)
-{
-        
-}
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        if(nums.size() <= 1)
+            return;
+            
+        sort(nums.begin(), nums.end());
+        int half = nums.size() / 2 + (nums.size() % 2 == 0 ? -1 : 0);
+        for(int l = 0, r = half; l < r; ++l, --r)
+            swap(nums[l], nums[r]);
+            
+        for(int l = half + 1, r = nums.size() - 1; l < r; ++l, --r)
+            swap(nums[l], nums[r]);   
+            
+        for(int write = 1, read = half + 1; write < read && read < nums.size(); write += 2, ++read)
+        {
+            for(int j = read; j > write; --j)
+                swap(nums[j - 1], nums[j]);
+        }
+    }
+};
