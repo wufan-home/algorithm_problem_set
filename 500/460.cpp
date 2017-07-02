@@ -23,92 +23,68 @@
     cache.get(4);       // returns 4
 */
 
-#include <forward_list>
-
 class LFUCache {
 public:
     LFUCache(int capacity) {
-        cache = unordered_map<int, vector<int>>();
-        freqToKeys = unordered_map<int, list<int>>();
         mCapacity = capacity;
-        transactionNo = 0;
+        mMinFreq = 0;
+        freqToItems[1] = list<int>();
     }
     
     int get(int key) {
-        if(cache.find(key) == cache.end())
+        if(mCapacity == 0 || keyToInfo.find(key) == keyToInfo.end())
             return -1;
         
-        cache[key][2] = ++transactionNo;
-        return cache[key][0];
+        int curFreq = ++keyToInfo[key].second;
+        
+        freqToItems[curFreq - 1].erase(keyToIterator[key]);
+        freqToItems[curFreq].push_back(key);
+        keyToIterator[key] = --freqToItems[curFreq].end();
+        if(freqToItems[mMinFreq].empty())
+            ++mMinFreq;
+        
+        return keyToInfo[key].first;
     }
     
     void put(int key, int value) {
-        if(mCapacity < 1)
-            return ;
-
-        int oldFreq = -1;
-        int newFreq = -1;
-        if(cache.find(key) != cache.end())
+        if(mCapacity == 0)
+            return;
+        
+        if(keyToInfo.find(key) != keyToInfo.end())
         {
-            if(cache[key][0] != value)
-                cache[key][0] = value;
-
-            oldFreq = cache[key][1]++;
-            newFreq = cache[key][1];
-            cache[key][2] = ++transactionNo;
-        }
-        else 
-        {
-            if(cache.size() == mCapacity)
-            {
-                int leastFreq = findMinimalFrequency();
-                list<int>& tempList = freqToKeys[leastFreq];
-                int removeKey = -1;
-                for(list<int>::iterator it = tempList.begin(); it != tempList.end(); ++it)
-                {
-                    //cout << *it << ", " << cache[*it][2] << ", " << removeKey << ", " << (removeKey != - 1 ? cache[removeKey][2] : -1) << endl;
-                    if(removeKey == -1 || cache[*it][2] < cache[removeKey][2])
-                    {
-                        removeKey = *it;
-                    }
-                }
-                
-                cache.erase(removeKey);
-                freqToKeys[leastFreq].remove(removeKey);
-            }
+            keyToInfo[key].first = value;
             
-            cache[key] = vector<int>(3, 1);
-            cache[key][0] = value;
-            newFreq = 1;
-            cache[key][2] = 0;
+            int curFreq = ++keyToInfo[key].second;
+            
+            freqToItems[curFreq - 1].erase(keyToIterator[key]);
+            freqToItems[curFreq].push_back(key);
+            keyToIterator[key] = --freqToItems[curFreq].end();
+            if(freqToItems[mMinFreq].empty())
+                ++mMinFreq;
+            return;
         }
         
-        if(oldFreq > 0)
-            freqToKeys[oldFreq].remove(key);
+        if(keyToInfo.size() == mCapacity)
+        {
+            int removedKey = *(freqToItems[mMinFreq].begin());
+            freqToItems[mMinFreq].pop_front();
+            keyToInfo.erase(removedKey);
+            keyToIterator.erase(removedKey);
+        }
         
-        if(freqToKeys.find(newFreq) == freqToKeys.end())
-            freqToKeys[newFreq] = list<int>(1, key);
-        else
-            freqToKeys[newFreq].push_back(key);
+        keyToInfo[key] = make_pair(value, 1);
+        freqToItems[1].push_back(key);
+        keyToIterator[key] = --freqToItems[1].end();
+        mMinFreq = 1;
     }
     
 private:
-    int findMinimalFrequency()
-    {
-        int freq = 1;
-        for(unordered_map<int, list<int>>::iterator it = freqToKeys.begin(); it != freqToKeys.end(); ++it)
-        {
-            if(it->second.size() > 0 && it->first < freq)
-                freq = it->first;
-        }
-        
-        return freq;
-    }
+    unordered_map<int, pair<int ,int>> keyToInfo;
+    unordered_map<int, list<int>> freqToItems;
+    unordered_map<int, list<int>::iterator> keyToIterator;
     
-    unordered_map<int, vector<int>> cache;
-    unordered_map<int, list<int>> freqToKeys;
     int mCapacity;
-    int transactionNo;
+    int mMinFreq;
 };
 
 /**
