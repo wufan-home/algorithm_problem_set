@@ -18,68 +18,29 @@
 class Solution {
 public:
     vector<pair<int, int>> reconstructQueue(vector<pair<int, int>>& people) {
-        int size = people.size();
-        vector<pair<int, int>> reconstruction;
-        if(size == 0)
-            return reconstruction;
-            
-        unordered_map<int, vector<int>> rankGroupsByHeight;
-        unordered_map<int, int> heightMapIndex;
-        vector<pair<int, int>> heightCount;
-        for(int i = 0; i < size; ++i)
+        sort(people.begin(), people.end(), compare);
+        for(int i = people.size() - 1; i >= 0;)
         {
             int height = people[i].first;
-            int rank = people[i].second;
-            if(rankGroupsByHeight.find(height) == rankGroupsByHeight.end())
+            int start = i;
+            for(; start >= 0 && people[start].first == height; --start) {}
+            ++start;
+            for(int j = i; j >= start; --j)
             {
-                rankGroupsByHeight[height] = vector<int>();
-                heightMapIndex[height] = 0;
-                heightCount.push_back(make_pair(height, 0));
+                int position = people[j].second;
+                for(int k = j; position > k - start; ++k)
+                    swap(people[k], people[k + 1]);
             }
             
-            rankGroupsByHeight[height].push_back(rank);
+            i = start - 1;
         }
         
-        for(unordered_map<int, vector<int>>::iterator it = rankGroupsByHeight.begin(); 
-            it != rankGroupsByHeight.end(); ++it)
-        {
-            vector<int> &ranks = it->second;
-            sort(ranks.begin(), ranks.end());
-        }
-        sort(heightCount.begin(), heightCount.end(), compare);
-        
-        while(reconstruction.size() < size)
-        {
-            for(int i = 0; i < heightCount.size(); ++i)
-            {
-                int height = heightCount[i].first;
-                int count = heightCount[i].second;
-                //cout << rankGroupsByHeight[height][heightMapIndex[height]] << " <-->" << count << endl;
-                if(rankGroupsByHeight[height][heightMapIndex[height]] == count)
-                {
-                    reconstruction.push_back(make_pair(height, count));
-                    
-                    ++heightMapIndex[height];
-                    for(int j = 0; j <= i; ++j)
-                        ++heightCount[j].second;
-                    
-                    /*for(int j = 0; j < heightCount.size(); ++j)
-                        cout << heightCount[j].first << ": " << heightCount[j].second << "; ";
-                    cout << endl;*/
-                    
-                    break;
-                }
-            }
-            /*if(reconstruction.size() == 4)
-                break;*/
-        }
-        
-        return reconstruction;
+        return people;
     }
     
 private:
-    static bool compare(const pair<int, int> &l, const pair<int, int> &r)
+    static bool compare(const pair<int, int>& l, const pair<int, int>& r)
     {
-        return l.first <= r.first;
+        return l.first < r.first || (l.first == r.first && l.second < r.second);
     }
 };
