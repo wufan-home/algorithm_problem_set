@@ -55,3 +55,49 @@ public:
         return maxValues;
     }
 };
+
+class Solution {
+public:
+    vector<int> largestValues(TreeNode* root) {
+        vector<int> maxValues;
+        if(root == NULL)
+            return maxValues;
+        
+        stack<TreeNode *> st;
+        TreeNode *cur = root;
+        int curLevel = 0;
+        bool backFromRight = false;
+        while(cur || !st.empty())
+        {
+            if(cur)
+            {
+                if(maxValues.empty() || maxValues.size() <= curLevel)
+                    maxValues.push_back(cur->val);
+                else
+                    maxValues[curLevel] = max(maxValues[curLevel], cur->val);
+                
+                st.push(cur);
+                cur = cur->left;
+                ++curLevel;
+            }
+            else
+            {
+                if(backFromRight)
+                {
+                    cur = st.top();
+                    st.pop();
+                    --curLevel;
+                    backFromRight = (!st.empty() && cur == st.top()->right);
+                    cur = NULL;
+                    continue;
+                }
+                
+                cur = st.top()->right;
+                if(cur == NULL)
+                    backFromRight = true;
+            }
+        }
+        
+        return maxValues;
+    }
+};
