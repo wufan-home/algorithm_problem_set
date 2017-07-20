@@ -13,54 +13,37 @@
 
 */
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-vector<vector<int> > generateMatrix(int n) {
-	vector<vector<int> > rv;
-        if(n == 0)
-		return rv;
-
-	rv.resize(n, vector<int>(n, 1));
-	int cur_value = 1;
-	int steps = n /2;
-	for(int i = 0; i < steps; ++i)
-	{
-		for(int j = i; j < n - i; ++j)
-			rv[i][j] = cur_value++;
-
-		for(int j = i + 1; j < n - 1 - i; ++j)
-			rv[j][n - 1 - i] = cur_value++;
-
-		for(int j = n - 1 - i; j >= i; --j)
-			rv[n - 1 - i][j] = cur_value++;
-
-		for(int j = n - 2 - i; j > i; --j)
-			rv[j][i] = cur_value++;
-	}
-
-	if(n % 2)
-		rv[steps][steps] = cur_value;
-
-	return rv;
-}
-
-int main()
+class Solution
 {
-	vector<vector<int> > m;
-	for(int n = 1; n < 5; ++n)
+public:
+    vector<vector<int> > generateMatrix(int n) {
+        vector<vector<int> > matrix(n, vector<int>(n, 0));
+
+	int bound = n / 2;
+	int current = 1;
+	for(int i = 0; i <= bound; ++i)
 	{
-		m.clear();
-		m = generateMatrix(n);
-		for(int i = 0; i < n; ++i)
-		{
-			for(int j = 0; j < n; ++j)
-				cout << m[i][j] << ", ";
-			cout << endl;
-		}
-		cout << endl;
+	    if(i == bound)
+	    {
+		if(n % 2 == 1)
+		    matrix[i][i] = n * n;
+
+		continue;
+	    }
+
+	    for(int j = i; j < n - i; ++j)
+		matrix[i][j] = current++;
+
+	    for(int j = i + 1; j < n - i - 1; ++j)
+		matrix[j][n - i - 1] = current++;
+
+	    for(int j = n - i - 1; j >= i; --j)
+		matrix[n - i - 1][j] = current++;
+
+	    for(int j = n - i - 2; j > i; --j)
+		matrix[j][i] = current++;
 	}
-	return 1;
-}
+
+	return matrix;
+    }
+};
