@@ -24,35 +24,36 @@ class Solution
 public:
     bool isMatch(const string& s, const string& p)
     {
-	int pLen = p.size();
-	int sLen = s.size();
-	int pcur = 0;
-	int scur = 0;
-	int pstar = -1;
-	int sstar = -1;
-	while(scur < sLen)
-	{
-	    if(s[scur] == p[pcur] || p[pcur] == '?')
-	    {
-		++scur;
-		++pcur;
-	    }
-	    else if(p[pcur] == '*')
-	    {
-		pstar = pcur++;
-		sstar = scur;
-	    }
-	    else if(pstar > -1)
-	    {
-		pcur = pstar + 1;
-		scur = ++sstar;
-	    }
-	    else
-		return false;
-	}
+		int pLen = p.size();
+		int sLen = s.size();
+		int pcur = 0;
+		int scur = 0;
+		int pstar = -1;
+		int sstar = -1;
+		while(scur < sLen)
+		{
+			if(s[scur] == p[pcur] || p[pcur] == '?')
+			{
+				++scur;
+				++pcur;
+			}
+			else if(p[pcur] == '*')
+			{
+				pstar = pcur++;
+				sstar = scur;
+			}
+			else if(pstar > -1)
+			{
+				pcur = pstar + 1;
+				scur = ++sstar;
+			}
+			else
+				return false;
+		}
 
-	if(pcur == pLen - 1 && p[pcur] == '*') ++pcur;
+		if(pcur == pLen - 1 && p[pcur] == '*') 
+			++pcur;
 
-	return pcur == pLen;
+		return pcur == pLen;
     }
 };
