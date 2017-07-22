@@ -31,3 +31,22 @@ public:
         return count;
     }
 };
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        vector<int> sums(nums.size(), 0);
+        
+        int count = 0;
+        for(int i = 0; i < nums.size(); ++i)
+        {
+            for(int j = 0; j <= i; ++j)
+            {
+                sums[j] += nums[i];
+                count += (sums[j] == k);
+            }
+        }
+        
+        return count;
+    }
+};
