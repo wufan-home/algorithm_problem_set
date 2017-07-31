@@ -39,3 +39,39 @@ public:
         return maxProfit;
     }
 };
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if(prices.size() < 2)
+            return 0;
+        
+        int maxProfit = 0;
+        
+        int size = prices.size();
+        
+        int preBuy = 0;
+        int buy = INT_MIN;
+        
+        int sell = 0;
+        int preSell = 0;
+        
+        int idle = 0;
+        int preIdle = 0;
+        
+        for(int i = 0; i < size; ++i)
+        {
+            preBuy = buy;
+            preSell = sell;
+            preIdle = idle;
+            
+            buy = max(idle - prices[i], preBuy);
+            sell = max(preBuy + prices[i], preSell);
+            idle = max(preIdle, max(preBuy, preSell));
+            
+            maxProfit = max(maxProfit, sell);
+        }
+        
+        return maxProfit;
+    }
+};
