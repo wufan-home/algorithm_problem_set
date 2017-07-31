@@ -65,7 +65,7 @@ public:
             preSell = sell;
             preIdle = idle;
             
-            buy = max(idle - prices[i], preBuy);
+            buy = max(preIdle - prices[i], preBuy);
             sell = max(preBuy + prices[i], preSell);
             idle = max(preIdle, max(preBuy, preSell));
             
