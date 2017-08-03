@@ -34,3 +34,31 @@ public:
         return false;
     }
 };
+
+class Solution {
+public:
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        k = abs(k);
+        
+        if(nums.size() < 2)
+            return false;
+        
+        if(k == 1)
+            return true;
+        
+        unordered_map<int, int> residues;
+        residues[0] = -1;
+        int sum = 0;
+        for(int i = 0; i < nums.size(); ++i)
+        {
+            sum += nums[i];
+            int residue = k == 0 ? sum : sum % k;
+            if(residues.find(residue) != residues.end() && residues[residue] <= i - 2)
+                return true;
+            else if(residues.find(residue) == residues.end())
+                residues[residue] = i;
+        }
+        
+        return false;
+    }
+};
