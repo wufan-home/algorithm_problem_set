@@ -21,23 +21,34 @@ All elements in nums1 and nums2 are unique.
 The length of both nums1 and nums2 would not exceed 1000.
 */
 
-vector<int> nextGreaterElement(vector<int>& findNums, vector<int>& nums) {
-        unordered_map<int, int> value_to_index;
-        for(int i = 0; i < nums.size(); ++i)
-            value_to_index[nums[i]] = i;
-            
-        vector<int> largerValueIndex(findNums.size(), -1);
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& findNums, vector<int>& nums) {
+        vector<int> res;
+        
+        unordered_map<int, int> m;
         for(int i = 0; i < findNums.size(); ++i)
+            m[findNums[i]] = -1;
+        
+        stack<int> st;
+        for(int i = nums.size() - 1; i >= 0; --i)
         {
-            for(int j = value_to_index[findNums[i]]; j < nums.size(); ++j)
+            while(!st.empty() && nums[i] > st.top())
+                st.pop();
+            
+            if(m.find(nums[i]) != m.end())
             {
-                if(nums[j] > findNums[i])
-                {
-                    largerValueIndex[i] = nums[j];
-                    break;
-                }
+                if(!st.empty() && nums[i] < st.top())
+                    m[nums[i]] = st.top();
             }
+
+            if(st.empty() || nums[i] < st.top())
+                st.push(nums[i]);
         }
         
-        return largerValueIndex;
+        for(int i = 0; i < findNums.size(); ++i)
+            res.push_back(m[findNums[i]]);
+        
+        return res;
     }
+};
