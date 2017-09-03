@@ -13,6 +13,10 @@
     Note:
     The rectangle inside the matrix must have an area > 0.
     What if the number of rows is much larger than the number of columns?
+    
+    Note:
+    If your new structure is one more dimension than the input and the adding line is all zero,
+    use 1 as the starting point of the loop.
 */
 
 class Solution {
