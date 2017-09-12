@@ -53,7 +53,7 @@ public:
                 hash.erase(removeKey);
             }
 
-            hash[key] = make_pair(value, listFreq.cend());
+            hash[key] = make_pair(value, listFreq.end());
         }
         
         updateIterator(key);
@@ -68,12 +68,12 @@ private:
             listFreq.erase(it);
         
         listFreq.push_front(key);
-        hash[key].second = listFreq.cbegin();
+        hash[key].second = listFreq.begin();
     }
     
     int cap;
     list<int> listFreq;
-    unordered_map<int, pair<int, list<int>::const_iterator>> hash;
+    unordered_map<int, pair<int, list<int>::iterator>> hash;
 };
 
 /**
