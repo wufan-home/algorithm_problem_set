@@ -22,6 +22,69 @@
 	cache.get(4);       // returns 4
 */
 
+class LRUCache {
+public:
+    LRUCache(int capacity) : cap(capacity) {}
+    
+    int get(int key) 
+    {
+        int value = -1;
+        if(hash.find(key) != hash.end())
+        {
+            value = hash[key].first;
+            updateIterator(key);
+        }
+        
+        return value;
+    }
+    
+    void put(int key, int value) 
+    {
+        if(hash.find(key) != hash.end())
+        {
+            hash[key].first = value;
+        }
+        else
+        {
+            if(hash.size() == cap)
+            {
+                int removeKey = listFreq.back();
+                listFreq.pop_back();
+                hash.erase(removeKey);
+            }
+
+            hash[key] = make_pair(value, listFreq.cend());
+        }
+        
+        updateIterator(key);
+    }
+    
+private:
+    void updateIterator(int key)
+    {
+        list<int>::const_iterator it = hash[key].second;
+        
+        if(it != listFreq.end())
+            listFreq.erase(it);
+        
+        listFreq.push_front(key);
+        hash[key].second = listFreq.cbegin();
+    }
+    
+    int cap;
+    list<int> listFreq;
+    unordered_map<int, pair<int, list<int>::const_iterator>> hash;
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+
+// ================================
+
 class LRUCache{
 public:
     LRUCache(int capacity) : mCapacity(capacity), head(NULL), tail(NULL) {}
