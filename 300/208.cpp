@@ -8,60 +8,64 @@ class Trie {
 public:
     /** Initialize your data structure here. */
     Trie() {
-        root = new TrieNode();
+        tailFlag = false;
+        next = vector<Trie *>(26, NULL);
     }
     
     /** Inserts a word into the trie. */
     void insert(string word) {
-        TrieNode *curNode = root;
+        if(word.empty())
+            return ;
+        
+        Trie *cur = this;
         for(int i = 0; i < word.size(); ++i)
         {
-            if(curNode->next[word[i] - 'a'] == NULL)
-               curNode->next[word[i] - 'a'] = new TrieNode(); 
+            int index = word[i] - 'a';
+            if((*cur).next[index] == NULL)
+                (*cur).next[index] = new Trie();
             
+            cur = (*cur).next[index];
             if(i == word.size() - 1)
-                curNode->next[word[i] - 'a']->wordStopsFlag = true;
-                
-            curNode = curNode->next[word[i] - 'a'];
+                cur->tailFlag = true;
         }
     }
     
     /** Returns if the word is in the trie. */
     bool search(string word) {
-        TrieNode *curNode = root;
-        for(int i = 0; i < word.size(); ++i)
-        {
-            if(curNode->next[word[i] - 'a'] == NULL || (i == word.size() - 1 && curNode->next[word[i] - 'a']->wordStopsFlag == false))
-                return false;
-                
-            curNode = curNode->next[word[i] - 'a'];
-        }
-        
-        return true;
+        Trie *endNode = traverseToEnd(word);
+        return endNode != NULL && endNode->tailFlag;
     }
     
     /** Returns if there is any word in the trie that starts with the given prefix. */
     bool startsWith(string prefix) {
-        TrieNode *curNode = root;
-        for(int i = 0; i < prefix.size(); ++i)
+        return traverseToEnd(prefix) != NULL;
+    }
+private:
+    Trie *traverseToEnd(const string &word)
+    {
+        if(word.empty())
+            return NULL;
+        
+        Trie *cur = this;
+        for(int i = 0; i < word.size(); ++i)
         {
-            if(curNode->next[prefix[i] - 'a'] == NULL)
-                return false;
-                
-            curNode = curNode->next[prefix[i] - 'a'];
+            int index = word[i] - 'a';
+            cur = (*cur).next[index];
+            if(cur == NULL)
+                break;
         }
         
-        return true;
+        return cur;
     }
     
-private:
-    struct TrieNode
-    {
-        vector<TrieNode *> next;
-        bool wordStopsFlag;
-        
-        TrieNode() : next(26, NULL), wordStopsFlag(false) {}
-    };
-
-    TrieNode *root;
+    bool tailFlag;
+    vector<Trie *> next;
 };
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * bool param_2 = obj.search(word);
+ * bool param_3 = obj.startsWith(prefix);
+ */
