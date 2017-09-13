@@ -25,7 +25,7 @@ public:
                 (*cur).next[index] = new Trie();
             
             cur = (*cur).next[index];
-            if(i == word.size() - 1)
+            if(i == word.size() - 1 && cur->tailFlag == false)
                 cur->tailFlag = true;
         }
     }
