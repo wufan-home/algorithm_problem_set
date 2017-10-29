@@ -9,6 +9,29 @@
 class Solution {
 public:
     vector<int> lexicalOrder(int n) {
+        vector<int> res;
+        for(int cur = 1; res.size() < n;)
+        {
+            res.push_back(cur);
+            
+            if(cur <= n / 10)
+                cur *= 10;
+            else 
+            {
+                if(cur >= n)
+                    cur /= 10;
+                ++cur;
+                for(; cur % 10 == 0; cur /= 10) {}
+            }
+        }
+        
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> lexicalOrder(int n) {
         vector<int> sortedList;
         for(int i = 1; i < 10; ++i)
         {
