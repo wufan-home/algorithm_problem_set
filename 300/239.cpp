@@ -19,92 +19,26 @@
 
     Follow up:
     Could you solve it in linear time?
+    
+    Solution: This solution is very smart. Use a dequeue. The first is always the maxium of a window.
+    Every time when a new element comes in, we have two cases need to handle:
+    1. The size of the dequeue has k elements already. (Pop the front.)
+    2. Compare every elements of the dequeue from the back, pop back all elements that are smaller than
+    the new one.
+    3. The contents of the dequeue should be the indices of the elements, but not the value.
 */
 
 class Solution {
 public:
     vector<int> maxSlidingWindow(vector<int>& nums, int k) {
-        if(nums.empty() || k == 0 || k > nums.size())
-            return vector<int>();
-            
-        vector<int> maximums;
-        for(int i = 0; i < nums.size(); ++i)
-        {
-            if(i >= k)
-                removeElement(i - k);
-
-            int maximum = addNewElement(nums[i], i);
-            
-            if(i >= k - 1)
-                maximums.push_back(maximum);
+        vector<int> res;
+        deque<int> q;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (!q.empty() && q.front() == i - k) q.pop_front();
+            while (!q.empty() && nums[q.back()] < nums[i]) q.pop_back();
+            q.push_back(i);
+            if (i >= k - 1) res.push_back(nums[q.front()]);
         }
-        
-        return maximums;
+        return res;
     }
-private:
-    struct ListNode
-    {
-        int val;
-        int index;
-        ListNode *next;
-        
-        ListNode(int val, int index) : val(val), index(index), next(NULL) {}
-    };
-    
-    int addNewElement(int val, int index)
-    {
-        if(sortedWindow == NULL)
-            sortedWindow = new ListNode(val, index);
-        else if(val >= sortedWindow->val)
-        {
-            ListNode *temp = sortedWindow;
-            sortedWindow = new ListNode(val, index);
-            sortedWindow->next = temp;
-        }
-        else
-        {
-            for(ListNode *cur = sortedWindow; cur != NULL; cur = cur->next)
-            {
-                if(cur->next == NULL)
-                {
-                    cur->next = new ListNode(val, index);
-                    break;
-                }
-                else if(val >= cur->next->val)
-                {
-                    ListNode *temp = cur->next;
-                    cur->next = new ListNode(val, index);
-                    cur->next->next = temp;
-                    break;
-                }
-            }
-        }
-
-        return max(val, sortedWindow->val);
-    }
-    
-    void removeElement(int invalidIndex)
-    {
-        if(sortedWindow->index == invalidIndex)
-        {
-            ListNode *temp = sortedWindow->next;
-            delete sortedWindow;
-            sortedWindow = temp;
-        }
-        else
-        {
-            for(ListNode *cur = sortedWindow; cur->next != NULL; cur = cur->next)
-            {
-                if(cur->next->index == invalidIndex)
-                {
-                    ListNode *temp = cur->next->next;
-                    delete cur->next;
-                    cur->next = temp;
-                    break;
-                }
-            }
-        }
-    }
-    
-    ListNode *sortedWindow;
 };
