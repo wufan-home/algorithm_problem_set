@@ -31,7 +31,7 @@ public:
             if(s[i] == '(')
                 left.push(i);
             else if(s[i] == '*')
-                start.push(i);
+                star.push(i);
             else if(!left.empty())
                 left.pop();
             else if(!star.empty())
