@@ -1,89 +1,54 @@
-// 257.cpp : Defines the entry point for the console application.
-//
+/*
+	Given a binary tree, return all root-to-leaf paths.
 
-#include "stdafx.h"
-#include <string>
-#include <vector>
-#include <stack>
-#include <iostream>
+	For example, given the following binary tree:
 
-using namespace std;
+	   1
+	 /   \
+	2     3
+	 \
+	  5
+	All root-to-leaf paths are:
 
-struct TreeNode {
-	int val;
-	TreeNode *left;
-	TreeNode *right;
-	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+	["1->2->5", "1->3"]
+*/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        if(root == NULL)
+            return vector<string>();
+        
+        vector<string> left = binaryTreePaths(root->left);
+        vector<string> right = binaryTreePaths(root->right);
+        
+        vector<string> res;
+        for(auto a : left)
+        {
+            res.push_back(to_string(root->val));
+            res.back().append("->");
+            res.back().append(a);
+        }
+        
+        for(auto a : right)
+        {
+            res.push_back(to_string(root->val));
+            res.back().append("->");
+            res.back().append(a);
+        }
+        
+        if(res.empty())
+            res.push_back(to_string(root->val));
+        
+        return res;
+    }
 };
-
-vector<string> binaryTreePaths(TreeNode* root)
-{
-	vector<string> results;
-	if (root == NULL)
-		return results;
-
-	vector<string> s_number_list(1000, "");
-	int cur = 0;
-	TreeNode *p_cur = root;
-	stack<TreeNode *> node_stack;
-	bool visited = false;
-	while (p_cur || !node_stack.empty()) {
-		if (p_cur) 
-		{
-			s_number_list[cur++] = (to_string(p_cur->val));
-			node_stack.push(p_cur);
-			p_cur = p_cur->left;
-		}
-		else 
-		{
-			p_cur = node_stack.top();
-
-			if (p_cur->left == NULL && p_cur->right == NULL)
-			{
-				string path("");
-				for (int curl = 0; curl < cur; ++curl)
-				{
-					if (!path.empty())
-						path.append("->");
-					path.append(s_number_list[curl]);
-				}
-				results.push_back(path);
-			}
-			else if (p_cur->right != NULL)
-			{
-				if (!visited)
-				{
-					p_cur = node_stack.top()->right;
-					continue;
-				}
-			}
-
-			--cur;
-
-			node_stack.pop();
-			if (!node_stack.empty())
-				visited = (p_cur == node_stack.top()->right);
-			p_cur = NULL;
-		}
-	}
-
-	return results;
-}
-
-int main()
-{
-	TreeNode *head = new TreeNode(1);
-	head->left = new TreeNode(2);
-	head->right = new TreeNode(3);
-	head->left->left = new TreeNode(4);
-	head->left->right = new TreeNode(5);
-	head->right->left = new TreeNode(6);
-	head->right->right = new TreeNode(7);
-	vector<string> results = binaryTreePaths(head);
-	for (int i = 0; i < results.size(); ++i)
-		cout << results[i] << endl;
-
-	delete head;
-    return 0;
-}
-
