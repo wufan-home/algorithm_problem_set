@@ -15,12 +15,28 @@
  * Note: If there are several possible values for h, the maximum one is taken as the h-index. 
  */
 
-int hIndex(vector<int>& citations)
-{
-	return 1;
-}
-
-int main()
-{
-	return 1;
-}
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        if(citations.empty())
+            return 0;
+        
+        int maxIndex = 0;
+        for(int i = 0; i < citations.size(); ++i)
+            maxIndex = max(maxIndex, citations[i]);
+        
+        vector<int> count(maxIndex + 1, 0);
+        for(int i = 0; i < citations.size(); ++i)
+            ++count[citations[i]];
+        
+        for(int i = maxIndex; i > 0; --i)
+        {
+            if(count[i] >= i)
+                return min(count[i], i);
+            
+            count[i - 1] += count[i];
+        }
+        
+        return 0;
+    }
+};
