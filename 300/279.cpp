@@ -5,6 +5,7 @@
     For example, given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, return 2 because 13 = 4 + 9.
 */
 
+// math
 class Solution {
 public:
     int numSquares(int n) {
@@ -35,42 +36,40 @@ public:
     }
 };
 
-
-#include <iostream>
-#include <stack>
-#include <cmath>
-
-using namespace std;
-
-
-void num_squares_aux(int n, stack<int>& components, int& min_num)
-    {
-      if(n == 0) {
-            if(min_num == 0 || components.size() < min_num)
-                min_num = components.size();
-        } else {
-            int max_root = int(sqrt(n));
-            for(int i = max_root; i >= 1; --i) {
-                components.push(max_root);
-                num_squares_aux(n - i * i, components, min_num);
-                components.pop();
-            }
-        }
+// dp
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n < 2)
+            return 1;
+        
+        vector<int> cache(n + 1, INT_MAX);
+        cache[0] = 1;
+        cache[1] = 1;
+        squares(n, cache);
+        return cache[n];
     }
     
-    int numSquares(int n) {
-        int min_num = 0;
-        stack<int> components;
-        int max_root = int(sqrt(n));
-        for(int i = max_root; i >= 1; --i) {
-            components.push(max_root);
-            num_squares_aux(n - i * i, components, min_num);
-            components.pop();
+private:
+    void squares(int num, vector<int>& cache)
+    {
+        if(num < 2)
+            return;
+        
+        int bound = (int)sqrt(num);
+        if(bound * bound == num)
+        {
+            cache[num] = 1;
+            return;
         }
-        return min_num;
+        
+        for(int i = 1; i <= bound; ++i)
+        {
+            int next = num - i * i;
+            if(cache[next] == INT_MAX)
+                squares(next, cache);
+            
+            cache[num] = min(cache[num], 1 + cache[next]);
+        }
     }
-
-int main()
-{
-  cout << numSquares(46) << endl;
-}
+};
