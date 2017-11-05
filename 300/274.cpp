@@ -18,25 +18,12 @@
 class Solution {
 public:
     int hIndex(vector<int>& citations) {
-        if(citations.empty())
-            return 0;
-        
-        int maxIndex = 0;
-        for(int i = 0; i < citations.size(); ++i)
-            maxIndex = max(maxIndex, citations[i]);
-        
-        vector<int> count(maxIndex + 1, 0);
-        for(int i = 0; i < citations.size(); ++i)
-            ++count[citations[i]];
-        
-        for(int i = maxIndex; i > 0; --i)
+        sort(citations.begin(), citations.end());
+        for(int i = citations.size() - 1; i >= 0; --i)
         {
-            if(count[i] >= i)
-                return min(count[i], i);
-            
-            count[i - 1] += count[i];
+            if(citations.size() - i - 1 >= citations[i])
+                return citations.size() - i - 1;
         }
-        
-        return 0;
+        return citations.size();
     }
 };
