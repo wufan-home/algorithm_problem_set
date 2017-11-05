@@ -3,12 +3,23 @@
  * Could you optimize your algorithm?
  */
 
-int hIndex(vector<int>& citations)
-{
-	return 1;
-}
-
-int main()
-{
-	return 1;
-}
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int size = citations.size();
+        int l = 0;
+        int r = size - 1;
+        while(l <= r)
+        {
+            int mid = l + (r - l) / 2;
+            if(citations[mid] == size - mid)
+                return size - mid;
+            else if(citations[mid] > size - mid)
+                r = mid - 1;
+            else
+                l = mid + 1;
+        }
+        
+        return size - l;
+    }
+};
