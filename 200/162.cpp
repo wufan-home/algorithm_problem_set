@@ -21,7 +21,7 @@ public:
         while(l < r)
         {
             int mid = l + (r - l) / 2;
-            if(nums[mid] > nums[mid + 1] && (mid == 0 || nums[mid] > nums[mid - 1]))
+            if(nums[mid] > nums[mid + 1] && (mid == l || nums[mid] > nums[mid - 1]))
                 return mid;
             else if(nums[mid] < nums[mid + 1])
                 l = mid + 1;
