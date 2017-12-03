@@ -19,17 +19,12 @@ public:
         int r = nums.size() - 1;
         while(l < r)
         {
-            if(nums[l] == nums[r])
-                for(; r > l && nums[r] == nums[l]; --r) {}
-            
-            if(r == l)
+            for(; r > l && nums[r] == nums[l]; --r) {}
+            if(l == r)
                 break;
             
             int mid = l + (r - l) / 2;
-            for(; mid > l && nums[mid] == nums[mid - 1]; --mid) {}
-            if(nums[mid] < nums[mid + 1] && (mid == l || nums[mid] < nums[mid - 1]))
-                return nums[mid];
-            else if(nums[mid] > nums[r])
+            if(nums[mid] > nums[r])
                 l = mid + 1;
             else
                 r = mid;
