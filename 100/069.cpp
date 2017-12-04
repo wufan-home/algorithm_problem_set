@@ -7,28 +7,20 @@
   such that mid * mid = x.
 */
 
-int mySqrt(int x)
-{
-        if(x < 0)
-		return INT_MIN;
-
-	if(x < 2)
-		return x;
-
-	long long x1 = x;
-	for(int l = 0, r = x / 2; l <= r;)
-	{
-		long long mid = l + (r + 1 - l) / 2;
-		long long square = mid * mid;
-		if(square == x1)
-			return mid;
-		else if(mid == r)
-			return square > x1 ? l : r;
-		else if(square > x1)
-			r = mid;
-		else
-			l = mid;
-	}
-	
-	return INT_MIN;
-}
+class Solution {
+public:
+    int mySqrt(int x) {
+        int l = 1;
+        int r = x - 1;
+        while(l < r)
+        {
+            int mid = l + (r - l) / 2;
+            if(mid < x / mid)
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        
+        return l > x / l ? l - 1 : l;
+    }
+};
