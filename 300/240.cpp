@@ -27,26 +27,22 @@ Given target = 20, return false.
   The reason why we choose the right-upmost is because the changing direections of row and column from this point are different.
 */
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-bool searchMatrix(vector<vector<int> >& matrix, int target) {
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
         if(matrix.empty() || matrix[0].empty())
-		return false;
-
-	int row = 0;
-	int col = matrix[0].size() - 1;
-	for(; row < matrix.size() && col >= 0;)
-	{
-		if(matrix[row][col] == target)
-			return true;
-		else if(matrix[row][col] < target)
-			++row;
-		else
-			--col;
-	}
-
-	retrun false;
-}
+            return false;
+        
+        for(int i = 0, j = matrix[0].size() - 1; i < matrix.size() && j >= 0;)
+        {
+            if(matrix[i][j] == target)
+                return true;
+            else if(matrix[i][j] < target)
+                ++i;
+            else 
+                --j;
+        }
+        
+        return false;
+    }
+};
