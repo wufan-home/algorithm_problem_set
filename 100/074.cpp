@@ -21,26 +21,41 @@ public:
         if(matrix.empty() || matrix[0].empty())
             return false;
         
-        int r1 = 0; 
-        int r2 = matrix.size() - 1;
-        while(r1 < r2)
+        int s1 = 0;
+        int s2 = matrix.size() - 1;
+        while(s1 < s2)
         {
-            int mid = r1 + (r2 - r1) / 2;
+            int mid = s1 + (s2 - s1) / 2;
             if(matrix[mid][0] == target)
                 return true;
             else if(matrix[mid][0] < target)
-                r1 = mid + 1;
+                s1 = mid + 1;
             else
-                r2 = mid;
+                s2 = mid;
         }
         
-        if(matrix[r1][0] > target)
-            --r1;
+        int e1 = 0;
+        int e2 = matrix.size() - 1;
+        while(e1 < e2)
+        {
+            int mid = e1 + (e2 - e1) / 2;
+            if(matrix[mid].back() == target)
+                return true;
+            else if(matrix[mid].back() < target)
+                e1 = mid + 1;
+            else
+                e2 = mid;
+        }
         
-        for(int i = r1; i < matrix.size(); ++i)
+        //cout << s1 << " - " << e1 << endl;
+        
+        if(s1 < e1)
+            return false;
+        
+        for(int i = e1; i <= s1; ++i)
         {
             int l = 0;
-            int r = matrix[i].size() - 1;
+            int r = matrix[i].size();
             while(l < r)
             {
                 int mid = l + (r - l) / 2;
@@ -57,5 +72,6 @@ public:
         }
         
         return false;
+        
     }
 };
