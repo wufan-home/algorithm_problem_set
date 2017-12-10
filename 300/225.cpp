@@ -14,69 +14,48 @@
     You may assume that all operations are valid (for example, no pop or top operations will be called on an empty stack).
 */
 
-class Stack {
+class MyStack {
 public:
-    // Push element x onto stack.
+    /** Initialize your data structure here. */
+    MyStack() {}
+    
+    /** Push element x onto stack. */
     void push(int x) {
-        if(m_queue.size() < 2) {
-            if(m_queue.size() == 1) {
-                m_queue_backup.push(m_queue.front());
-                m_queue.pop();
-            }
-
-            while(!m_queue_backup.empty()) {
-                m_queue.push(m_queue_backup.front());
-                m_queue_backup.pop();
-            }
+        q.push(x);
+        int amount = q.size() - 1;
+        for(int i = 0; i < amount; ++i)
+        {
+            q.push(q.front());
+            q.pop();
         }
-        
-        m_queue.push(x);
     }
-
-    // Removes the element on top of the stack.
-    void pop() {
-        if(m_queue.empty()) {
-            while(!m_queue_backup.empty()) {
-                m_queue.push(m_queue_backup.front());
-                m_queue_backup.pop();
-            }
-        } 
-        
-        if(m_queue.size() > 1) {
-            while(m_queue.size() > 1) {
-                m_queue_backup.push(m_queue.front());
-                m_queue.pop();
-            }
-        }
-        
-        m_queue.pop();
+    
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int front = q.front();
+        q.pop();
+        return front;
     }
-
-    // Get the top element.
+    
+    /** Get the top element. */
     int top() {
-        if(m_queue.empty()) {
-            while(!m_queue_backup.empty()) {
-                m_queue.push(m_queue_backup.front());
-                m_queue_backup.pop();
-            }
-        } 
-        
-        if(m_queue.size() > 1) {
-            while(m_queue.size() > 1) {
-                m_queue_backup.push(m_queue.front());
-                m_queue.pop();
-            }
-        }
-        
-        return m_queue.front();
+        return q.front();
     }
-
-    // Return whether the stack is empty.
+    
+    /** Returns whether the stack is empty. */
     bool empty() {
-        return (m_queue.empty() && m_queue_backup.empty());
+        return q.empty();
     }
     
 private:
-    queue<int> m_queue;
-    queue<int> m_queue_backup;
+    queue<int> q;
 };
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack obj = new MyStack();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.top();
+ * bool param_4 = obj.empty();
+ */
