@@ -14,48 +14,53 @@
     You may assume that all operations are valid (for example, no pop or peek operations will be called on an empty queue).
 */
 
-class Queue {
+class MyQueue {
 public:
-    #include <stack>
-    // Push element x to the back of queue.
+    /** Initialize your data structure here. */
+    MyQueue() {
+        
+    }
+    
+    /** Push element x to the back of queue. */
     void push(int x) {
-        if(m_stack.empty()) {
-            while(!m_stack_backup.empty()) {
-                m_stack.push(m_stack_backup.top());
-                m_stack_backup.pop();
+        input.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    int pop() {
+        int res = peek();
+        output.pop();
+        return res;
+    }
+    
+    /** Get the front element. */
+    int peek() {
+        if(output.empty())
+        {
+            while(!input.empty())
+            {
+                output.push(input.top());
+                input.pop();
             }
         }
-        m_stack.push(x);
+        return output.top();
     }
-
-    // Removes the element from in front of queue.
-    void pop(void) {
-        if(m_stack_backup.empty()) {
-            while(!m_stack.empty()) {
-                m_stack_backup.push(m_stack.top());
-                m_stack.pop();
-            }
-        }
-        m_stack_backup.pop();
-    }
-
-    // Get the front element.
-    int peek(void) {
-        if(m_stack_backup.empty()) {
-            while(!m_stack.empty()) {
-                m_stack_backup.push(m_stack.top());
-                m_stack.pop();
-            }
-        }
-        return m_stack_backup.top();
-    }
-
-    // Return whether the queue is empty.
-    bool empty(void) {
-        return (m_stack.empty() && m_stack_backup.empty());
+    
+    /** Returns whether the queue is empty. */
+    bool empty() {
+        return input.empty() && output.empty();
     }
     
 private:
-    stack<int> m_stack;
-    stack<int> m_stack_backup;
+    stack<int> input;
+    stack<int> output;
 };
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue obj = new MyQueue();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.peek();
+ * bool param_4 = obj.empty();
+ */
