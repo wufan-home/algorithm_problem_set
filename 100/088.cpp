@@ -9,15 +9,9 @@
 class Solution {
 public:
     void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
-        for(int k = m + n - 1; k >= 0; --k)
+        for(int w = m + n - 1, i1 = m - 1, i2 = n - 1; w >= 0; --w)
         {
-            if(n <= 0)
-                break;
-
-            if(m <= 0 || nums2[n - 1] >= nums1[m - 1])
-                nums1[k] = nums2[--n];
-            else
-                nums1[k] = nums1[--m];
-        }       
+            nums1[w] = (i1 < 0 ? INT_MIN : nums1[i1]) > (i2 < 0 ? INT_MIN : nums2[i2]) ? nums1[i1--] : nums2[i2--];
+        }
     }
 };
