@@ -7,27 +7,28 @@
 class Solution {
 public:
     bool isValid(string s) {
+        unordered_map<char, int> opToValue;
+        opToValue['('] = 1;
+        opToValue[')'] = -1;
+        opToValue['['] = 2;
+        opToValue[']'] = -2;
+        opToValue['{'] = 3;
+        opToValue['}'] = -3;
+        
+        stack<int> st;
         for(int i = 0; i < s.size(); ++i)
         {
-            if(s[i] == '(' || s[i] == '[' || s[i] == '{')
-                stackForLeftParentheses.push(s[i]);
-            else if(!checkMatchedParentheses(s[i]))
+            if(s[i] == '(' || s[i] == '{' || s[i] == '[')
+                st.push(opToValue[s[i]]);
+            else
+            {
+                if(st.empty() || opToValue[s[i]] + st.top() != 0)
                     return false;
+                
+                st.pop();
+            }
         }
         
-        return stackForLeftParentheses.empty();
-    }
-private:
-    stack<char> stackForLeftParentheses;
-
-    bool checkMatchedParentheses(const char rightParentheses)
-    {
-        if(stackForLeftParentheses.empty() || 
-           ((int) stackForLeftParentheses.top() != (int) rightParentheses - 1 && 
-           (int) stackForLeftParentheses.top() != (int) rightParentheses - 2))
-            return false;
-        
-        stackForLeftParentheses.pop();
-        return true;
+        return st.empty();
     }
 };
