@@ -16,6 +16,42 @@
  *     Interval(int s, int e) : start(s), end(e) {}
  * };
  */
+
+// Two vector, one contains all start timestamps; another one contains all end timestamps.
+
+class Solution {
+public:
+    int minMeetingRooms(vector<Interval>& intervals) {
+        vector<int> starts(intervals.size(), -1);
+        vector<int> ends(intervals.size(), -1);
+        for(int i = 0; i < intervals.size(); ++i)
+        {
+            starts[i] = intervals[i].start;
+            ends[i] = intervals[i].end;
+        }
+        
+        sort(starts.begin(), starts.end());
+        sort(ends.begin(), ends.end());
+        
+        int intersection = 0;
+        int maxIntersection = 0;
+        for(int start = 0, end = 0; start < intervals.size(); ++start)
+        {
+            while(end < start && ends[end] <= starts[start])
+            {
+                --intersection;
+                ++end;
+            }
+            
+            maxIntersection = max(maxIntersection, ++intersection);
+        }
+        
+        return maxIntersection;
+    }
+};
+
+// Use a priority queue.
+
 class Solution {
 public:
     int minMeetingRooms(vector<Interval>& intervals) {
