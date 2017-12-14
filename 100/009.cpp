@@ -8,22 +8,28 @@
   you know that the reversed integer might overflow. How would you handle such case?
   There is a more generic way of solving this problem.
 */
-
-
-bool isPalindrome(int x) {
-        if(x < 0 || (x && x % 10 == 0))
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if(x < 0)
             return false;
-            
-        int stackForReverseDigits = 0;
-        while(x > stackForReverseDigits)
+        
+        int div = 1;
+        while(x / 10 >= div)
+            div *= 10;
+        
+        while(div > 1)
         {
-            const int tailDigit = x % 10;
+            int first = x / div;
+            int last = x % 10;
+            if(first != last)
+                return false;
+            
+            x %= div;
             x /= 10;
-            if(x == stackForReverseDigits || x == 10 * stackForReverseDigits + tailDigit)
-                return true; 
-
-            stackForReverseDigits = 10 * stackForReverseDigits + tailDigit;
+            div /= 100;
         }
         
-        return x == 0;
+        return true;
     }
+};
