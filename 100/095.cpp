@@ -11,79 +11,41 @@
 	   2     1         2                 3
 */
 
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
 class Solution {
 public:
     vector<TreeNode*> generateTrees(int n) {
-        valueRangeToTreeNodes[""] = vector<TreeNode *>();
-        return getListOfTreeWithGivenRange(1, n);
+        if(n == 0) return {};
+        
+        return *doGenerate(1, n);
     }
     
 private:
-    vector<TreeNode *>& getListOfTreeWithGivenRange(int start, int end)
+    vector<TreeNode *> *doGenerate(int start, int end)
     {
+        vector<TreeNode *> *res = new vector<TreeNode *>();
         if(start > end)
-            return valueRangeToTreeNodes[""];
-            
-        string range = to_string(start).append(to_string(end));
-        if(valueRangeToTreeNodes.find(range) != valueRangeToTreeNodes.end())
-            return valueRangeToTreeNodes[range];
-
-        valueRangeToTreeNodes[range] = vector<TreeNode *>();
-        if(start == end)
         {
-            valueRangeToTreeNodes[range].push_back(new TreeNode(start));
-            return valueRangeToTreeNodes[range];
+            res->push_back(NULL);
+            return res;
         }
         
-        for(int rootValue = start; rootValue <= end; ++rootValue)
+        for(int i = start; i <= end; ++i)
         {
-            vector<TreeNode *> &leftSubtrees = getListOfTreeWithGivenRange(start, rootValue - 1);
-            vector<TreeNode *> &rightSubtrees = getListOfTreeWithGivenRange(rootValue + 1, end);
+            vector<TreeNode *> *left = doGenerate(start, i - 1);
+            vector<TreeNode *> *right = doGenerate(i + 1, end);
             
-            if(leftSubtrees.empty())
+            for(int k = 0; k < left->size(); ++k)
             {
-                for(int i = 0; i < rightSubtrees.size(); ++i)
+                for(int j = 0; j < right->size(); ++j)
                 {
-                    TreeNode *root = new TreeNode(rootValue);
-                    root->right = rightSubtrees[i];
-                    valueRangeToTreeNodes[range].push_back(root);
-                }
-            }
-            else if(rightSubtrees.empty())
-            {
-                for(int i = 0; i < leftSubtrees.size(); ++i)
-                {
-                    TreeNode *root = new TreeNode(rootValue);
-                    root->left = leftSubtrees[i];
-                    valueRangeToTreeNodes[range].push_back(root);
-                }
-            }
-            else
-            {
-                for(int i = 0; i < leftSubtrees.size(); ++i)
-                {
-                    for(int j = 0; j < rightSubtrees.size(); ++j)
-                    {
-                        TreeNode *root = new TreeNode(rootValue);
-                        root->left = leftSubtrees[i];
-                        root->right = rightSubtrees[j];
-                        valueRangeToTreeNodes[range].push_back(root);
-                    }
+                    TreeNode *root = new TreeNode(i);
+                    root->left = (*left)[k];
+                    root->right = (*right)[j];
+                    res->push_back(root);
                 }
             }
         }
         
-        return valueRangeToTreeNodes[range];
+        return res;
     }
-
-    unordered_map<string, vector<TreeNode *>> valueRangeToTreeNodes;
 };
