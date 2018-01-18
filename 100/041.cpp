@@ -11,29 +11,23 @@
 class Solution {
 public:
     int firstMissingPositive(vector<int>& nums) {
-        const int maxNumber = nums.size();
-        
-        for(int i = 0; i < maxNumber; ++i)
+        for(int i = 1; i <= nums.size(); ++i)
         {
-            while(i != nums[i] - 1)
+            if(nums[i - 1] <= 0 || nums[i - 1] > nums.size())
+                nums[i - 1] = 0;
+            
+            while(nums[i - 1] > 0 && nums[i - 1] != i && nums[nums[i - 1] - 1] != nums[i - 1])
             {
-                if(nums[i] < 1 || nums[i] > maxNumber || nums[i] == nums[nums[i] - 1])
-                {
-                    nums[i] = -1;
-                    break;
-                }
-                
-                swap(nums[i], nums[nums[i] - 1]);
+                swap(nums[i - 1], nums[nums[i - 1] - 1]);
             }
         }
         
-        int firstMissingPositive = 1;
-        for(; firstMissingPositive <= maxNumber; ++firstMissingPositive)
+        for(int i = 0; i < nums.size(); ++i)
         {
-            if(nums[firstMissingPositive - 1] == -1)
-                break;
+            if(nums[i] <= 0 || nums[i] != i + 1)
+                return i + 1;
         }
         
-        return firstMissingPositive;
+        return nums.size() + 1;
     }
 };
