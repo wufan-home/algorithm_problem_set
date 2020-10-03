@@ -23,6 +23,20 @@ arr will have length in range [1, 10].
 arr[i] will be a permutation of [0, 1, ..., arr.length - 1].
 */
 
+/*
+ * Solution: This problem requires an ascending array. The key to the problem is that the values of one segment 
+ * should be bigger than any elements before this group. It suffices as long as we show 
+ * the values are bigger than any local maximum values of previous groups.
+ * 1 - For a descending segment, they must be within a group.
+ * 2 - For a ascending segement, We need to compare all the elements with the current local maximum value:
+ * 2.1 - If they are bigger than the value, add a new group and update the maximum value.
+ * 2.2. - If they are smaller than the value, check them with the previous maximum values:
+ * 2.2.1 - If they are smaller than any of them, the previous groups should be merged into the current group.
+ * 3 - For this reason, we use a stack to record of all previous maximum values. 
+ * 
+ * Similar questions: Trapper water.
+ * */
+
 class Solution {
 public:
     int maxChunksToSorted(vector<int>& arr) {
