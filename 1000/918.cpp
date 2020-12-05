@@ -49,8 +49,9 @@
     5. The total sum.
 
     It is easy to see that a circular sum starting with bigger index and ending with a smaller index is actually
-    a substract of the total sum and a interval sum. This implies that the set of circular sums and interval sums are one to one match.
-    It implies that the maximum circular sum is nothing but the total sum minus the minimum interval sum.
+    a substract of the total sum and some interval sum (start with end index  + 1 and end with start index - 1). 
+    This implies that the set of circular arrays and the set of interval arrays are one-to-one match. 
+    It implies that the maximum circular sum is the total sum minus the minimum interval sum.
 
     This logic can also be applied to the relationships between prefix sums and suffix sums.
 
