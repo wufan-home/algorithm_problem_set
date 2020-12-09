@@ -45,11 +45,11 @@
     1. Prefix sums.
     2. Suffix sums.
     3. Interval sums.
-    4. The substract of total sum and interval sums.
+    4. The circular sums.
     5. The total sum.
 
-    It is easy to see that a circular sum starting with bigger index and ending with a smaller index is actually
-    a substract of the total sum and some interval sum (start with end index  + 1 and end with start index - 1). 
+    It is easy to see that a circular array starting with bigger index and ending with a smaller index is actually
+    a substract of the array and some interval array (start with end index  + 1 and end with start index - 1). 
     This implies that the set of circular arrays and the set of interval arrays are one-to-one match. 
     It implies that the maximum circular sum is the total sum minus the minimum interval sum.
 
