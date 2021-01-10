@@ -65,7 +65,7 @@ public:
                 }
             }
             
-            swap(cache[start], middle > start ? cache[middle] : cache[start]);
+            swap(cache[start], cache[middle]);
             
             if (middle - start == K) {
                 break;
