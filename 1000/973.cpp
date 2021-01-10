@@ -67,7 +67,7 @@ public:
             
             swap(cache[start], cache[middle]);
             
-            if (middle - start == K) {
+            if (middle == K) {
                 break;
             }
             else if (middle > K) {
