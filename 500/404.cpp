@@ -42,3 +42,40 @@ public:
         return sum;
     }
 };
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        int res = 0;
+        iterateAllLeftLeaves(NULL, root, res);
+        return res;
+    }
+    
+private:
+    void iterateAllLeftLeaves(TreeNode* parent, TreeNode* child, int& sum) {
+        if (child == NULL) {
+            return;
+        }
+        
+        if (child->left == NULL && child->right == NULL) {
+            if (parent && child == parent->left) {
+                sum += child->val;
+            }
+            return;
+        }
+        
+        iterateAllLeftLeaves(child, child->left, sum);
+        iterateAllLeftLeaves(child, child->right, sum);
+    }
+};
