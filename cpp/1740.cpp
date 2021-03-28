@@ -44,6 +44,18 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
     int findDistance(TreeNode* root, int p, int q) {
@@ -61,7 +73,7 @@ public:
     
 private:
     void findPath(TreeNode* root, int p, vector<TreeNode*>& path) {
-        if (root == NULL) {
+        if (root == NULL || (!path.empty() && path.back()->val == p)) {
             return;
         }
         
@@ -69,14 +81,16 @@ private:
         
         findPath(root->left, p, path);
         if (path.back()->val == p) {
-            return;
+           return;
         }
         
         findPath(root->right, p, path);
+        
         if (path.back()->val == p) {
-            return;
+           return;
         }
         
         path.pop_back();
     }
 };
+
