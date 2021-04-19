@@ -79,3 +79,22 @@ public:
         return sum_cost;
     }
 };
+
+// This is a better solution.
+
+class Solution {
+public:
+    int twoCitySchedCost(vector<vector<int>>& costs) {
+        int num = costs.size();
+        auto compare_a = [](const vector<int>& l, const vector<int>& r) { return l[0] - l[1] < r[0] - r[1]; };
+        
+        sort(costs.begin(), costs.end(), compare_a);
+        
+        int sum = 0;
+        for (int i = 0; i < num; ++i) {
+            sum += costs[i][i < num / 2 ? 0 : 1];
+        }
+        
+        return sum;
+    }
+};
