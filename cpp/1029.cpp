@@ -86,15 +86,15 @@ class Solution {
 public:
     int twoCitySchedCost(vector<vector<int>>& costs) {
         int num = costs.size();
-        auto compare_a = [](const vector<int>& l, const vector<int>& r) { return l[0] - l[1] < r[0] - r[1]; };
+        auto compare = [](const vector<int>& l, const vector<int>& r) { return l[0] - l[1] < r[0] - r[1]; };
         
-        sort(costs.begin(), costs.end(), compare_a);
+        sort(costs.begin(), costs.end(), compare);
         
-        int sum = 0;
+        int min_cost = 0;
         for (int i = 0; i < num; ++i) {
-            sum += costs[i][i < num / 2 ? 0 : 1];
+            min_cost += costs[i][i < num / 2 ? 0 : 1];
         }
         
-        return sum;
+        return min_cost;
     }
 };
