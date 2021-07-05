@@ -21,13 +21,12 @@
     26
     
     l , m  , r  : count
-    0 , 42 , 84 : 28
-    0 , 20 , 41 : 14
-    21 , 31 , 41 : 23
-    32 , 36 , 41 : 26
-    32 , 33 , 35 : 24
-    34 , 34 , 35 : 25
-    35 , 35 , 35 : 25
+    0 , 42 , 85 : 28
+    0 , 21 , 42 : 15
+    22 , 32 , 42 : 24
+    33 , 37 , 42 : 27
+    33 , 35 , 37 : 25
+    36 , 36 , 37 : 26
 */
 
 class Solution {
@@ -36,8 +35,8 @@ public:
         sort(nums.begin(), nums.end());
         int size = nums.size();
         int l = 0;
-        int r = nums.back() - nums.front();
-        while (l <= r) {
+        int r = nums.back() - nums.front() + 1;
+        while (l < r) {
             int mid = l + (r - l) / 2;
             int count = 0;
             int j = 0;
@@ -46,7 +45,10 @@ public:
                 count += j - i - 1;
             }
             
-            count >= k ? r = mid - 1 : l = mid + 1;
+            // The mid is a "guessed" difference - it may not be a real difference obtained by substracting two elements in the array.
+            // There would be a "real" difference smaller than the "guessed" one while the count would be same.
+            // It means that the difference not the least ???
+            count >= k ? r = mid : l = mid + 1;
         }
         
         return l;
