@@ -14,31 +14,35 @@
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
-        int res = 0;
-        
-        heights.push_back(0);
+        int ans = 0;
+        int size = heights.size();
         stack<pair<int, int>> st;
-        for(int i = 0; i < heights.size(); ++i)
-        {
-            if(st.empty() || heights[i] > st.top().second)
-            {
-                st.push(make_pair(1, heights[i]));
+        st.push({heights[0], 1});
+        for (int i = 1; i < size; ++i) {
+            if (heights[i] >= st.top().first) {
+                st.push({heights[i], 1});
                 continue;
             }
             
-            int height = 0;
-            int width = 0;
-            for(; !st.empty() && st.top().second >= heights[i]; st.pop())
-            {
-                height = st.top().second;
-                width += st.top().first;
-                res = max(res, height * width);
+            int h = 0;
+            int w = 0;
+            for (; !st.empty() && st.top().first >= heights[i]; st.pop()) {
+                h = st.top().first;
+                w += st.top().second;
+                ans = max(ans, h * w);
             }
             
-            res = max(res, min(height, heights[i]) * (++width));
-            st.push(make_pair(width, min(height, heights[i])));
+            h = min(h, heights[i]);
+            w += 1;
+            st.push({h, w});
         }
         
-        return res;
+        for (int h = 0, w = 0; !st.empty(); st.pop()) {
+            h = st.top().first;
+            w += st.top().second;
+            ans = max(ans, h * w);
+        }
+        
+        return ans;
     }
 };
