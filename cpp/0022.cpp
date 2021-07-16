@@ -22,31 +22,27 @@
 class Solution {
 public:
     vector<string> generateParenthesis(int n) {
-        vector<string> results;
-        string result;
-        populateParenthesis(n, n, result, results);
-        return results;
+        vector<string> ans;
+        string valid(2 * n, '\0');
+        generate(valid, 0, n, n, ans);
+        return ans;
     }
     
 private:
-    void populateParenthesis(int l, int r, string result, vector<string>& results)
-    {
-        if(l == 0)
-        {
-            for(int i = 0; i < r; ++i)
-                result.push_back(')');
-                
-            results.push_back(result);
+    void generate(string& valid, int cur, int left, int right, vector<string>& ans) {
+        if (cur == valid.size()) {
+            ans.push_back(valid);
+            return;
         }
-        else
-        {
-            result.push_back('(');
-            populateParenthesis(l - 1, r, result, results);
-            if(l < r)
-            {
-                result[result.size() - 1] = ')';
-                populateParenthesis(l, r - 1, result, results);
-            }
+        
+        if (left > 0) {
+            valid[cur] = '(';
+            generate(valid, cur + 1, left - 1, right, ans);
+        }
+        
+        if (right > left) {
+            valid[cur] = ')';
+            generate(valid, cur + 1, left, right - 1, ans);
         }
     }
 };
