@@ -40,17 +40,19 @@ Hints:
 class Solution {
 public:
     vector<int> getModifiedArray(int length, vector<vector<int>>& updates) {
-        vector<int> array(length + 1, 0);
-        for(int i = 0; i < updates.size(); ++i)
-        {
-            array[updates[i][0]] += updates[i][2];
-            array[updates[i][1] + 1] -= updates[i][2];
+        vector<int> ans(length, 0);
+        int times = updates.size();
+        for (int i = 0; i < times; ++i) {
+            ans[updates[i][0]] += updates[i][2];
+            if (updates[i][1] < length - 1) {
+                ans[updates[i][1] + 1] -= updates[i][2];
+            }
         }
         
-        for(int i = 1; i <= length; ++i)
-            array[i] += array[i - 1];
+        for (int i = 1; i < length; ++i) {
+            ans[i] += ans[i - 1];
+        }
         
-        array.pop_back();
-        return array;
+        return ans;
     }
 };
