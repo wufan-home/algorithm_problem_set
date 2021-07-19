@@ -45,8 +45,7 @@
 class Solution {
 public:
     TreeNode* pruneTree(TreeNode* root) {
-        dfs(root);
-        return root->val == 0 && root->left == NULL && root->right == NULL ? NULL : root;
+        return dfs(root) ? root : NULL;
     }
     
 private:
