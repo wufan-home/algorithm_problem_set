@@ -62,8 +62,7 @@ public:
             if (root1 == root2) {
                 continue;
             }
-            
-            if (root1 <= root2) {
+            else if (root1 < root2) {
                 uf[root2] = root1;
             }
             else {
