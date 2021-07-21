@@ -1,71 +1,61 @@
-/*
-	Implement a trie with insert, search, and startsWith methods.
-	Note:
-	You may assume that all inputs are consist of lowercase letters a-z.
-*/
-
 class Trie {
 public:
     /** Initialize your data structure here. */
     Trie() {
-        tailFlag = false;
-        next = vector<Trie *>(26, NULL);
+        root = new TrieNode();
     }
     
     /** Inserts a word into the trie. */
     void insert(string word) {
-        if(word.empty())
-            return ;
-        
-        Trie *cur = this;
-        for(int i = 0; i < word.size(); ++i)
-        {
-            int index = word[i] - 'a';
-            if((*cur).next[index] == NULL)
-                (*cur).next[index] = new Trie();
+        TrieNode* cur = root;
+        for (auto c : word) {
+            if (cur->next[c - 'a'] == NULL) {
+                cur->next[c - 'a'] = new TrieNode();
+            }
             
-            cur = (*cur).next[index];
-            if(i == word.size() - 1 && cur->tailFlag == false)
-                cur->tailFlag = true;
+            cur = cur->next[c - 'a'];
         }
+        cur->isEnd = true;
     }
     
     /** Returns if the word is in the trie. */
     bool search(string word) {
-        Trie *endNode = traverseToEnd(word);
-        return endNode != NULL && endNode->tailFlag;
+        TrieNode* cur = root;
+        for (auto c : word) {
+            if (cur->next[c - 'a'] == NULL) {
+                return false;
+            }
+            cur = cur->next[c - 'a'];
+        }
+        return cur->isEnd;
     }
     
     /** Returns if there is any word in the trie that starts with the given prefix. */
     bool startsWith(string prefix) {
-        return traverseToEnd(prefix) != NULL;
-    }
-private:
-    Trie *traverseToEnd(const string &word)
-    {
-        if(word.empty())
-            return NULL;
-        
-        Trie *cur = this;
-        for(int i = 0; i < word.size(); ++i)
-        {
-            int index = word[i] - 'a';
-            cur = (*cur).next[index];
-            if(cur == NULL)
-                break;
+        TrieNode* cur = root;
+        for (auto c : prefix) {
+            if (cur->next[c - 'a'] == NULL) {
+                return false;
+            }
+            cur = cur->next[c - 'a'];
         }
-        
-        return cur;
+        return true;
     }
     
-    bool tailFlag;
-    vector<Trie *> next;
+private:
+    struct TrieNode {
+        bool isEnd;
+        vector<TrieNode*> next;
+        TrieNode() : isEnd(false), next(vector<TrieNode*>(26, NULL)) {}
+    };
+    
+    TrieNode* root;
 };
 
 /**
  * Your Trie object will be instantiated and called as such:
- * Trie obj = new Trie();
- * obj.insert(word);
- * bool param_2 = obj.search(word);
- * bool param_3 = obj.startsWith(prefix);
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
  */
