@@ -50,22 +50,18 @@
 class Solution {
 public:
     int goodNodes(TreeNode* root) {
-        int res = 0;
-        res += findGoodNode(root, root->val);
-        return res;
+        return find(root, INT_MIN);
     }
     
 private:
-    int findGoodNode(TreeNode* root, int maxValue) {
+    int find(TreeNode* root, int localMax) {
         if (root == NULL) {
             return 0;
         }
         
-        int count = 0;
-        int nextMaxValue = max(maxValue, root->val);
-        count += findGoodNode(root->left, nextMaxValue);
-        count += findGoodNode(root->right, nextMaxValue);
-        count += (root->val >= maxValue);
+        int count = root->val >= localMax ? 1 : 0;
+        count += find(root->left, root->val >= localMax ? root->val : localMax);
+        count += find(root->right, root->val >= localMax ? root->val : localMax);
         
         return count;
     }
