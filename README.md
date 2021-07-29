@@ -1,3 +1,4 @@
-This repository is prepared for the collection of my solutions to the problems on the website www.leetcode.com .
+This repository is prepared for the collection of my solutions to the problems from:
 
-https://github.com/DoctorLai/ACM
+* [Leetcode](www.leetcode.com)
+* [ACM](https://github.com/DoctorLai/ACM)
