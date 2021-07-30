@@ -41,16 +41,9 @@ public:
     vector<int> finalPrices(vector<int>& prices) {
         int size = prices.size();
         vector<int> ans(size, 0);
-        ans[size - 1] = prices[size - 1];
         stack<int> st;
-        st.push(prices[size - 1]);
-        for (int i = size - 2; i >= 0; --i) {
-            if (prices[i] >= prices[i + 1]) {
-                ans[i] = prices[i] - prices[i + 1];
-                st.push(prices[i]);
-                continue;
-            }
-            
+        st.push(INT_MAX);
+        for (int i = size - 1; i >= 0; --i) {
             for (; !st.empty() && prices[i] < st.top(); st.pop()) {}
             ans[i] = prices[i] - (!st.empty() ? st.top() : 0);
             st.push(prices[i]);
