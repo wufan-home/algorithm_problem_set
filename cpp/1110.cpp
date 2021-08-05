@@ -35,6 +35,41 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+class Solution {
+public:
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        vector<TreeNode*> ans;
+        unordered_set<int> valueToDelete(to_delete.begin(), to_delete.end());
+        aux(root, valueToDelete, ans, true);
+        return ans;
+    }
+    
+private:
+    TreeNode* aux(TreeNode* root, unordered_set<int>& to_delete, vector<TreeNode*>& ans, bool isRoot) {
+        if (root == NULL) {
+            return NULL;
+        }
+        
+        // This is the critical step:
+        // Only the not deleted root has to be in the result list.
+        // If the parent is not deleted (no matter it is root), its child needs not to be in the ans.
+        bool toDelete = to_delete.count(root->val) > 0;
+        if (isRoot && !toDelete) {
+            ans.push_back(root);
+        }
+        
+        TreeNode* l = aux(root->left, to_delete, ans, toDelete);
+        TreeNode* r = aux(root->right, to_delete, ans, toDelete);
+        if (!toDelete) {
+            root->left = l;
+            root->right = r;
+        }
+        
+        return toDelete ? NULL : root;
+    }
+};
+
 class Solution {
 public:
     vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
