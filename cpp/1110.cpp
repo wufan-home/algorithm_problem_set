@@ -54,6 +54,7 @@ private:
         // This is the critical step:
         // Only the not deleted root has to be in the result list.
         // If the parent is not deleted (no matter it is root), its child needs not to be in the ans.
+        // In the meantime, if the current root is to be deleted, all its children may become two new roots.
         bool toDelete = to_delete.count(root->val) > 0;
         if (isRoot && !toDelete) {
             ans.push_back(root);
