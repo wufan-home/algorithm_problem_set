@@ -24,49 +24,44 @@
 	Topological sort could also be done via BFS.
 */
 
+// Topological sort, DFS.
 class Solution {
 public:
-    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
-        vector<vector<int>> dependency(numCourses, vector<int>());
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<unordered_set<int>> adj(numCourses, unordered_set<int>());
+        vector<int> pre(numCourses, 0);
+        for (auto edge : prerequisites) {
+            adj[edge[1]].insert(edge[0]);
+            ++pre[edge[0]];
+        }
         
-        for(int i = 0; i < prerequisites.size(); ++i)
-            dependency[prerequisites[i].first].push_back(prerequisites[i].second);
+        vector<int> schedule;
+        stack<int> st;
+        vector<bool> visited(numCourses, false);
+        for (int c = 0; c < numCourses; ++c) {
+            if (pre[c] == 0) {
+                schedule.push_back(c);
+                st.push(c);
+                visited[c] = true;
+            }
+        }
         
-        stack<int> stackForCourses;
-        vector<bool> finished(numCourses, false);
-        vector<bool> cached(numCourses, false);
-        for(int i= 0; i < numCourses; ++i)
-        {
-            if(!finished[i])
-            {
-                stackForCourses.push(i);
-                while(!stackForCourses.empty())
-                {
-                    int curCourse = stackForCourses.top();
-                    if(finished[curCourse] || dependency[curCourse].empty() || cached[curCourse])
-                    {
-                        finished[curCourse] = true;
-                        cached[curCourse] = false;
-                        stackForCourses.pop();
-                    }
-                    else
-                    {
-                        cached[curCourse] = true;
-                        for(int j = 0; j < dependency[curCourse].size(); ++j)
-                        {
-                            if(finished[dependency[curCourse][j]])
-                                continue;
-                                
-                            if(cached[dependency[curCourse][j]])
-                                return false;
-                                
-                            stackForCourses.push(dependency[curCourse][j]);
-                        }
-                    }
+        while (!st.empty()) {
+            int c = st.top();
+            st.pop();
+            for (auto n : adj[c]) {
+                if (visited[n]) {
+                    return false;
+                }
+                
+                if (--pre[n] == 0) {
+                    schedule.push_back(n);
+                    st.push(n);
+                    visited[c] = true;
                 }
             }
         }
         
-        return true;
+        return schedule.size() == numCourses ? true : false;
     }
 };
