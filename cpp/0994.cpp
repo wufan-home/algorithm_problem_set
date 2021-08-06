@@ -43,48 +43,49 @@
 class Solution {
 public:
     int orangesRotting(vector<vector<int>>& grid) {
+        vector<int> steps({0, 1, 0, -1, 0});
         int row = grid.size();
         int col = grid[0].size();
-        
-        vector<vector<int>> directions({{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
-        
-        // Count
-        int total_rotate = 0;
-        int total_fresh = 0;
-        queue<pair<int, int>> q;
-        for(int i = 0; i < row; ++i) {
+        int fresh = 0;
+        queue<int> rotten;
+        for (int i = 0; i < row; ++i) {
             for (int j = 0; j < col; ++j) {
-                total_fresh += (grid[i][j] == 1);
+                fresh += grid[i][j] == 1;
                 if (grid[i][j] == 2) {
-                    ++total_rotate;
-                    q.push(make_pair(i, j));
+                    rotten.push(i * 10000 + j);
                 }
             }
         }
         
-        int res = 0;
-        while(!q.empty()) {
-            int level_size = q.size();
-            for (int i = 0; i < level_size; ++i) {
-                int curX = q.front().first;
-                int curY = q.front().second;
-                
-                for (int i = 0; i < 4; ++i) {
-                    int nextX = curX + directions[i][0];
-                    int nextY = curY + directions[i][1];
-                    
-                    if (nextX >= 0 && nextX < row && nextY >= 0 && nextY < col && grid[nextX][nextY] == 1) {
-                        grid[nextX][nextY] = 2;
-                        --total_fresh;
-                        q.push(make_pair(nextX, nextY));
-                    }
-                }
-                
-                q.pop();
-            }
-            res += (q.size() > 0);
+        int ans = 0;
+        if (fresh == 0) {
+            return ans;
         }
         
-        return total_fresh == 0 ? res : -1;
+        for (int level = rotten.size(); !rotten.empty();) {
+            int rx = rotten.front() / 10000;
+            int ry = rotten.front() % 10000;
+            rotten.pop();
+            
+            for (int i = 0; i < 4; ++i) {
+                int nx = rx + steps[i];
+                int ny = ry + steps[i + 1];
+                
+                if (nx < 0 || nx >= row || ny < 0 || ny >= col || grid[nx][ny] != 1) {
+                    continue;
+                }
+                
+                grid[nx][ny] = 2;
+                --fresh;
+                rotten.push(nx * 10000 + ny);
+            }
+            
+            if (--level == 0) {
+                ++ans;
+                level = rotten.size();
+            }
+        }
+        
+        return fresh == 0 ? ans - 1 : -1;
     }
 };
