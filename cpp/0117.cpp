@@ -23,51 +23,53 @@ After calling your function, the tree should look like:
     Solution: This problem cannnot be solved by the recursive method, since its structure is not symmetric.
 */
 
-/**
- * Definition for binary tree with next pointer.
- * struct TreeLinkNode {
- *  int val;
- *  TreeLinkNode *left, *right, *next;
- *  TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
- * };
- */
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {}
+};
+*/
+
 class Solution {
 public:
-    void connect(TreeLinkNode *root) {
-        if(root == NULL)
-            return;
+    Node* connect(Node* root) {
+        if (root == NULL) {
+            return root;
+        }
+        
+        queue<Node*> q;
+        q.push(root);
+        for (int level = q.size(); !q.empty();) {
+            Node* cur = q.front();
+            q.pop();
             
-        vector<TreeLinkNode *> vectorForTreeTrasversal;
-        vectorForTreeTrasversal.push_back(root);
-        for(int start = 0, end = 0; start < vectorForTreeTrasversal.size(); end = vectorForTreeTrasversal.size() - 1)
-        {
-            int i = start;
-            start = end + 1;
-            for(; i <= end; ++i)
-            {
-                TreeLinkNode *neighbour = NULL;
-                for(int j = i + 1; j <= end; ++j)
-                {
-                    TreeLinkNode *node = vectorForTreeTrasversal[j];
-                    neighbour = node->left ? node->left : (node->right ? node->right : NULL);
-                    if(neighbour)
-                        break;
-                }
-                
-                if(vectorForTreeTrasversal[i]->left)
-                {
-                    vectorForTreeTrasversal[i]->left->next = vectorForTreeTrasversal[i]->right ? 
-                                                             vectorForTreeTrasversal[i]->right : 
-                                                             neighbour;
-                    vectorForTreeTrasversal.push_back(vectorForTreeTrasversal[i]->left);
-                }
-                    
-                if(vectorForTreeTrasversal[i]->right)
-                {
-                    vectorForTreeTrasversal[i]->right->next = neighbour;
-                    vectorForTreeTrasversal.push_back(vectorForTreeTrasversal[i]->right);
-                }
+            if (--level > 0) {
+                cur->next = q.front();
+            }
+            
+            if (cur->left) {
+                q.push(cur->left);
+            }
+            
+            if (cur->right) {
+                q.push(cur->right);
+            }
+            
+            if (level == 0) {
+                level = q.size();
             }
         }
+        return root;
     }
 };
