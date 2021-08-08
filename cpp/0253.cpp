@@ -17,36 +17,35 @@
  * };
  */
 
-// Two vector, one contains all start timestamps; another one contains all end timestamps.
-
+// Use sort.
+// Put all endpoints into one vector and use 1 and -1 to distinguish them as start/end time points.
+// Use the time endpoints to sort all of them and put end timestamp before the next start timestamp.
+// Accumulate 1 and -1 from the left to the right, and get the maximum value each round.
+// This is the best code I did.
 class Solution {
 public:
-    int minMeetingRooms(vector<Interval>& intervals) {
-        vector<int> starts(intervals.size(), -1);
-        vector<int> ends(intervals.size(), -1);
-        for(int i = 0; i < intervals.size(); ++i)
-        {
-            starts[i] = intervals[i].start;
-            ends[i] = intervals[i].end;
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        int size = intervals.size();
+        vector<pair<int, int>> timestamps(2 * size, {-1, -1});
+        for (int i = 0; i < size; ++i) {
+            timestamps[2 * i] = make_pair(intervals[i][0], 1);
+            timestamps[2 * i + 1] = make_pair(intervals[i][1], -1);
         }
         
-        sort(starts.begin(), starts.end());
-        sort(ends.begin(), ends.end());
+        auto compare = [](const pair<int, int>& l, const pair<int, int>& r) {
+            return l.first < r.first || (l.first == r.first && l.second < r.second);
+        };
         
-        int intersection = 0;
-        int maxIntersection = 0;
-        for(int start = 0, end = 0; start < intervals.size(); ++start)
-        {
-            while(end < start && ends[end] <= starts[start])
-            {
-                --intersection;
-                ++end;
-            }
-            
-            maxIntersection = max(maxIntersection, ++intersection);
+        sort(timestamps.begin(), timestamps.end(), compare);
+        
+        int ans = 0;
+        int local = 0;
+        for (int i = 0; i < 2 * size; ++i) {
+            local += timestamps[i].second;
+            ans = max(ans, local);
         }
         
-        return maxIntersection;
+        return ans;
     }
 };
 
