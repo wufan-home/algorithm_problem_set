@@ -29,35 +29,22 @@
 
 class MyCalendar {
 public:
-    MyCalendar() {
-        
-    }
+    MyCalendar() {}
     
-    bool book(int start, int end) {    
-        auto it = lower_bound(timestamps_.begin(), timestamps_.end(), start);
-        if (it != timestamps_.end()) {
-            int index = it - timestamps_.begin();
-            if (index % 2 == 1) {
-                if (start < timestamps_[index] || (index < timestamps_.size() - 1 && end > timestamps_[index + 1])) {
-                    return false;
-                }
-            }
-            else {
-                if (start == timestamps_[index] || end > timestamps_[index]) {
-                    return false;
-                }
+    bool book(int start, int end) {
+        for (auto calendar : calendar_) {
+            if (max(calendar.first, start) < min(calendar.second, end)) {
+                // The condition is very smart!!!!!
+                return false;
             }
         }
         
-        timestamps_.push_back(start);
-        timestamps_.push_back(end);
-        sort(timestamps_.begin(), timestamps_.end());
-        
+        calendar_.push_back({start, end});
         return true;
     }
     
 private:
-    vector<int> timestamps_;
+    vector<pair<int, int>> calendar_;
 };
 
 /**
